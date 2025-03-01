@@ -56,3 +56,51 @@ IETF'nin standart belgelerine **Yorum Talepleri (RFC)** denir.
 RFC'ler aslında internetin ilk zamanlarında ortaya çıkan sorunlara çözüm bulmak için **yorum istemek amacıyla** başlamıştır. 
 RFC'ler genelde teknik ve detaylı belgelerdir. TCP, IP, HTTP (web için), SMTP (e-posta için) gibi protokolleri tanımlarlar. 
 Şu anda yaklaşık 9000+ tane RFC var. **IEEE 802 LAN Standartları Komitesi** gibi başka kuruluşlar da ağ bağlantıları gibi bazı ağ bileşenleri için standartlar belirler. Örneğin, **Ethernet ve WiFi standartlarını** bu komite belirler.
+
+### İnternet Sadece Kablolardan İbaret Değil: Uygulamalara Sunduğu Hizmetler
+
+Yukarıdaki tartışmamızda interneti oluşturan birçok parçayı tanıdık. Ama interneti **tamamen farklı bir açıdan**, yani **uygulamalara hizmet sunan bir altyapı** olarak da tanımlayabiliriz.  Sadece e-posta ve web siteleri gibi klasik uygulamaları düşünmeyin. İnternet uygulamaları artık çok daha çeşitli:
+
+*   **Mobil Uygulamalar:** Akıllı telefon ve tablet uygulamaları (mesajlaşma, haritalar, trafik bilgisi vb.)
+*   **Medya Akışı:** Müzik, film, televizyon dizisi yayınları (streaming)
+*   **Sosyal Medya:** Online sosyal platformlar
+*   **Video Konferans:** Görüntülü toplantı uygulamaları
+*   **Çok Oyunculu Oyunlar:** Online, birden fazla kişinin katıldığı oyunlar
+*   **Konum Bazlı Öneriler:** Yakındaki mekanları, restoranları öneren sistemler
+
+Bu uygulamaların hepsine **dağıtık uygulamalar (distributed applications)** denir. 
+Çünkü birden fazla uç sistemin veri alışverişi yapmasını gerektirirler.  
+Önemli bir nokta: **İnternet uygulamaları uç sistemlerde çalışır.** Ağın merkezindeki sinyal dağıtıcılarda (paket anahtarlarında) çalışmazlar. 
+Sinyal dağıtıcılar sadece uç sistemler arasında veri alışverişini kolaylaştırır, uygulamanın kendisiyle ilgilenmezler. 
+Yani sinyal dağıtıcılar "kargoyu taşır", ama "kargonun ne olduğunu bilmez".
+
+Şimdi "uygulamalara hizmet sunan altyapı" ifadesiyle ne demek istediğimizi biraz daha açalım.  
+Diyelim ki aklınıza harika bir internet uygulaması fikri geldi. Belki insanlığa çok faydalı olacak, belki de sizi zengin ve ünlü yapacak bir fikir! 
+Bu fikri gerçek bir internet uygulamasına nasıl dönüştürürsünüz?
+
+Uygulamalar uç sistemlerde çalıştığı için, **uç sistemlerde çalışacak programlar yazmanız** gerekecek. 
+Programlarınızı Java, C, Python gibi dillerde yazabilirsiniz. Dağıtık bir uygulama geliştirdiğiniz için, farklı uç sistemlerde çalışan programların **birbirleriyle veri göndermesi ve alması** gerekecek. 
+İşte burada kritik bir soru ortaya çıkıyor: Bir uç sistemdeki program, başka bir uç sistemdeki programa veri göndermesi için internete nasıl **talimat verir**?
+
+İnternete bağlı uç sistemler, **soket arayüzü (socket interface)** adı verilen bir şey sağlar. 
+Soket arayüzü, bir uç sistemdeki programın internet altyapısından başka bir uç sistemdeki **belirli bir programa veri göndermesini nasıl isteyeceğini** belirtir.  Bu arayüz, gönderen programın uyması gereken bir **kurallar bütünüdür**. İnternet, veriyi hedef programa ancak bu kurallara uyulursa ulaştırabilir.
+
+Şimdilik basit bir benzetme yapalım, diyelim ki Ayşe postane aracılığıyla Bob'a mektup göndermek istiyor. 
+Ayşe mektubu yazıp pencereden aşağı atamaz, değil mi? Postane, Ayşe'den şunları yapmasını ister:
+
+*   Mektubu bir **zarfa** koymalı.
+*   Zarfın ortasına Bob'un **tam adını, adresini ve posta kodunu** yazmalı.
+*   Zarfı **kapatmalı**.
+*   Zarfın sağ üst köşesine **pul** yapıştırmalı.
+*   Son olarak, zarfı resmi bir **posta kutusuna** atmalı.
+
+Yani postanenin kendi "posta hizmeti arayüzü" veya kuralları vardır. 
+Ayşe'nin mektubunun Bob'a ulaşması için bu kurallara uyması gerekir. 
+İşte internet de benzer şekilde, veri gönderen programın uyması gereken bir **soket arayüzüne** sahiptir. 
+Böylece internet, veriyi alacak programa ulaştırabilir.
+
+Postane elbette müşterilerine birden fazla hizmet sunar: hızlı gönderi, teslimat onayı, normal gönderi ve daha pek çok hizmet. 
+Benzer şekilde, internet de uygulamalarına **birden fazla hizmet** sunar. 
+Bir internet uygulaması geliştirirken, siz de uygulamanız için internetin bu hizmetlerinden birini seçmelisiniz. 
+
+İnterneti şimdiye kadar iki farklı şekilde tanımladık: donanım ve yazılım bileşenleri açısından ve dağıtık uygulamalara hizmet veren bir altyapı açısından. Belki hala internetin ne olduğu konusunda kafanız karışıktır. **Paket anahtarlama ve TCP/IP nedir? Yönlendiriciler nedir? İnternette ne tür bağlantı kabloları var? Dağıtık uygulama nedir? Termostat veya tartı aleti internete nasıl bağlanır?**
