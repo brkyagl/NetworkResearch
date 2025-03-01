@@ -134,3 +134,28 @@ Yukarıdaki insan ve ağ iletişimi örnekleri göz önüne alındığında, mes
 
 İnternet ve genel olarak bilgisayar ağları, protokolleri **yoğun bir şekilde** kullanır. 
 Farklı iletişim görevlerini gerçekleştirmek için farklı protokoller kullanılır.
+
+## Ağın Kenarı(Edge): Bizim Cihazlarımız ve Uygulamalar
+
+Şimdi interneti oluşturan **parçalara biraz daha yakından** bakalım. Bu kısımda ağın **kenarından** başlayacağız. 
+Yani en çok tanıdığımız şeylere: **bilgisayarlar, akıllı telefonlar ve günlük kullandığımız diğer cihazlar.** Bir sonraki kısımda ağın kenarından **merkeze** geçip ağlardaki veri yönlendirme işlerine bakacağız.
+
+Hatırlarsanız, bilgisayar ağları dilinde internete bağlı bilgisayarlara ve diğer cihazlara **uç sistemler(end system)** deniyordu. Neden "uç sistemler"? Çünkü bunlar internetin **kenarında** duruyor. İnternetin uç sistemleri neler mi? **Masaüstü bilgisayarlar** (PC'ler, Mac'ler, Linux bilgisayarlar), **sunucular** (web ve e-posta sunucuları), **mobil cihazlar** (dizüstüler, akıllı telefonlar, tabletler) hep uç sistemdir. Hatta artık **alışılmadık "şeyler"** de uç sistem olarak internete bağlanıyor.
+
+Uç sistemlere **ana bilgisayar (host)** da denir. Çünkü bunlar **uygulama programlarını "ağırlıyor" (yani çalıştırıyor)**. 
+Mesela web tarayıcısı, web sunucusu, e-posta programı, e-posta sunucusu gibi programlar hep uç sistemlerde çalışır. 
+
+Ana bilgisayarlar bazen ikiye ayrılır: **istemciler (client)** ve **sunucular (server)**. Basitçe söylemek gerekirse, **istemciler** genelde bizim kullandığımız masaüstü bilgisayarlar, dizüstüler, akıllı telefonlar vb. olurken, **sunucular** web sayfalarını saklayan, video yayınlayan, e-posta gönderip alan daha güçlü makinelerdir. Bugün arama sonuçları, e-postalar, web sayfaları, videolar ve mobil uygulama içerikleri aldığımız sunucuların çoğu büyük **veri merkezlerinde (data center)** bulunur. Örneğin, 2020 itibarıyla Google'ın dört kıtada 19 veri merkezi var ve buralarda milyonlarca sunucu çalışıyor. 
+
+**VERİ MERKEZLERİ VE BULUT BİLİŞİM**
+
+Google, Microsoft, Amazon, Alibaba gibi internet devleri, her biri **on binlerce, yüz binlerce ana bilgisayarı** barındıran devasa veri merkezleri kurdu. 
+Bu veri merkezleri sadece internete bağlı değil, aynı zamanda kendi içlerinde de veri merkezindeki ana bilgisayarları birbirine bağlayan **karmaşık ağlar** var. Veri merkezleri, her gün kullandığımız internet uygulamalarının **motoru** gibidir.
+
+Veri merkezleri genel olarak **üç temel amaca** hizmet eder. Amazon örneği üzerinden gidelim:
+
+1.  **Amazon E-Ticaret Sayfaları:** Kullanıcılara Amazon'un ürün sayfalarını, alışveriş bilgilerini vb. sunar.
+2.  **Büyük Veri İşleme:** Amazon'a özel büyük veri işleme görevleri için devasa bir paralel bilgisayar altyapısı görevi görür. Yani aynı anda çok fazla işlem yapabilir.
+3.  **Bulut Bilişim (Cloud Computing):** Başka şirketlere bulut hizmetleri sunar. Günümüzde şirketlerin bilgi işlem ihtiyaçlarının çoğunu Amazon gibi bulut sağlayıcılardan karşılaması büyük bir trend. Örneğin, Airbnb gibi birçok internet şirketi kendi veri merkezlerini kurup yönetmek yerine, tüm web hizmetlerini Amazon bulutunda (Amazon Web Services - AWS) çalıştırır.
+
+Veri merkezlerindeki **işçi arılar** ana bilgisayarlardır. Bunlar **içerik sunar** (web sayfaları, videolar), **e-postaları ve belgeleri saklar** ve hep birlikte **büyük hesaplama işlerini** yaparlar. Veri merkezlerindeki ana bilgisayarlara **"blade"** denir ve bunlar pizza kutusuna benzerler. Genelde **standart bilgisayarlardır**, yani özel bir şey değillerdir. İçlerinde işlemci, bellek ve disk depolama bulunur. Bu ana bilgisayarlar **raflara dizilir** ve her rafta genellikle 20-40 tane "blade" bulunur. Raflar da gelişmiş **veri merkezi ağlarıyla** birbirine bağlanır. 
