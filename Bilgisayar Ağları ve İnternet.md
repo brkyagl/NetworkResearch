@@ -104,3 +104,33 @@ Benzer şekilde, internet de uygulamalarına **birden fazla hizmet** sunar.
 Bir internet uygulaması geliştirirken, siz de uygulamanız için internetin bu hizmetlerinden birini seçmelisiniz. 
 
 İnterneti şimdiye kadar iki farklı şekilde tanımladık: donanım ve yazılım bileşenleri açısından ve dağıtık uygulamalara hizmet veren bir altyapı açısından. Belki hala internetin ne olduğu konusunda kafanız karışıktır. **Paket anahtarlama ve TCP/IP nedir? Yönlendiriciler nedir? İnternette ne tür bağlantı kabloları var? Dağıtık uygulama nedir? Termostat veya tartı aleti internete nasıl bağlanır?**
+
+### Protokol Nedir? Ağ İletişiminin Kuralları
+
+İnternetin ne olduğunu az çok anladık. Şimdi de bilgisayar ağlarında sıkça duyduğumuz bir başka önemli kelimeye, **protokole** yakından bakalım. 
+Protokol nedir? Protokol ne işe yarar?
+
+#### İnsanlarla Protokol: Günlük Hayattan Bir Örnek
+
+Bilgisayar ağı protokollerini anlamak için, önce insan protokollerine bakmak faydalı olabilir. Çünkü biz insanlar da sürekli olarak protokoller uygularız. Örneğin, birinden saati sormak istediğinizde ne yaparsınız? İnsan protokolü (ya da en azından **görgü kuralları**) gereği, önce karşıdaki kişiye **selam vermek** gerekir. "Merhaba"ya tipik cevap yine bir "Merhaba"dır.  Kibar bir "Merhaba" cevabını aldığımızda, saati sormaya devam edebileceğimiz **sinyalini** almış oluruz. İlk "Merhaba"ya farklı bir cevap gelirse ("Rahat bırak beni!", "Ben Türkçe konuşmuyorum!" veya daha kaba bir yanıt gibi), iletişim kurmak istemediğini veya kuramadığını anlarız. Bu durumda, insan protokolü saati sormaktan **vazgeçmeyi** gerektirir. Bazen de soruya hiç cevap alamayız. Bu durumda genellikle o kişiye saati sormaktan vazgeçeriz.
+
+İnsan protokolümüzde, gönderdiğimiz **belirli mesajlar** ve aldığımız **cevap mesajlarına veya diğer olaylara (cevap gelmemesi gibi)** karşılık olarak yaptığımız **belirli eylemler** vardır. Gönderilen ve alınan mesajlar, bu mesajlar gönderildiğinde veya alındığında ya da başka olaylar meydana geldiğinde yapılan eylemler, insan protokolünde **merkezi bir rol oynar**. Eğer insanlar farklı protokoller uygularsa (örneğin, bir kişi görgülü ama diğeri değilse, veya biri zaman kavramını anlıyor ama diğeri anlamıyorsa), protokoller **uyumlu çalışmaz** ve **işe yarar bir sonuç elde edilemez**. 
+Aynı durum ağ iletişimi için de geçerlidir: Bir görevi tamamlamak için aynı protokolü çalıştıran **iki (veya daha fazla)** iletişim kuran varlık gerekir.
+
+Başka bir insan örneği düşünelim. Diyelim ki bir üniversite sınıfındasınız (örneğin, bilgisayar ağları dersi!). Öğretmen protokoller hakkında konuşup duruyor ve kafanız karıştı. Öğretmen durur ve "Soru sormak isteyen var mı?" diye sorar (uyuyanlar hariç tüm öğrencilere gönderilen ve alınan bir mesaj). Siz parmağınızı kaldırırsınız (öğretmene **örtülü bir mesaj** gönderirsiniz). Öğretmeniniz size gülümseyerek "Evet..." der (sorunuzu sormanız için sizi **teşvik eden** bir mesaj gönderir - öğretmenler soru sorulmasını sever), ve siz de sorunuzu sorarsınız (yani, öğretmeninize mesajınızı iletirsiniz). Öğretmeniniz sorunuzu duyar (soru mesajınızı alır) ve cevaplar (size bir yanıt gönderir). Bir kez daha görüyoruz ki, mesajların iletilmesi ve alınması, ve bu mesajlar gönderildiğinde ve alındığında yapılan geleneksel eylemler, bu soru-cevap protokolünün merkezinde yer alır.
+
+#### Ağ Protokolleri: Bilgisayarların Ortak Dili
+
+Bir **ağ protokolü**, insan protokolüne benzer. Ancak mesaj alışverişinde bulunan ve eylemde bulunan varlıklar, bir cihazın (örneğin, bilgisayar, akıllı telefon, tablet, yönlendirici veya diğer ağ özellikli cihaz) **donanım veya yazılım bileşenleridir**. 
+İnternette iki veya daha fazla uzak varlığın iletişim kurmasını içeren tüm etkinlikler bir protokol tarafından yönetilir. 
+Örneğin, fiziksel olarak birbirine bağlı iki bilgisayardaki donanım tarafından uygulanan protokoller, iki ağ arayüz kartı arasındaki "kablo" üzerindeki bit akışını kontrol eder; uç sistemlerdeki tıkanıklık kontrolü protokolleri, gönderici ve alıcı arasında paketlerin iletim hızını kontrol eder; yönlendiricilerdeki protokoller, bir paketin kaynaktan hedefe giden yolunu belirler.
+
+Muhtemelen aşina olduğunuz bir bilgisayar ağı protokolü örneği olarak, bir Web sunucusuna istekte bulunduğunuzda, yani Web tarayıcınıza bir Web sayfasının URL'sini yazdığınızda neler olduğunu düşünün. İlk olarak, bilgisayarınız Web sunucusuna bir **bağlantı isteği mesajı** gönderir ve bir yanıt bekler. 
+Web sunucusu sonunda bağlantı isteği mesajınızı alır ve bir **bağlantı yanıtı mesajı** döndürür. Artık Web belgesini istemenin uygun olduğunu anlayan bilgisayarınız, ardından bir **GET mesajı** içinde Web sunucusundan getirmek istediği Web sayfasının adını gönderir. Son olarak, Web sunucusu Web sayfasını (dosyayı) bilgisayarınıza geri gönderir.
+
+Yukarıdaki insan ve ağ iletişimi örnekleri göz önüne alındığında, mesaj alışverişi ve bu mesajlar gönderildiğinde ve alındığında yapılan eylemler, bir protokolün **temel belirleyici unsurlarıdır**:
+
+**Bir protokol, iki veya daha fazla iletişim kuran varlık arasında değiş tokuş edilen mesajların formatını ve sırasını, ayrıca bir mesajın veya başka bir olayın iletimi ve/veya alınması üzerine yapılan eylemleri tanımlar.**
+
+İnternet ve genel olarak bilgisayar ağları, protokolleri **yoğun bir şekilde** kullanır. 
+Farklı iletişim görevlerini gerçekleştirmek için farklı protokoller kullanılır.
