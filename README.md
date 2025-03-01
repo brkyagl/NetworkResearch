@@ -1,3 +1,5 @@
 ## 💻 Network Kaynaklarım
 
-- [1-Bilgisayar Ağları ve İnternet Notları]
+### Okuma Sırasına Göre Türkçe Olarak Araştırdım
+
+- [ Bilgisayar Ağları ve İnternet]
