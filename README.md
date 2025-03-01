@@ -1,3 +1,3 @@
 ## 💻 Network Kaynaklarım
 
-- 1. [Bilgisayar Ağları ve İnternet Notları]
+- [1-Bilgisayar Ağları ve İnternet Notları]
