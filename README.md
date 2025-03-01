@@ -1,1 +1,3 @@
-1 - [/ Bilgisayar Ağları ve İnternet.md] 
+## 💻 Network Kaynaklarım
+
+- [Bilgisayar Ağları ve İnternet Notları](Bilgisayar Ağları ve İnternet.md)
