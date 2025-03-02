@@ -269,3 +269,26 @@ Akıllı telefonlar (iPhone, Android cihazlar vb.) hareket halindeyken mesajlaş
 
 Telekomünikasyon şirketleri, **dördüncü nesil (4G) kablosuz teknolojilere** büyük yatırımlar yaptı. 
 4G, gerçek hayatta **60 Mbps'ye kadar indirme hızları** sunabiliyor. Ama daha da hızlı **geniş alan erişim teknolojileri** - **beşinci nesil (5G) geniş alan kablosuz ağları** - şimdiden kullanılmaya başlanıyor. 
+
+### Fiziksel Ortamlar: Veri Kablolar ve Kablosuz Dalgalar
+
+Bu bölümde, internette yaygın olarak kullanılan bu ve diğer **iletim ortamlarına** daha yakından bakacağız.
+
+**Fiziksel ortam** derken ne kastediyoruz? Bir bitin yolculuğunu düşünelim. 
+Bir uç sistemden çıkıp, bir sürü bağlantı ve yönlendiriciden geçerek başka bir uç sisteme ulaşıyor. 
+Bu minik bit, yol boyunca defalarca aktarılıyor! Gönderen uç sistem biti ilk önce iletiyor, kısa süre sonra ilk yönlendirici biti alıyor, sonra o yönlendirici biti tekrar iletiyor, ikinci yönlendirici alıyor... Bu böyle sürüp gidiyor. Yani bitimiz, kaynaktan hedefe giderken bir dizi **verici-alıcı çiftinden** geçiyor. Her verici-alıcı çiftinde bit, **elektromanyetik dalgalar** veya **ışık sinyalleri** yoluyla bir fiziksel ortam üzerinden gönderiliyor.
+
+Bu **fiziksel ortam** farklı şekil ve türlerde olabilir. 
+Yol boyunca her verici-alıcı çifti için aynı türde olması da gerekmiyor. 
+Fiziksel ortamlara örnek olarak **bükümlü çift bakır tel**, **koaksiyel kablo**, **çok modlu fiber optik kablo**, **karasal radyo dalgaları** ve **uydu radyo dalgaları** sayılabilir.
+
+Fiziksel ortamlar ikiye ayrılır: **kılavuzlu ortamlar** ve **kılavuzsuz ortamlar**. 
+**Kılavuzlu ortamlarda** dalgalar, fiber optik kablo, bükümlü çift bakır tel veya koaksiyel kablo gibi **katı bir ortam** boyunca yönlendirilir. 
+**Kılavuzsuz ortamlarda** ise dalgalar atmosferde ve uzay boşluğunda yayılır, örneğin kablosuz LAN veya dijital uydu kanallarında olduğu gibi.
+
+Farklı ortam türlerinin özelliklerine geçmeden önce, **maliyetlerinden** de bahsedelim. 
+Fiziksel bağlantının (bakır tel, fiber optik kablo vb.) gerçek maliyeti, diğer ağ maliyetleriyle karşılaştırıldığında genellikle **düşüktür**. 
+Asıl maliyet, fiziksel bağlantının **kurulumu** sırasında ortaya çıkan **işçilik maliyetidir**. 
+Bu maliyet, malzeme maliyetinden kat kat daha yüksek olabilir. 
+Bu nedenle, birçok inşaatçı bir binadaki her odaya bükümlü çift tel, optik fiber ve koaksiyel kablo döşetir. 
+Başlangıçta sadece bir ortam kullanılsa bile, yakın gelecekte başka bir ortama ihtiyaç duyulabilir ve gelecekte ek kablo döşemek zorunda kalmamak için baştan hazırlık yapılır.
