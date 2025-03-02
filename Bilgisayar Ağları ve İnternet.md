@@ -262,3 +262,10 @@ Tipik bir ev ağı örneği. Bu ev ağında:
 *   Bir **ev yönlendiricisi (router)**, kablosuz erişim noktasını ve diğer kablolu cihazları internete bağlıyor.
 
 Bu ağ sayesinde ev sakinleri, mutfaktan bahçeye, yatak odasına kadar **her yerden internete** geniş bant hızında erişebiliyor.
+
+#### Geniş Alan Kablosuz Erişim: 3G, 4G (LTE) ve 5G
+
+Akıllı telefonlar (iPhone, Android cihazlar vb.) hareket halindeyken mesajlaşmak, sosyal medyada fotoğraf paylaşmak, mobil ödeme yapmak, film izlemek, müzik dinlemek ve daha birçok şey için kullanılıyor. Bu cihazlar, paketleri cep telefonu şebeke sağlayıcısının işlettiği bir **baz istasyonu** aracılığıyla gönderip almak için cep telefonu teknolojisinde kullanılan **aynı kablosuz altyapıyı** kullanıyor. WiFi'dan farklı olarak, kullanıcının baz istasyonuna sadece **birkaç kilometre (WiFi'da olduğu gibi birkaç on metre değil)** yakınında olması yeterli.
+
+Telekomünikasyon şirketleri, **dördüncü nesil (4G) kablosuz teknolojilere** büyük yatırımlar yaptı. 
+4G, gerçek hayatta **60 Mbps'ye kadar indirme hızları** sunabiliyor. Ama daha da hızlı **geniş alan erişim teknolojileri** - **beşinci nesil (5G) geniş alan kablosuz ağları** - şimdiden kullanılmaya başlanıyor. 
