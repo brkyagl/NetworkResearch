@@ -237,3 +237,28 @@ Fiber Optik İnternet (FTTH) Teknolojileri:
 
    * PON (Pasif Optik Ağ): Birden fazla evin tek bir fiber optik kabloyu paylaştığı bir mimari. Ayırıcılar kullanılarak sinyaller evlere dağıtılır. Verizon FiOS bu teknolojiyi kullanmaktadır.
 
+#### İş Yerinde ve Evde İnternet: Ethernet ve WiFi
+
+Büyük şirketlerde, üniversitelerde ve artık evlerde de internete bağlanmak için **yerel ağlar (LAN)** kullanılıyor. 
+Birçok farklı LAN teknolojisi olsa da, **Ethernet** açık ara en yaygın olanı. 
+Özellikle şirketler, üniversiteler ve ev ağlarında Ethernet çok popüler.
+Ethernet kullananlar bilgisayarlarını **Ethernet anahtarlayıcıya (switch)** bükümlü çift bakır kablolarla bağlıyor. 
+Bu Ethernet anahtarlayıcı veya birbirine bağlı anahtarlayıcılardan oluşan bir ağ, daha sonra internete bağlanıyor. 
+Ethernet ile kullanıcılar genelde 100 Mbps'den **10 Gbps'e kadar** hızlara ulaşabilirken, sunucular 1 Gbps'den **10 Gbps'e kadar** hızlara çıkabiliyor.
+
+Ancak günümüzde insanlar internete daha çok **kablosuz olarak** bağlanıyor: dizüstüler, akıllı telefonlar, tabletler... 
+Kablosuz yerel ağlarda (WLAN), kablosuz kullanıcılar paketleri **erişim noktasına (access point)** gönderip alıyor. 
+Erişim noktası da şirketin ağına (genellikle kablolu Ethernet ile) ve oradan da internete bağlı oluyor. 
+Kablosuz LAN kullanıcıları, erişim noktasına **birkaç on metre** yakınında olmalı genelde. 
+**WiFi** olarak bilinen ve **IEEE 802.11** standardını kullanan kablosuz LAN'lar artık her yerde karşımıza çıkıyor: üniversiteler, ofisler, kafeler, havaalanları, evler, hatta uçaklarda bile! 802.11 teknolojisi bugünlerde **100 Mbps'den daha yüksek** paylaşım hızları sunabiliyor.
+
+Ethernet ve WiFi erişim ağları ilk başta iş yerleri ve üniversiteler için geliştirilmiş olsa da, artık **ev ağlarında** da çok yaygın. 
+Birçok ev, geniş bant internet erişimini (kablo modem veya DSL) ucuz kablosuz LAN teknolojileriyle birleştirerek **güçlü ev ağları** oluşturuyor.
+
+Tipik bir ev ağı örneği. Bu ev ağında:
+
+*   **Kablosuz dizüstü bilgisayar**, **internete bağlı ev aletleri** ve **kablolu bir masaüstü bilgisayar** var.
+*   Bir **baz istasyonu (kablosuz erişim noktası)**, kablosuz bilgisayar ve diğer kablosuz cihazlarla iletişim kuruyor.
+*   Bir **ev yönlendiricisi (router)**, kablosuz erişim noktasını ve diğer kablolu cihazları internete bağlıyor.
+
+Bu ağ sayesinde ev sakinleri, mutfaktan bahçeye, yatak odasına kadar **her yerden internete** geniş bant hızında erişebiliyor.
