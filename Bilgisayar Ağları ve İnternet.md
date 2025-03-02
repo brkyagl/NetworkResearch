@@ -214,3 +214,26 @@ PON mimarisinde, OLT'den ayırıcıya gönderilen tüm paketler ayırıcıda ço
 
 DSL, Kablo ve FTTH'ye ek olarak, **5G sabit kablosuz** da dağıtılmaya başlanıyor. 5G sabit kablosuz sadece yüksek hızlı konut erişimi vaat etmekle kalmıyor, aynı zamanda telekomünikasyon şirketinin merkez ofisinden eve kadar maliyetli ve arıza eğilimli kablolama yapmadan bunu yapacak. 
 **Hüzmeleme (beam-forming)** teknolojisini kullanan 5G sabit kablosuz ile, veri bir sağlayıcının baz istasyonundan evdeki bir modeme kablosuz olarak gönderilir. Bir WiFi kablosuz yönlendirici, bir kablo veya DSL modemine bağlı olduğu gibi modeme (muhtemelen birlikte paketlenmiş) bağlanır. 
+
+Burada bahsedilen kavramları daha basitçe özetliyelim.
+
+ * Merkez Ofis(CO): İnternet servis sağlayıcısının (ISS) ana merkezi.
+
+ * Fiber Optik: Verileri ışık sinyalleriyle ileten ince cam liflerinden oluşan kablolar.
+
+ * ONT (Optik Ağ Sonlandırıcısı): Evdeki fiber optik sinyalleri elektrik sinyallerine dönüştüren cihaz.
+
+ * OLT (Optik Hat Sonlandırıcısı): Merkez ofiste bulunan ve fiber optik ağı yöneten cihaz.
+
+ * Ayırıcı (Splitter): Tek bir fiber optik kabloyu birden fazla eve dağıtan cihaz.
+
+ * 5G Sabit Kablosuz: 5G teknolojisi kullanılarak kablosuz olarak internet erişimi sağlayan sistem.
+
+ * Hüzmeleme (Beamforming): 5G'de sinyallerin belirli bir yöne odaklanarak daha güçlü ve istikrarlı bir bağlantı sağlaması.
+
+Fiber Optik İnternet (FTTH) Teknolojileri:
+
+   * Doğrudan Fiber: Her eve ayrı bir fiber optik kablo çekilmesi. Bu, en yüksek bant genişliğini ve en düşük gecikmeyi sağlar, ancak maliyetlidir.
+
+   * PON (Pasif Optik Ağ): Birden fazla evin tek bir fiber optik kabloyu paylaştığı bir mimari. Ayırıcılar kullanılarak sinyaller evlere dağıtılır. Verizon FiOS bu teknolojiyi kullanmaktadır.
+
