@@ -145,7 +145,7 @@ Hatırlarsanız, bilgisayar ağları dilinde internete bağlı bilgisayarlara ve
 Uç sistemlere **ana bilgisayar (host)** da denir. Çünkü bunlar **uygulama programlarını "ağırlıyor" (yani çalıştırıyor)**. 
 Mesela web tarayıcısı, web sunucusu, e-posta programı, e-posta sunucusu gibi programlar hep uç sistemlerde çalışır. 
 
-Ana bilgisayarlar bazen ikiye ayrılır: **istemciler (client)** ve **sunucular (server)**. Basitçe söylemek gerekirse, **istemciler** genelde bizim kullandığımız masaüstü bilgisayarlar, dizüstüler, akıllı telefonlar vb. olurken, **sunucular** web sayfalarını saklayan, video yayınlayan, e-posta gönderip alan daha güçlü makinelerdir. Bugün arama sonuçları, e-postalar, web sayfaları, videolar ve mobil uygulama içerikleri aldığımız sunucuların çoğu büyük **veri merkezlerinde (data center)** bulunur. Örneğin, 2020 itibarıyla Google'ın dört kıtada 19 veri merkezi var ve buralarda milyonlarca sunucu çalışıyor. 
+Ana bilgisayarlar bazen ikiye ayrılır: **istemciler (client)** ve **sunucular (server)**. Basitçe söylemek gerekirse, **istemciler** genelde bizim kullandığımız masaüstü bilgisayarlar, dizüstüler, akıllı telefonlar vb. olurken, **sunucular** web sayfalarını saklayan, video yayınlayan, e-posta gönderip alan daha güçlü makinelerdir. Bugün arama sonuçları, e-postalar, web sayfaları, videolar ve mobil uygulama içerikleri aldığımız sunucuların çoğu büyük **veri merkezlerinde (data center)** bulunur. Örneğin, 2020 yılında Google'ın dört kıtada 19 veri merkezi vardı ve buralarda milyonlarca sunucu çalışıyor. 
 
 **VERİ MERKEZLERİ VE BULUT BİLİŞİM**
 
@@ -159,3 +159,58 @@ Veri merkezleri genel olarak **üç temel amaca** hizmet eder. Amazon örneği �
 3.  **Bulut Bilişim (Cloud Computing):** Başka şirketlere bulut hizmetleri sunar. Günümüzde şirketlerin bilgi işlem ihtiyaçlarının çoğunu Amazon gibi bulut sağlayıcılardan karşılaması büyük bir trend. Örneğin, Airbnb gibi birçok internet şirketi kendi veri merkezlerini kurup yönetmek yerine, tüm web hizmetlerini Amazon bulutunda (Amazon Web Services - AWS) çalıştırır.
 
 Veri merkezlerindeki **işçi arılar** ana bilgisayarlardır. Bunlar **içerik sunar** (web sayfaları, videolar), **e-postaları ve belgeleri saklar** ve hep birlikte **büyük hesaplama işlerini** yaparlar. Veri merkezlerindeki ana bilgisayarlara **"blade"** denir ve bunlar pizza kutusuna benzerler. Genelde **standart bilgisayarlardır**, yani özel bir şey değillerdir. İçlerinde işlemci, bellek ve disk depolama bulunur. Bu ana bilgisayarlar **raflara dizilir** ve her rafta genellikle 20-40 tane "blade" bulunur. Raflar da gelişmiş **veri merkezi ağlarıyla** birbirine bağlanır. 
+
+### Erişim Ağları: İnternete Nasıl Bağlanıyoruz?
+
+"Ağın kenarında" ne olduğunu, yani uygulamaları ve uç sistemleri inceledik. 
+Şimdi de **erişim ağına** bakalım. Erişim ağı, bir uç sistemi internete bağlayan **ilk adım**. 
+Yani bir uç sistemi, herhangi bir uzak uç sisteme giden yoldaki **ilk yönlendiriciye (kenar yönlendiricisi)** fiziksel olarak bağlayan ağdır.
+
+#### Evde İnternet Erişimi: DSL, Kablo, Fiber ve 5G Kablosuz
+
+Evde internet erişim ağlarının bu kadar yaygın kullanımı göz önüne alındığında, erişim ağlarına genel bakışımıza evlerin internete nasıl bağlandığını inceleyerek başlayalım.
+
+Günümüzde en yaygın iki geniş bant ev internet erişim türü **DSL (dijital abone hattı)** ve **kablo internet**tir. 
+Evler genellikle DSL internet erişimini, kablolu telefon hizmetini de sağlayan yerel telefon şirketinden (telco) alır. 
+Yani DSL kullanıldığında, müşterinin telcosu aynı zamanda ISS'sidir. Her müşterinin DSL modemi, telefon şirketinin yerel merkez ofisinde (CO) bulunan bir DSL erişim çoklayıcısı (DSLAM) ile mevcut telefon hattı üzerinden veri alışverişi yapar. Evin DSL modemi, dijital veriyi alır ve merkez ofise telefon telleri üzerinden iletim için yüksek frekanslı tonlara çevirir; bu tür birçok evden gelen analog sinyaller, DSLAM'da tekrar dijital formata çevrilir.
+
+Ev telefonu hattı, farklı frekanslarda kodlanmış hem veri hem de geleneksel telefon sinyallerini aynı anda taşır:
+
+*   **Yüksek hızlı indirme (download) kanalı:** 50 kHz ila 1 MHz bandında
+*   **Orta hızlı yükleme (upload) kanalı:** 4 kHz ila 50 kHz bandında
+*   **Sıradan iki yönlü telefon kanalı:** 0 ila 4 kHz bandında
+
+Bu yaklaşım, tek DSL bağlantısının üç ayrı bağlantı varmış gibi görünmesini sağlar, böylece bir telefon görüşmesi ve bir internet bağlantısı aynı anda DSL bağlantısını paylaşabilir. Müşteri tarafında, bir ayırıcı (splitter) eve gelen veri ve telefon sinyallerini ayırır ve veri sinyalini DSL modeme yönlendirir. Telekom tarafında, merkez ofiste, DSLAM veri ve telefon sinyallerini ayırır ve veriyi internete gönderir. Yüzlerce, hatta binlerce hane tek bir DSLAM'a bağlanır.
+
+DSL standartları, 24 Mbps ve 52 Mbps indirme ve 3.5 Mbps ve 16 Mbps yükleme hızları dahil olmak üzere birden fazla iletim hızı tanımlar; 
+en yeni standart, 1 Gbps toplu yükleme + indirme hızları sağlar [ITU 2014]. İndirme ve yükleme hızları farklı olduğu için, erişim **asimetrik** olarak adlandırılır. Elde edilen gerçek indirme ve yükleme hızları, DSL sağlayıcısının kademeli hizmet (farklı fiyatlarla sunulan farklı hızlar) sunduğunda konut hızını kasıtlı olarak sınırlayabilmesi nedeniyle yukarıda belirtilen hızlardan daha düşük olabilir. Maksimum hız, evin merkez ofise olan mesafesi, bükümlü çift hattının kalınlığı ve elektriksel parazit derecesi ile de sınırlıdır. Mühendisler, DSL'yi ev ve merkez ofis arasındaki kısa mesafeler için özel olarak tasarlamışlardır; genellikle, konut merkez ofise 5 ila 10 mil içinde bulunmuyorsa, konutun alternatif bir internet erişim şekline başvurması gerekir.
+
+DSL, telekomünikasyon şirketinin mevcut yerel telefon altyapısını kullanırken, kablolu internet erişimi kablolu televizyon şirketinin mevcut kablolu televizyon altyapısını kullanır. Bir konut, kablolu televizyonunu sağlayan aynı şirketten kablolu internet erişimi alır. Fiber optikler kablo merkezini mahalle düzeyindeki kavşaklara bağlar, buradan geleneksel koaksiyel kablo daha sonra bireysel evlere ve apartman dairelerine ulaşmak için kullanılır. Her mahalle kavşağı tipik olarak 500 ila 5.000 evi destekler. Bu sistemde hem fiber hem de koaksiyel kablo kullanıldığı için, genellikle **hibrit fiber koaks (HFC)** olarak adlandırılır.
+
+Kablolu internet erişimi, **kablo modemleri** adı verilen özel modemler gerektirir. 
+Bir DSL modeminde olduğu gibi, kablo modemi de tipik olarak harici bir cihazdır ve bir Ethernet portu aracılığıyla ev bilgisayarına bağlanır. 
+Kablo merkezinde, kablo modem sonlandırma sistemi (CMTS), DSL ağının DSLAM'ına benzer bir işlev görür; birçok aşağı yönlü evdeki kablo modemlerinden gönderilen analog sinyali tekrar dijital formata çevirir. Kablo modemleri, HFC ağını iki kanala ayırır: bir **aşağı yönlü** ve bir **yukarı yönlü** kanal. 
+DSL'de olduğu gibi, erişim tipik olarak **asimetriktir**, aşağı yönlü kanala tipik olarak yukarı yönlü kanaldan daha yüksek bir iletim hızı ayrılır. 
+DOCSIS 2.0 ve 3.0 standartları, sırasıyla 40 Mbps ve 1.2 Gbps indirme bit hızlarını ve 30 Mbps ve 100 Mbps yükleme hızlarını tanımlar. 
+DSL ağlarında olduğu gibi, daha düşük sözleşmeli veri hızları veya ortam bozulmaları nedeniyle elde edilebilecek maksimum hıza ulaşılamayabilir.
+
+Kablolu internet erişiminin önemli bir özelliği, **paylaşımlı bir yayın ortamı** olmasıdır. 
+Özellikle, merkezden gönderilen her paket, her eve giden her bağlantıda aşağı yönde ve bir evden gönderilen her paket yukarı yönlü kanalda merkeze doğru gider. 
+Bu nedenle, birden fazla kullanıcı aynı anda aşağı yönlü kanalda bir video dosyası indiriyorsa, her kullanıcının video dosyasını alma hızı, toplam kablolu aşağı yönlü hızdan önemli ölçüde düşük olacaktır. Öte yandan, yalnızca birkaç aktif kullanıcı varsa ve hepsi web'de gezinirken, kullanıcıların her biri aslında tam kablolu aşağı yönlü hızda web sayfaları alabilir, çünkü kullanıcılar nadiren aynı anda bir web sayfası isterler. Yukarı yönlü kanal da paylaşıldığı için, iletimleri koordine etmek ve çarpışmaları önlemek için dağıtılmış çoklu erişim protokolüne ihtiyaç vardır
+
+DSL ve kablolu ağlar şu anda Amerika Birleşik Devletleri'ndeki konut geniş bant erişiminin çoğunluğunu temsil etmesine rağmen, daha yüksek hızlar sağlayan yükselen bir teknoloji **eve fiber (FTTH)**'dir [Fiber Broadband 2020]. Adından da anlaşılacağı gibi, FTTH konsepti basittir; merkez ofisten doğrudan eve bir optik fiber yolu sağlamak. FTTH potansiyel olarak saniyede gigabit aralığında internet erişim hızları sağlayabilir.
+
+Merkez ofisten evlere optik dağıtım için birkaç rakip teknoloji vardır. 
+En basit optik dağıtım ağına **doğrudan fiber** denir ve her ev için merkez ofisten bir fiber çıkar. 
+Daha yaygın olarak, merkez ofisten çıkan her fiber aslında birçok ev tarafından paylaşılır; fiber evlere nispeten yaklaşana kadar bireysel müşteri özel fiberlere ayrılmaz. Bu ayırmayı gerçekleştiren iki rakip optik dağıtım ağı mimarisi vardır: **aktif optik ağlar (AON'lar)** ve **pasif optik ağlar (PON'lar)**. 
+AON esasen anahtarlamalı Ethernet'tir. Burada, Verizon'ın FiOS hizmetinde kullanılan PON'u kısaca tartışıyoruz.
+
+Her evin, özel optik fiber ile bir mahalle ayırıcısına bağlı bir **optik ağ sonlandırıcısı (ONT)** vardır. 
+Ayırıcı, bir dizi evi (tipik olarak 100'den az) tek bir paylaşımlı optik fiber üzerinde birleştirir ve bu fiber, 
+telekomünikasyon şirketinin merkez ofisindeki bir **optik hat sonlandırıcısına (OLT)** bağlanır. 
+Optik ve elektrik sinyalleri arasında dönüşüm sağlayan OLT, bir telekomünikasyon şirketi yönlendiricisi aracılığıyla internete bağlanır. 
+Evde, kullanıcılar bir ev yönlendiricisini (tipik olarak bir kablosuz yönlendirici) ONT'ye bağlar ve bu ev yönlendiricisi aracılığıyla internete erişir. 
+PON mimarisinde, OLT'den ayırıcıya gönderilen tüm paketler ayırıcıda çoğaltılır (bir kablo merkezine benzer şekilde).
+
+DSL, Kablo ve FTTH'ye ek olarak, **5G sabit kablosuz** da dağıtılmaya başlanıyor. 5G sabit kablosuz sadece yüksek hızlı konut erişimi vaat etmekle kalmıyor, aynı zamanda telekomünikasyon şirketinin merkez ofisinden eve kadar maliyetli ve arıza eğilimli kablolama yapmadan bunu yapacak. 
+**Hüzmeleme (beam-forming)** teknolojisini kullanan 5G sabit kablosuz ile, veri bir sağlayıcının baz istasyonundan evdeki bir modeme kablosuz olarak gönderilir. Bir WiFi kablosuz yönlendirici, bir kablo veya DSL modemine bağlı olduğu gibi modeme (muhtemelen birlikte paketlenmiş) bağlanır. 
