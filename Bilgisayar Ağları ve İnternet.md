@@ -312,3 +312,18 @@ Ama bükümlü çift tel o kadar kolay pes etmedi. Kategori 6a kablosu gibi mode
 Daha önce de tartıştığımız gibi, bükümlü çift tel konut internet erişimi için de yaygın olarak kullanılmaktadır. 
 Çevirmeli modem teknolojisinin bükümlü çift tel üzerinden 56 kbps'ye kadar hızlarda erişim sağladığını gördük. 
 Ayrıca DSL (dijital abone hattı) teknolojisinin, konut kullanıcılarının bükümlü çift tel üzerinden (kullanıcılar ISS'nin merkez ofisine yakın yaşadığında) onlarca Mbps hızında internete erişmelerini sağladığını gördük.
+
+#### Koaksiyel Kablo: TV'den İnternete Geniş Kullanım Alanı
+
+**Koaksiyel kablo**, bükümlü çifte benzer şekilde iki bakır iletkenden oluşur. 
+Ancak buradaki fark, iki iletkenin **yan yana değil, iç içe** olmasıdır. 
+Bu özel yapısı, yalıtımı ve koruması sayesinde koaksiyel kablo **yüksek veri hızlarına** ulaşabilir.
+
+Koaksiyel kablo, **kablo televizyon sistemlerinde** oldukça yaygındır. 
+Daha önce gördüğümüz gibi, kablo televizyon sistemleri son zamanlarda kablo modemlerle birleştirilerek ev kullanıcılarına **yüzlerce Mbps hızında internet erişimi** sunmaktadır. Kablolu televizyon ve kablolu internet erişiminde, verici dijital sinyali belirli bir frekans bandına kaydırır ve ortaya çıkan analog sinyal vericiden bir veya daha fazla alıcıya gönderilir.
+
+Koaksiyel kablo, **paylaşımlı bir ortam** olarak da kullanılabilir. 
+Yani, birden fazla uç sistem doğrudan kabloya bağlanabilir ve uç sistemlerin her biri diğer uç sistemler tarafından gönderilen her şeyi alır. 
+Bu özellik, eski tip ağlarda koaksiyel kablonun yaygın olarak kullanılmasının nedenlerinden biriydi. 
+Günümüzde ise daha çok kablolu TV ve internet altyapısında karşımıza çıkıyor.
+
