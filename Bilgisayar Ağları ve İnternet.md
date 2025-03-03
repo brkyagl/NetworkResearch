@@ -360,3 +360,18 @@ Karasal radyo kanalları genel olarak **üç gruba** ayrılabilir:
 **Kısa mesafe** radyo kanalları kablosuz kulaklık, klavye, tıbbi cihazlar gibi kişisel cihazlarda kullanılır. 
 **Yerel alan** radyo kanalları kablosuz LAN (WiFi) teknolojilerinde kullanılır. 
 **Geniş alan** radyo kanalları ise hücresel erişim teknolojilerinde (3G, 4G, 5G gibi) kullanılır.
+
+#### Uydu Radyo Kanalları: Uzaydan İnternet
+
+**Uydu iletişim uyduları**, yeryüzündeki **yer istasyonları** adı verilen iki veya daha fazla mikrodalga verici/alıcısını birbirine bağlar. 
+Uydu, sinyalleri bir frekans bandında alır, **tekrarlayıcı (repeater)** kullanarak sinyali yeniler (aşağıda açıklanacaktır) ve sinyali başka bir frekansta iletir. İletişimde **iki tür uydu** kullanılır: **yer sabit uydular (geostationary satellites)** ve **alçak yörüngeli uydular (LEO satellites)**.
+
+**Yer sabit uydular**, Dünya üzerinde **aynı noktada sabit** kalır. 
+Bu sabitlik, uydunun Dünya yüzeyinden 36.000 kilometre yukarıda bir yörüngeye yerleştirilmesiyle sağlanır. 
+Yer istasyonundan uyduya ve tekrar yer istasyonuna olan bu **muazzam mesafe**, 280 milisaniyelik **önemli bir sinyal gecikmesine** neden olur. 
+Yine de, **yüzlerce Mbps hızında** çalışabilen uydu bağlantıları, DSL veya kablolu internet erişiminin olmadığı bölgelerde sıklıkla kullanılır.
+
+**Alçak yörüngeli (LEO) uydular** Dünya'ya çok daha yakın yerleştirilir ve Dünya üzerinde **tek bir noktada sabit kalmazlar**. 
+Dünya etrafında dönerler (tıpkı Ay gibi) ve hem birbirleriyle hem de yer istasyonlarıyla iletişim kurabilirler. 
+Bir bölgeye **kesintisiz kapsama** sağlamak için, yörüngeye birçok uydu yerleştirilmesi gerekir. 
+Şu anda geliştirilmekte olan birçok alçak irtifa iletişim sistemi bulunmaktadır. **LEO uydu teknolojisi**, gelecekte internet erişimi için kullanılabilir. Hatta SpaceX'in Starlink projesi gibi bazı LEO uydu internet hizmetleri şimdiden kullanıma sunulmaya başladı bile.
