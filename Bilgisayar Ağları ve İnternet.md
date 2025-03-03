@@ -327,3 +327,19 @@ Yani, birden fazla uç sistem doğrudan kabloya bağlanabilir ve uç sistemlerin
 Bu özellik, eski tip ağlarda koaksiyel kablonun yaygın olarak kullanılmasının nedenlerinden biriydi. 
 Günümüzde ise daha çok kablolu TV ve internet altyapısında karşımıza çıkıyor.
 
+#### Fiber Optik Kablolar: Işık Hızında Veri İletişimi
+
+**Fiber optik kablo**, ince ve esnek bir ortamdır. İçinden **ışık sinyalleri** göndererek veri iletir. 
+Her bir ışık sinyali, bir biti temsil eder. Tek bir fiber optik kablo, **inanılmaz yüksek hızlara** ulaşabilir: saniyede onlarca, hatta yüzlerce gigabit!
+
+**Fiber optik kabloların avantajları:**
+
+*   **Elektromanyetik parazitten etkilenmezler:** Dış etkenlerden kaynaklanan sinyal bozulmaları olmaz.
+*   **Sinyal kaybı çok düşüktür:** 100 kilometreye kadar mesafelerde bile sinyal kalitesi bozulmaz.
+*   **Dinlenmesi çok zordur:** Veri güvenliği açısından çok avantajlıdır.
+
+Bu özellikler, fiber optik kabloları özellikle **uzun mesafeli iletişimde** (denizaşırı bağlantılar gibi) **en çok tercih edilen kablolu iletim ortamı** yapmıştır. Amerika Birleşik Devletleri ve diğer ülkelerdeki birçok uzun mesafe telefon ağı artık tamamen fiber optik kullanıyor. 
+Aynı şekilde, **internet omurgasında** da fiber optik yaygın olarak kullanılıyor.
+
+Ancak **optik cihazların (vericiler, alıcılar, anahtarlayıcılar)** maliyeti hala yüksek olduğu için, fiber optiklerin **kısa mesafelerde** (LAN'lar veya evlere internet erişimi gibi) kullanımı henüz o kadar yaygın değil. **Optik Taşıyıcı (OC)** standardı, bağlantı hızlarını 51.8 Mbps'den 39.8 Gbps'ye kadar değişen aralıklarda tanımlar. Bu hızlar genellikle **OC-n** olarak adlandırılır; burada bağlantı hızı n × 51.8 Mbps'ye eşittir. 
+Günümüzde kullanılan standartlar arasında OC-1, OC-3, OC-12, OC-24, OC-48, OC-96, OC-192, OC-768 bulunur. Fiber optik teknolojisi sürekli gelişiyor ve maliyetler düşmeye devam ettikçe, gelecekte daha da yaygınlaşması bekleniyor.
