@@ -292,3 +292,23 @@ Asıl maliyet, fiziksel bağlantının **kurulumu** sırasında ortaya çıkan *
 Bu maliyet, malzeme maliyetinden kat kat daha yüksek olabilir. 
 Bu nedenle, birçok inşaatçı bir binadaki her odaya bükümlü çift tel, optik fiber ve koaksiyel kablo döşetir. 
 Başlangıçta sadece bir ortam kullanılsa bile, yakın gelecekte başka bir ortama ihtiyaç duyulabilir ve gelecekte ek kablo döşemek zorunda kalmamak için baştan hazırlık yapılır.
+
+#### Bükümlü Çift Bakır Kablo: Evlerden Ofislere Her Yerde
+
+En **ucuz** ve **en yaygın** kullanılan kablolu iletim ortamı **bükümlü çift bakır tel**dir. 
+Yüz yılı aşkın süredir telefon ağlarında kullanılıyor. 
+Hatta telefon ahizesinden yerel telefon santraline kadar olan kablolu bağlantıların %99'undan fazlası bükümlü çift bakır tel kullanır. 
+Çoğumuz evlerimizde (veya aile büyüklerimizin evlerinde!) ve iş yerlerimizde bükümlü çift teli görmüşüzdür.
+
+Bükümlü çift tel, her biri yaklaşık 1 mm kalınlığında **iki yalıtımlı bakır telden** oluşur ve düzenli bir spiral şeklinde düzenlenmiştir. 
+Teller, yakındaki benzer çiftlerden gelen **elektriksel paraziti azaltmak** için birbirine bükülür. 
+Tipik olarak, bir kablodaki bir dizi çift, çiftler koruyucu bir kılıfla sarılarak bir araya getirilir. 
+Bir tel çifti, tek bir iletişim bağlantısı oluşturur. **Korumasız bükümlü çift (UTP)**, bir bina içindeki bilgisayar ağları, yani LAN'lar için yaygın olarak kullanılır. Günümüzde bükümlü çift kullanan LAN'lar için veri hızları 10 Mbps ile 10 Gbps arasında değişmektedir. 
+Elde edilebilecek veri hızları, telin kalınlığına ve verici ile alıcı arasındaki mesafeye bağlıdır.
+
+1980'lerde fiber optik teknolojisi ortaya çıktığında, birçok kişi nispeten düşük bit hızları nedeniyle bükümlü çift teli küçümsedi. 
+Hatta bazıları fiber optik teknolojisinin bükümlü çiftin tamamen yerini alacağını düşündü. 
+Ama bükümlü çift tel o kadar kolay pes etmedi. Kategori 6a kablosu gibi modern bükümlü çift tel teknolojisi, yüz metreye kadar mesafeler için 10 Gbps veri hızlarına ulaşabilir. Sonuç olarak, bükümlü çift tel, **yüksek hızlı LAN ağları için baskın çözüm** olarak ortaya çıkmıştır. 
+Daha önce de tartıştığımız gibi, bükümlü çift tel konut internet erişimi için de yaygın olarak kullanılmaktadır. 
+Çevirmeli modem teknolojisinin bükümlü çift tel üzerinden 56 kbps'ye kadar hızlarda erişim sağladığını gördük. 
+Ayrıca DSL (dijital abone hattı) teknolojisinin, konut kullanıcılarının bükümlü çift tel üzerinden (kullanıcılar ISS'nin merkez ofisine yakın yaşadığında) onlarca Mbps hızında internete erişmelerini sağladığını gördük.
