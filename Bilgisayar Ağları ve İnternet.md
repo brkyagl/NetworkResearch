@@ -344,3 +344,19 @@ Aynı şekilde, **internet omurgasında** da fiber optik yaygın olarak kullanı
 Ancak **optik cihazların (vericiler, alıcılar, anahtarlayıcılar)** maliyeti hala yüksek olduğu için, fiber optiklerin **kısa mesafelerde** (LAN'lar veya evlere internet erişimi gibi) kullanımı henüz o kadar yaygın değil. **Optik Taşıyıcı (OC)** standardı, bağlantı hızlarını 51.8 Mbps'den 39.8 Gbps'ye kadar değişen aralıklarda tanımlar. Bu hızlar genellikle **OC-n** olarak adlandırılır; burada bağlantı hızı n × 51.8 Mbps'ye eşittir. 
 Günümüzde kullanılan standartlar arasında OC-1, OC-3, OC-12, OC-24, OC-48, OC-96, OC-192, OC-768, OC-3072, OC-12288 bulunur. Fiber optik teknolojisi sürekli gelişiyor ve maliyetler düşmeye devam ettikçe, gelecekte daha da yaygınlaşması bekleniyor.
 
+#### Karasal Radyo Dalgaları
+
+**Radyo dalgaları**, elektromanyetik spektrumda sinyalleri taşır. 
+Kablo döşemeye gerek olmaması, duvarlardan geçebilmesi, mobil cihazlara bağlanabilmesi ve uzun mesafelere sinyal iletebilmesi nedeniyle **çekici bir iletişim ortamıdır**.  Radyo kanalının özellikleri, sinyalin yayıldığı **ortama** ve **mesafeye** göre büyük ölçüde değişir. 
+Ortam koşulları **sinyal kaybını** ve **gölgelemeyi** (sinyal uzaklaştıkça ve engellerin etrafından dolaştıkça/içinden geçtikçe sinyal gücünün azalması), 
+**çoklu yol etkisini** (sinyalin nesnelerden yansımasıyla oluşan girişimler) ve **paraziti** (diğer yayınlar ve elektromanyetik sinyaller nedeniyle) etkiler.
+
+Karasal radyo kanalları genel olarak **üç gruba** ayrılabilir:
+
+*   **Çok kısa mesafe:** Birkaç metre (örneğin, 1-2 metre) içinde çalışanlar.
+*   **Yerel alan:** Genellikle on metreden birkaç yüz metreye kadar olan mesafelerde çalışanlar.
+*   **Geniş alan:** Onlarca kilometreye kadar ulaşabilenler.
+
+**Kısa mesafe** radyo kanalları kablosuz kulaklık, klavye, tıbbi cihazlar gibi kişisel cihazlarda kullanılır. 
+**Yerel alan** radyo kanalları kablosuz LAN (WiFi) teknolojilerinde kullanılır. 
+**Geniş alan** radyo kanalları ise hücresel erişim teknolojilerinde (3G, 4G, 5G gibi) kullanılır.
