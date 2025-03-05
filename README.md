@@ -2,4 +2,4 @@
 
 ### Okuma Sırasına Göre Türkçe Olarak Araştırdım
 
-- [ Bilgisayar Ağları ve İnternet] 
+- [ Bilgisayar Ağları ve İnternet] .
