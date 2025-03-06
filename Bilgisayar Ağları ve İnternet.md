@@ -391,3 +391,60 @@ Bir mesajı kaynak uç sistemden hedef uç sisteme göndermek için, kaynak uzun
 Kaynak ve hedef arasında, her paket **iletişim bağlantılarından** ve **paket anahtarlarından** (iki ana türü vardır: yönlendiriciler(routers)
 ve bağlantı katmanı anahtarları( link-layer switches)) geçer. Paketler, her iletişim bağlantısı üzerinden bağlantının **tam iletim hızına** eşit bir hızda iletilir. Yani, bir kaynak uç sistemi veya bir paket anahtarı, L bitlik bir paketi R bit/sn iletim hızına sahip bir bağlantı üzerinden gönderiyorsa, paketi iletme süresi **L/R saniye** olur.
 
+L/R ve 2L/R'nin Anlamını Açıklama:
+
+L: Paket boyutu (bit cinsinden). Verinin miktarını temsil ediyor.
+R: Bağlantı hızı (bit/saniye). Verinin ne kadar hızlı iletilebileceğini gösteriyor.
+L/R: Bir paketi gönderme süresi (saniye). Bir paketin bir bağlantıdan geçmesi için gereken zamanı ifade ediyor.
+2L/R: İki bağlantıdan geçme süresi (saniye). Sakla ve ilet yönteminde ilk paketin hedefe ulaşma süresini gösteriyor.
+
+#### Sakla ve İlet Yöntemi: Paketler Nasıl Aktarılıyor?
+
+Çoğu **paket anahtarı (router)**, bağlantılarına gelen paketleri işlerken **sakla ve ilet (store-and-forward)** yöntemini kullanır. 
+Bu yöntemde, bir paket anahtarı gelen paketin **tamamını almadan**, paketin ilk bitini **giden bağlantıya** aktarmaya **başlayamaz**.
+
+Bir yönlendiricinin tipik olarak birçok bağlantısı vardır çünkü görevi gelen bir paketi bir giden bağlantıya yönlendirmektir. 
+Ancak bir örnekte, yönlendirici sadece bir (giriş) bağlantıdan diğerine (tek giden bağlantıya) paket aktarma görevini yapar. 
+Bu örnekte mesela, kaynağın hedefe göndermek üzere her biri **L bit** boyutunda üç paketi olsun. 
+Kaynak 1. paketin bir kısmını iletmiş ve 1. paketin başı yönlendiriciye ulaşmıştır bile. 
+Yönlendirici sakla ve ilet yöntemini kullandığı için, bu anda yönlendirici aldığı bitleri **hemen iletemez**. 
+Önce paketin bitlerini **belleğe kaydetmesi ("saklaması")** gerekir. 
+Yönlendirici paketin **tüm bitlerini aldıktan sonra** paketi giden bağlantı üzerinden hedefe doğru **iletmeye ("forward")** başlayabilir.
+
+Sakla ve ilet yöntemini daha iyi anlamak için, kaynağın paketi göndermeye başladığı andan hedef paketin tamamını alana kadar geçen süreyi hesaplayalım. 
+(Burada **yayılma gecikmesini** - bitlerin ışık hızına yakın bir hızda tel boyunca hareket etmesi için geçen süreyi - göz ardı ediyoruz.) 
+Kaynak, iletime 0 anında başlar; **L/R** saniye sonra, kaynak paketin tamamını iletmiş ve paketin tamamı yönlendiricide alınmış ve saklanmıştır (yayılma gecikmesi olmadığı için). 
+**L/R** saniye anında, yönlendirici paketin tamamını yeni aldığı için, paketi giden bağlantı üzerinden hedefe doğru iletmeye başlayabilir; **2L/R** anında, yönlendirici paketin tamamını iletmiş ve paketin tamamı hedef tarafından alınmıştır. 
+Yani, **toplam gecikme 2L/R**'dir. Eğer anahtar(switch/router), bitler gelir gelmez (önce paketin tamamını almadan) iletseydi, bitler yönlendiricide bekletilmediği için toplam gecikme L/R olurdu. Ancak, yönlendiricilerin iletmeden önce paketin tamamını alması, saklaması ve işlemesi gerekir.
+
+Şimdi de kaynağın ilk paketi göndermeye başladığı andan hedefin üç paketin tamamını alana kadar geçen süreyi hesaplayalım. 
+Daha önce olduğu gibi, **L/R** anında, yönlendirici ilk paketi iletmeye başlar. Ancak **L/R** anında kaynak da ikinci paketi göndermeye başlayacaktır, çünkü ilk paketin tamamını göndermeyi yeni bitirmiştir. Böylece, **2L/R** anında, hedef ilk paketi almış ve yönlendirici ikinci paketi almıştır. Benzer şekilde, **3L/R** anında, hedef ilk iki paketi almış ve yönlendirici üçüncü paketi almıştır. Son olarak, **4L/R** anında hedef üç paketin tamamını almıştır!
+
+Şimdi de kaynaktan hedefe **N bağlantıdan** oluşan bir yol üzerinden (yani, kaynak ve hedef arasında N-1 yönlendirici var) tek bir paket gönderme genel durumunu düşünelim; her bağlantının hızı R olsun. Yukarıdaki mantığı uygulayarak, uçtan uca gecikmenin şu olduğunu görürüz:
+
+                        L
+**d'end-to-end =  = N  ____ **
+                        R
+
+N, kaynak (gönderici) ile hedef (alıcı) arasındaki yol üzerindeki bağlantı sayısını temsil ediyor. 
+Metinde "N bağlantıdan oluşan bir yol" denmesinin sebebi bu.
+
+Yönlendiricilerle İlişkisi: Eğer yolda N bağlantı varsa, bu yolda N-1 tane yönlendirici (router) var demektir. Çünkü her yönlendirici iki bağlantıyı birbirine bağlar. Şöyle düşünün: 2 bağlantı için 1 yönlendirici, 3 bağlantı için 2 yönlendirici... N bağlantı için N-1 yönlendirici.
+
+Gecikme Neden Artıyor?  Sakla ve ilet (store-and-forward) yönteminde her yönlendirici, paketin tamamını alıp sonra ilettiği için her bağlantıda L/R kadar bir gecikme oluşuyor.  Yolda ne kadar çok bağlantı (ve dolayısıyla yönlendirici) varsa, gecikme de o kadar katlanıyor. İşte bu yüzden toplam gecikme N * (L/R) oluyor.
+
+Basit Bir Örnek: Kaynak ve hedef arasında sadece 1 yönlendirici olsun. O zaman yol 2 bağlantıdan oluşur (kaynaktan yönlendiriciye, yönlendiriciden hedefe). Yani N=2. Bu durumda gecikme 2 * (L/R) olur, ki bunu zaten önceki örnekte görmüştük.
+
+Şimdi de **P paketinin** N bağlantı üzerinden gönderilmesi durumunda gecikmenin ne olacağını bulmayı deneyebilirsiniz.
+
+P,  gönderilen paket sayısını temsil ediyor. Metinde "Şimdi de P paketinin N bağlantı üzerinden gönderilmesi durumunda gecikmenin ne olacağını bulmayı deneyebilirsiniz." denmesinin sebebi bu.  Yani artık tek paket değil, birden fazla paket gönderiyoruz.
+
+Formül Tek Paket İçin Geçerli: Dikkat ederseniz, d_end-to-end = N * (L/R) formülü tek bir paketin uçtan uca gecikmesini hesaplıyor.  
+Yani sadece ilk paketin kaynaktan hedefe ulaşması ne kadar sürer onu buluyoruz.
+
+P Paket Gönderirsek Ne Olur? Eğer P tane paket gönderirsek, ilk paketin gecikmesi hala N * (L/R) olur.  
+Çünkü ilk paket diğerlerinden bağımsız olarak aynı yolu takip ediyor ve aynı yönlendiricilerden geçiyor.
+
+Toplam Süre Uzar Ama İlk Paket Gecikmesi Aynı Kalır: P paket gönderdiğimizde toplamda tüm paketlerin hedefe ulaşması daha uzun sürer. Ama ilk paketin gecikmesi değişmez.  Şöyle düşünün: Bir kamyon düşünün ve bu kamyonla koliler taşıyorsunuz. Bir koli taşısanız da, 10 koli taşısanız da ilk kolinin varış süresi aynıdır (eğer yol aynıysa ve trafik yoksa).  Sadece tüm kolilerin teslimatı daha uzun sürer.
+
+Pipelining (Boru Hattı) Kavramı:  Birden fazla paket gönderdiğimizde aslında pipelining (boru hattı) dediğimiz bir durum ortaya çıkar. Kaynak, ilk paketi gönderdikten sonra hemen ikinci paketi, sonra üçüncü paketi... göndermeye başlar. Yönlendiriciler de paketleri art arda işlemeye başlar. Bu sayede ardışık paketlerin hedefe ulaşması arasındaki süre kısalır ve toplam verimlilik artar. Ama ilk paketin gecikmesi temel olarak N * (L/R) olarak kalır.
