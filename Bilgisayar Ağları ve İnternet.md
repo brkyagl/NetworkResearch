@@ -422,9 +422,11 @@ Daha önce olduğu gibi, **L/R** anında, yönlendirici ilk paketi iletmeye baş
 
 Şimdi de kaynaktan hedefe **N bağlantıdan** oluşan bir yol üzerinden (yani, kaynak ve hedef arasında N-1 yönlendirici var) tek bir paket gönderme genel durumunu düşünelim; her bağlantının hızı R olsun. Yukarıdaki mantığı uygulayarak, uçtan uca gecikmenin şu olduğunu görürüz:
 
+```
                         L
 **d'end-to-end =  = N  ____ **
                         R
+```
 
 N, kaynak (gönderici) ile hedef (alıcı) arasındaki yol üzerindeki bağlantı sayısını temsil ediyor. 
 Metinde "N bağlantıdan oluşan bir yol" denmesinin sebebi bu.
