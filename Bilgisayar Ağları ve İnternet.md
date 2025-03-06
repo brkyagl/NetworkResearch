@@ -375,3 +375,19 @@ Yine de, **yüzlerce Mbps hızında** çalışabilen uydu bağlantıları, DSL v
 Dünya etrafında dönerler (tıpkı Ay gibi) ve hem birbirleriyle hem de yer istasyonlarıyla iletişim kurabilirler. 
 Bir bölgeye **kesintisiz kapsama** sağlamak için, yörüngeye birçok uydu yerleştirilmesi gerekir. 
 Şu anda geliştirilmekte olan birçok alçak irtifa iletişim sistemi bulunmaktadır. **LEO uydu teknolojisi**, gelecekte internet erişimi için kullanılabilir. Hatta SpaceX'in Starlink projesi gibi bazı LEO uydu internet hizmetleri şimdiden kullanıma sunulmaya başladı bile.
+
+### Ağın Kalbi: Çekirdek Ağ
+
+İnternetin "kenarını" yani uç sistemleri inceledikten sonra, şimdi de ağın **kalbine** doğru yolculuk yapalım: **çekirdek ağ**. 
+Çekirdek ağ, internetin uç sistemlerini birbirine bağlayan **paket anahtarları** ve **bağlantıların** oluşturduğu karmaşık bir yapıdır. 
+
+
+#### Paket Anahtarlama: Veri Nasıl Parçalanıp Taşınıyor?
+
+Bir ağ uygulamasında, uç sistemler birbirleriyle **mesaj** alışverişinde bulunur. 
+Mesajlar, uygulama geliştiricisinin istediği her şeyi içerebilir. 
+Mesajlar bir **kontrol işlevi** görebilir veya bir e-posta mesajı, bir JPEG resim veya bir MP3 ses dosyası gibi **veri** içerebilir. 
+Bir mesajı kaynak uç sistemden hedef uç sisteme göndermek için, kaynak uzun mesajları **paket** olarak bilinen daha küçük veri parçalarına böler. 
+Kaynak ve hedef arasında, her paket **iletişim bağlantılarından** ve **paket anahtarlarından** (iki ana türü vardır: yönlendiriciler(routers)
+ve bağlantı katmanı anahtarları( link-layer switches)) geçer. Paketler, her iletişim bağlantısı üzerinden bağlantının **tam iletim hızına** eşit bir hızda iletilir. Yani, bir kaynak uç sistemi veya bir paket anahtarı, L bitlik bir paketi R bit/sn iletim hızına sahip bir bağlantı üzerinden gönderiyorsa, paketi iletme süresi **L/R saniye** olur.
+
