@@ -424,7 +424,7 @@ Daha önce olduğu gibi, **L/R** anında, yönlendirici ilk paketi iletmeye baş
 
 ```
                         L
-**d'end-to-end =  = N  ____ **
+d end-to-end =  = N  ____ 
                         R
 ```
 
