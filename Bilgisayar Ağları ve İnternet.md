@@ -465,3 +465,24 @@ Bu durumda **paket kaybı** meydana gelir. Ya gelen paket ya da zaten kuyrukta b
 
 Diyelim ki A ve B Ana Bilgisayarları, E Ana Bilgisayarına paket gönderiyor. A ve B Ana Bilgisayarları önce paketlerini 100 Mbps Ethernet bağlantıları üzerinden ilk yönlendiriciye gönderir. 
 Yönlendirici daha sonra bu paketleri 15 Mbps bağlantısına yönlendirir. Kısa bir süre içinde, yönlendiriciye gelen paketlerin hızı (saniyedeki bit cinsinden) 15 Mbps'yi aşarsa, bağlantının çıktı tamponunda paketler kuyruğa girerken yönlendiricide **yoğunluk** oluşur. Örneğin, A ve B Ana Bilgisayarlarının her biri aynı anda art arda beş paketlik bir veri patlaması gönderirse, bu paketlerin çoğu kuyrukta bir süre beklemek zorunda kalacaktır. Bu durum aslında günlük hayattaki birçok duruma tamamen benzerdir; örneğin, bir banka gişesinde sıra beklemek veya bir gişenin önünde beklemek gibi. 
+
+#### İletim Tabloları ve Yönlendirme Protokolleri
+
+Daha önce, bir yönlendiricinin (router) bağlı olduğu iletişim bağlantılarından birinden gelen bir paketi, bağlı olduğu diğer iletişim bağlantılarından birine ilettiğini söylemiştik. 
+Peki, yönlendirici paketi hangi bağlantıya ileteceğini nasıl belirliyor? **Packet forwarding** işlemi aslında farklı bilgisayar ağlarında farklı şekillerde yapılır. 
+Burada, bu işlemin internette nasıl yapıldığını kısaca açıklayacağız.
+
+İnternetteki her uç sistemin **IP adresi** adı verilen bir adresi vardır. Bir kaynak uç sistemi bir hedef uç sistemine bir paket göndermek istediğinde, kaynak hedef IP adresini paketin başlığına (header) ekler. Posta adreslerinde olduğu gibi, bu adresin de hiyerarşik bir yapısı vardır. Bir paket ağdaki bir yönlendiriciye ulaştığında, yönlendirici paketin hedef adresinin bir bölümünü inceler ve paketi komşu bir yönlendiriciye iletir. Daha spesifik olarak, her yönlendiricide hedef adresleri (veya hedef adreslerinin bölümlerini) o yönlendiricinin giden bağlantılarına eşleyen bir **iletim tablosu (forwarding table)** bulunur. Bir paket bir yönlendiriciye ulaştığında, yönlendirici adresi inceler ve bu hedef adresini kullanarak uygun giden bağlantıyı bulmak için iletim tablosunu arar. 
+Ardından yönlendirici, paketi bu giden bağlantıya yönlendirir.
+
+Uçtan uca yönlendirme süreci, harita kullanmayan ancak yol tarifi sormayı tercih eden bir araba sürücüsüne benzetilebilir. 
+Örneğin, diyelim ki Joe, Philadelphia'dan Orlando, Florida'daki 156 Lakeside Drive'a gidiyor. Joe önce mahallesindeki benzin istasyonuna gider ve Orlando, Florida'daki 156 Lakeside Drive'a nasıl gideceğini sorar. Benzin istasyonu görevlisi adresin Florida kısmını alır ve Joe'ya benzin istasyonunun hemen yanındaki girişten I-95 Güney otoyoluna girmesi gerektiğini söyler. Ayrıca Florida'ya girdiğinde orada bir başkasına sorması gerektiğini de belirtir. Joe daha sonra Jacksonville, Florida'ya ulaşana kadar I-95 Güney'i takip eder ve orada başka bir benzin istasyonu görevlisine yol tarifi sorar. 
+Görevli adresin Orlando kısmını alır ve Joe'ya I-95'te Daytona Beach'e kadar devam etmesini ve ardından bir başkasına sormasını söyler. 
+Daytona Beach'te başka bir benzin istasyonu görevlisi de adresin Orlando kısmını alır ve Joe'ya doğrudan Orlando'ya giden I-4'ü kullanmasını söyler. 
+Joe I-4'ü takip eder ve Orlando çıkışından çıkar. Joe başka bir benzin istasyonu görevlisine gider ve bu sefer görevli adresin Lakeside Drive kısmını alır ve Joe'ya Lakeside Drive'a ulaşmak için izlemesi gereken yolu söyler. Joe Lakeside Drive'a ulaştığında, bisikletli bir çocuğa gideceği yeri sorar. Çocuk adresin 156 kısmını alır ve evi işaret eder. Joe sonunda nihai hedefine ulaşır. 
+Yukarıdaki benzetmede, benzin istasyonu görevlileri ve bisikletli çocuklar **yönlendiricilere (routers)** benzer.
+
+Az önce bir yönlendiricinin, bir paketin hedef adresini kullanarak bir iletim tablosunu indekslediğini ve uygun giden bağlantıyı belirlediğini öğrendik. 
+Ancak bu ifade başka bir soruyu akla getiriyor: İletim tabloları nasıl oluşturulur? Her bir yönlendiricide elle mi yapılandırılırlar yoksa internet daha otomatik bir prosedür mü kullanır? 
+Ancak burada merakınızı gidermek için, internetin iletim tablolarını otomatik olarak ayarlamak için kullanılan bir dizi özel **yönlendirme protokolüne (routing protocols)** sahip olduğunu belirtelim. 
+Bir yönlendirme protokolü, örneğin, her yönlendiriciden her hedefe en kısa yolu belirleyebilir ve en kısa yol sonuçlarını yönlendiricilerdeki iletim tablolarını yapılandırmak için kullanabilir.
