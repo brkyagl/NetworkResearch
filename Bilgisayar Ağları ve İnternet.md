@@ -515,3 +515,30 @@ Bu nedenle, örneğin, bitişik anahtarlar arasındaki her bağlantının 1 Mbps
 Buna karşılık, bir ana bilgisayarın internet gibi bir paket anahtarlamalı ağ üzerinden başka bir ana bilgisayara bir paket göndermek istediğinde ne olduğuna bakalım. 
 Devre anahtarlamada olduğu gibi, paket bir dizi iletişim bağlantısı üzerinden iletilir. Ancak devre anahtarlamadan farklı olarak, paket herhangi bir bağlantı kaynağı ayrılmadan ağa gönderilir. 
 Bağlantılardan biri aynı anda diğer paketlerin de bağlantı üzerinden iletilmesi gerektiği için yoğunsa, paket iletim bağlantısının gönderen tarafındaki bir tamponda beklemek ve bir gecikme yaşamak zorunda kalacaktır. İnternet, paketleri zamanında teslim etmek için elinden geleni yapar, ancak herhangi bir garanti vermez.
+
+#### Devre Anahtarlamalı Ağlarda Veri Birleştirme (Çoklama)
+
+Devre anahtarlamalı ağlarda bir bağlantıdaki devre, temelde iki yöntemle oluşturulur: **frekans bölmeli çoklama (Frequency-Division Multiplexing - FDM)** veya **zaman bölmeli çoklama (Time-Division Multiplexing - TDM)**.
+
+**Frekans Bölmeli Çoklama (FDM):** Bu yöntemde, bir bağlantının frekans aralığı, o bağlantı üzerinden kurulan farklı iletişimler arasında paylaştırılır. 
+Yani, bağlantı süresince her bir iletişim için **ayrı bir frekans bandı** ayrılır. Telefon ağlarında bu frekans bandı genellikle 4 kHz genişliğindedir (4000 Hertz veya saniyede 4000 döngü). 
+Bu bandın genişliğine de tahmin edebileceğiniz gibi **bant genişliği (bandwidth)** denir. FM radyo istasyonları da 88 MHz ile 108 MHz arasındaki frekans aralığını paylaşmak için FDM'yi kullanır ve her istasyona belirli bir frekans bandı tahsis edilir.
+
+**Zaman Bölmeli Çoklama (TDM):** Bu yöntemde ise zaman, sabit süreli **çerçevelere (frame)** bölünür ve her çerçeve sabit sayıda **zaman dilimine (time slot)** ayrılır. 
+Ağ bir bağlantı üzerinden bir iletişim kurduğunda, ağ her çerçevedeki bir zaman dilimini bu iletişime ayırır. 
+Bu zaman dilimleri sadece o iletişimin kullanımı içindir ve her çerçevede bir zaman dilimi, o bağlantının verilerini iletmek için kullanılabilir.
+
+Örneğin, dört adede kadar devreyi destekleyen belirli bir ağ bağlantısı için FDM ve TDM olsun. FDM için, frekans alanı her biri 4 kHz bant genişliğine sahip dört banda ayrılmıştır. 
+TDM için ise zaman alanı çerçevelere bölünmüştür ve her çerçevede dört zaman dilimi vardır; her devre, dönen TDM çerçevelerinde aynı ayrılmış zaman dilimine atanır. 
+TDM için, bir devrenin iletim hızı, çerçeve hızı ile bir zaman dilimindeki bit sayısının çarpımına eşittir. Örneğin, bağlantı saniyede 8000 frames iletiyorsa ve her zaman dilimi 8 bitten oluşuyorsa, her devrenin iletim hızı 64 kbps'dir.
+
+Paket anahtarlama savunucuları her zaman devre anahtarlamanın **kaynak israfı** olduğunu savunmuşlardır çünkü ayrılan devreler sessiz dönemlerde boştur. 
+Örneğin, bir telefon görüşmesinde bir kişi konuşmayı bıraktığında, bağlantının yolu üzerindeki bağlantılardaki boş ağ kaynakları (frekans bantları veya zaman dilimleri) diğer devam eden bağlantılar tarafından kullanılamaz. Bu kaynakların nasıl yetersiz kullanılabileceğine başka bir örnek olarak, bir radyologun bir devre anahtarlamalı ağı kullanarak bir dizi röntgene uzaktan eriştiğini düşünün. 
+Radyolog bir bağlantı kurar, bir görüntü ister, görüntüyü inceler ve ardından yeni bir görüntü ister. Ağ kaynakları bağlantıya tahsis edilir ancak radyologun inceleme süreleri boyunca kullanılmaz (yani, boşa harcanır). Paket anahtarlama savunucuları ayrıca uçtan uca devreler kurmanın ve uçtan uca iletim kapasitesi ayırmanın karmaşık olduğunu ve uçtan uca yoldaki anahtarların çalışmasını koordine etmek için karmaşık sinyal yazılımı gerektirdiğini de belirtmekten hoşlanırlar.
+
+Devre anahtarlama tartışmamızı bitirmeden önce, konuya daha fazla ışık tutacak sayısal bir örnek çözelim. 
+Bir devre anahtarlamalı ağ üzerinden A Ana Bilgisayarından B Ana Bilgisayarına 640.000 bitlik bir dosyanın ne kadar sürede gönderileceğini düşünelim. 
+Ağdaki tüm bağlantıların 24 zaman dilimli TDM kullandığını ve 1.536 Mbps bit hızına sahip olduğunu varsayalım. 
+Ayrıca, A Ana Bilgisayarının dosyayı iletmeye başlamadan önce uçtan uca bir devre kurmasının 500 milisaniye sürdüğünü varsayalım. 
+Dosyayı göndermek ne kadar sürer? Her devrenin iletim hızı (1.536 Mbps) / 24 = 64 kbps'dir, bu nedenle dosyayı iletmek (640.000 bit) / (64 kbps) = 10 saniye sürer. 
+Bu 10 saniyeye devre kurma süresini de eklersek, dosyayı göndermek toplam 10.5 saniye sürer. İletim süresinin bağlantı sayısından bağımsız olduğuna dikkat edin: Uçtan uca devre bir bağlantıdan veya yüz bağlantıdan geçse bile iletim süresi 10 saniye olurdu.
