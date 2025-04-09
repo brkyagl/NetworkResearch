@@ -542,3 +542,32 @@ Ağdaki tüm bağlantıların 24 zaman dilimli TDM kullandığını ve 1.536 Mbp
 Ayrıca, A Ana Bilgisayarının dosyayı iletmeye başlamadan önce uçtan uca bir devre kurmasının 500 milisaniye sürdüğünü varsayalım. 
 Dosyayı göndermek ne kadar sürer? Her devrenin iletim hızı (1.536 Mbps) / 24 = 64 kbps'dir, bu nedenle dosyayı iletmek (640.000 bit) / (64 kbps) = 10 saniye sürer. 
 Bu 10 saniyeye devre kurma süresini de eklersek, dosyayı göndermek toplam 10.5 saniye sürer. İletim süresinin bağlantı sayısından bağımsız olduğuna dikkat edin: Uçtan uca devre bir bağlantıdan veya yüz bağlantıdan geçse bile iletim süresi 10 saniye olurdu.
+
+#### Paket Anahtarlama mı, Devre Anahtarlama mı?
+
+Devre anahtarlama ve paket anahtarlamayı açıkladıktan sonra, şimdi bu iki yöntemi karşılaştıralım.
+
+Paket anahtarlama eleştirmenleri, bu yöntemin değişken ve öngörülemeyen uçtan uca gecikmeleri (esas olarak değişken ve öngörülemeyen kuyruk gecikmelerinden kaynaklanır) nedeniyle **gerçek zamanlı hizmetler** (örneğin, telefon görüşmeleri ve video konferans görüşmeleri) için uygun olmadığını sık sık savunmuşlardır. 
+Ancak paket anahtarlama savunucuları ise şu argümanları öne sürerler: (1) devre anahtarlamaya göre **iletim kapasitesini daha iyi paylaşır** ve (2) devre anahtarlamaya göre **uygulaması daha basit, daha verimli ve daha az maliyetlidir**. Genel olarak konuşmak gerekirse, restoran rezervasyonlarıyla uğraşmaktan hoşlanmayanlar devre anahtarlamaya kıyasla paket anahtarlamayı tercih ederler.
+
+Peki, paket anahtarlama neden daha verimli? Basit bir örneğe bakalım. Diyelim ki kullanıcılar 1 Mbps'lik bir bağlantıyı paylaşıyorlar. 
+Ayrıca, her kullanıcının aktif olduğu dönemlerde sabit bir 100 kbps hızında veri ürettiğini ve aktif olmadığı dönemlerde ise hiç veri üretmediğini varsayalım. 
+Dahası, bir kullanıcının zamanın sadece %10'unda aktif olduğunu (ve geri kalan %90'ında kahvesini yudumladığını) varsayalım. 
+Devre anahtarlamada, her kullanıcı için her zaman 100 kbps **ayrılması** gerekir. Örneğin, devre anahtarlamalı TDM ile, bir saniyelik bir çerçeve her biri 100 ms'lik 10 zaman dilimine bölünürse, her kullanıcıya çerçeve başına bir zaman dilimi tahsis edilir.
+
+Bu nedenle, devre anahtarlamalı bağlantı aynı anda yalnızca 10 (= 1 Mbps / 100 kbps) kullanıcıyı destekleyebilir. 
+Paket anahtarlamada ise belirli bir kullanıcının aktif olma olasılığı 0.1'dir (yani %10). 35 kullanıcı varsa, aynı anda 11 veya daha fazla aktif kullanıcının olma olasılığı yaklaşık olarak 0.0004'tür.
+Aynı anda 10 veya daha az aktif kullanıcı olduğunda (ki bu %0.9996 olasılıkla gerçekleşir), verinin toplam geliş hızı bağlantının çıkış hızına eşit veya daha düşüktür (1 Mbps). 
+Bu nedenle, 10 veya daha az aktif kullanıcı olduğunda, kullanıcıların paketleri bağlantıdan esasen devre anahtarlamada olduğu gibi **gecikmesiz** akar. 
+Aynı anda 10'dan fazla aktif kullanıcı olduğunda ise paketlerin toplam geliş hızı bağlantının çıkış kapasitesini aşar ve çıktı kuyruğu büyümeye başlar. (Toplam giriş hızı 1 Mbps'nin altına düşene kadar büyümeye devam eder, bu noktada kuyruk küçülmeye başlar.) Bu örnekte aynı anda 10'dan fazla aktif kullanıcının olma olasılığı çok düşük olduğundan, paket anahtarlama esasen devre anahtarlama ile aynı performansı sağlar, ancak bunu üç katından fazla kullanıcıya izin vererek yapar.
+
+Şimdi de ikinci basit bir örneğe bakalım. Diyelim ki 10 kullanıcı var ve bir kullanıcı aniden bin adet 1000 bitlik paket üretiyor, diğer kullanıcılar ise sessiz kalıyor ve paket üretmiyorlar. 
+Çerçeve başına 10 zaman dilimi olan ve her zaman dilimi 1000 bitten oluşan TDM devre anahtarlamasında, aktif kullanıcı veri iletmek için çerçeve başına yalnızca bir zaman dilimini kullanabilirken, her çerçevedeki kalan dokuz zaman dilimi boş kalır. Aktif kullanıcının bir milyon bitlik verisinin tamamının iletilmesi 10 saniye sürer. Paket anahtarlama durumunda ise aktif kullanıcı, diğer kullanıcıların paketleriyle **çoklanması (multiplexed)** gereken başka kullanıcı olmadığı için paketlerini 1 Mbps'lik tam bağlantı hızında sürekli olarak gönderebilir. Bu durumda, aktif kullanıcının tüm verileri 1 saniye içinde iletilir.
+
+Yukarıdaki örnekler, paket anahtarlamanın performansının devre anahtarlamanın performansından üstün olabileceği iki yolu göstermektedir. 
+Ayrıca, bir bağlantının iletim hızının birden çok veri akışı arasında paylaşılmasının bu iki biçimi arasındaki temel farkı da vurgulamaktadır. 
+Devre anahtarlama, talebe bakılmaksızın iletim bağlantısının kullanımını önceden tahsis eder ve tahsis edilen ancak gerekmeyen bağlantı süresi kullanılmadan kalır. 
+Paket anahtarlama ise bağlantı kullanımını talep üzerine tahsis eder. Bağlantı iletim kapasitesi, yalnızca bağlantı üzerinden iletilmesi gereken paketleri olan kullanıcılar arasında paket paket bazında paylaşılır.
+
+Paket anahtarlama ve devre anahtarlama günümüz telekomünikasyon ağlarında yaygın olsa da, eğilim kesinlikle paket anahtarlamaya doğru olmuştur. 
+Günümüzün devre anahtarlamalı telefon ağlarının çoğu bile yavaş yavaş paket anahtarlamaya geçmektedir. Özellikle telefon ağları, bir telefon görüşmesinin pahalı denizaşırı kısmı için genellikle paket anahtarlamayı kullanır.
