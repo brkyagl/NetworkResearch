@@ -450,3 +450,18 @@ P Paket Gönderirsek Ne Olur? Eğer P tane paket gönderirsek, ilk paketin gecik
 Toplam Süre Uzar Ama İlk Paket Gecikmesi Aynı Kalır: P paket gönderdiğimizde toplamda tüm paketlerin hedefe ulaşması daha uzun sürer. Ama ilk paketin gecikmesi değişmez.  Şöyle düşünün: Bir kamyon düşünün ve bu kamyonla koliler taşıyorsunuz. Bir koli taşısanız da, 10 koli taşısanız da ilk kolinin varış süresi aynıdır (eğer yol aynıysa ve trafik yoksa).  Sadece tüm kolilerin teslimatı daha uzun sürer.
 
 Pipelining (Boru Hattı) Kavramı:  Birden fazla paket gönderdiğimizde aslında pipelining (boru hattı) dediğimiz bir durum ortaya çıkar. Kaynak, ilk paketi gönderdikten sonra hemen ikinci paketi, sonra üçüncü paketi... göndermeye başlar. Yönlendiriciler de paketleri art arda işlemeye başlar. Bu sayede ardışık paketlerin hedefe ulaşması arasındaki süre kısalır ve toplam verimlilik artar. Ama ilk paketin gecikmesi temel olarak N * (L/R) olarak kalır.
+
+#### Kuyruk Gecikmeleri ve Paket Kaybı: Ağda Bekleme ve Veri Kaybı
+
+Her **paket anahtarında (router)** birden fazla bağlantı bulunur. 
+Bu bağlantıların her biri için, paket anahtarında **çıktı tamponu (output buffer)** veya diğer adıyla **çıktı kuyruğu** adı verilen bir alan vardır. 
+Bu alan, yönlendiricinin o bağlantı üzerinden göndermeye hazır olduğu paketleri saklar. output buffer, paket anahtarlamada(packet switching) çok önemli bir rol oynar.
+
+Eğer gelen bir paket bir bağlantı üzerinden iletilmek isterse ancak bağlantı başka bir paketin iletimiyle meşgulse, gelen paket çıktı tamponunda **beklemek zorunda kalır**. 
+Yani, sakla ve ilet gecikmelerine ek olarak, paketler çıktı tamponlarında **kuyruk gecikmeleri** de yaşar. Bu gecikmeler **değişkenlik gösterir** ve ağdaki **yoğunluk seviyesine** bağlıdır.
+
+Tampon alanının boyutu **sınırlı** olduğu için, gelen bir paket tamponun iletim için bekleyen diğer paketlerle tamamen dolu olduğunu görebilir. 
+Bu durumda **paket kaybı** meydana gelir. Ya gelen paket ya da zaten kuyrukta bekleyen paketlerden biri **düşürülür** (kaybolur).
+
+Diyelim ki A ve B Ana Bilgisayarları, E Ana Bilgisayarına paket gönderiyor. A ve B Ana Bilgisayarları önce paketlerini 100 Mbps Ethernet bağlantıları üzerinden ilk yönlendiriciye gönderir. 
+Yönlendirici daha sonra bu paketleri 15 Mbps bağlantısına yönlendirir. Kısa bir süre içinde, yönlendiriciye gelen paketlerin hızı (saniyedeki bit cinsinden) 15 Mbps'yi aşarsa, bağlantının çıktı tamponunda paketler kuyruğa girerken yönlendiricide **yoğunluk** oluşur. Örneğin, A ve B Ana Bilgisayarlarının her biri aynı anda art arda beş paketlik bir veri patlaması gönderirse, bu paketlerin çoğu kuyrukta bir süre beklemek zorunda kalacaktır. Bu durum aslında günlük hayattaki birçok duruma tamamen benzerdir; örneğin, bir banka gişesinde sıra beklemek veya bir gişenin önünde beklemek gibi. 
