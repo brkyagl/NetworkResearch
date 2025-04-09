@@ -486,3 +486,32 @@ Az önce bir yönlendiricinin, bir paketin hedef adresini kullanarak bir iletim 
 Ancak bu ifade başka bir soruyu akla getiriyor: İletim tabloları nasıl oluşturulur? Her bir yönlendiricide elle mi yapılandırılırlar yoksa internet daha otomatik bir prosedür mü kullanır? 
 Ancak burada merakınızı gidermek için, internetin iletim tablolarını otomatik olarak ayarlamak için kullanılan bir dizi özel **yönlendirme protokolüne (routing protocols)** sahip olduğunu belirtelim. 
 Bir yönlendirme protokolü, örneğin, her yönlendiriciden her hedefe en kısa yolu belirleyebilir ve en kısa yol sonuçlarını yönlendiricilerdeki iletim tablolarını yapılandırmak için kullanabilir.
+
+#### Devre Anahtarlama(Circuit Switching)
+
+Veriyi bir ağdaki bağlantılar ve anahtarlar üzerinden taşımanın iki temel yolu vardır: **devre anahtarlama (circuit switching)** ve **paket anahtarlama (packet switching)**. 
+Önceki bölümde paket anahtarlamalı ağları inceledik, şimdi de dikkatimizi devre anahtarlamalı ağlara çeviriyoruz.
+
+**Devre anahtarlamalı ağlarda**, uç sistemler arasındaki iletişim için gereken kaynaklar (buffers(tamponlar), bağlantı iletim hızı) iletişim oturumu süresince **ayrılır**. 
+**Paket anahtarlamalı ağlarda** ise bu kaynaklar ayrılmaz; bir oturumun mesajları kaynakları ihtiyaç duydukça kullanır ve sonuç olarak bir iletişim bağlantısına erişmek için **beklemek (yani, kuyruğa girmek)** zorunda kalabilirler.
+
+Basit bir benzetme yapacak olursak, biri rezervasyon gerektiren, diğeri ise ne rezervasyon gerektiren ne de kabul eden iki restoran düşünün. 
+Rezervasyon gerektiren restorana gitmeden önce telefonla arama zahmetine katlanmamız gerekir. Ancak restorana vardığımızda prensip olarak hemen oturabilir ve yemeğimizi sipariş edebiliriz. 
+Rezervasyon gerektirmeyen restoranda ise masa ayırtmamıza gerek yoktur. Ancak restorana vardığımızda oturmadan önce masa beklemek zorunda kalabiliriz.
+
+Geleneksel telefon ağları, **devre anahtarlamalı ağlara** örnektir. Bir kişi telefon şebekesi üzerinden başka birine bilgi (ses veya faks) göndermek istediğinde ne olduğuna bakalım. 
+Gönderici bilgiyi göndermeden önce, ağın gönderici ve alıcı arasında bir **bağlantı kurması** gerekir. 
+Bu, gönderici ve alıcı arasındaki yoldaki anahtarların bu bağlantı için **bağlantı durumunu** koruduğu gerçek bir bağlantıdır. 
+Telefon terminolojisinde bu bağlantıya **devre (circuit)** denir. Ağ devreyi kurduğunda, bağlantı süresince ağın bağlantılarında **sabit bir iletim hızı** (her bağlantının iletim kapasitesinin bir bölümünü temsil eden) da **ayırır**. Belirli bir iletim hızı bu gönderici-alıcı bağlantısı için ayrıldığı için, gönderici veriyi alıcıya **garantili sabit bir hızda** aktarabilir.
+
+Örnek bir ağda, dört devre anahtarı dört bağlantı ile birbirine bağlanmıştır. Bu bağlantıların her birinde dört devre vardır, böylece her bağlantı dört eşzamanlı bağlantıyı destekleyebilir. 
+Ana bilgisayarlar (örneğin, PC'ler ve iş istasyonları) doğrudan anahtarlardan birine bağlıdır. 
+İki ana bilgisayar iletişim kurmak istediğinde, ağ iki ana bilgisayar arasında **özel bir uçtan uca bağlantı** kurar. 
+Bu nedenle, A Ana Bilgisayarının B Ana Bilgisayarı ile iletişim kurabilmesi için, ağın önce iki bağlantının her birinde bir devre ayırması gerekir. 
+Örnekte, özel uçtan uca bağlantı, ilk bağlantıdaki ikinci devreyi ve ikinci bağlantıdaki dördüncü devreyi kullanır. 
+Her bağlantıda dört devre olduğu için, uçtan uca bağlantı tarafından kullanılan her bağlantı için, bağlantı, bağlantı süresince bağlantının toplam iletim kapasitesinin dörtte birini alır. 
+Bu nedenle, örneğin, bitişik anahtarlar arasındaki her bağlantının 1 Mbps'lik bir iletim hızı varsa, her uçtan uca devre anahtarlamalı bağlantı 250 kbps'lik özel bir iletim hızına sahip olur.
+
+Buna karşılık, bir ana bilgisayarın internet gibi bir paket anahtarlamalı ağ üzerinden başka bir ana bilgisayara bir paket göndermek istediğinde ne olduğuna bakalım. 
+Devre anahtarlamada olduğu gibi, paket bir dizi iletişim bağlantısı üzerinden iletilir. Ancak devre anahtarlamadan farklı olarak, paket herhangi bir bağlantı kaynağı ayrılmadan ağa gönderilir. 
+Bağlantılardan biri aynı anda diğer paketlerin de bağlantı üzerinden iletilmesi gerektiği için yoğunsa, paket iletim bağlantısının gönderen tarafındaki bir tamponda beklemek ve bir gecikme yaşamak zorunda kalacaktır. İnternet, paketleri zamanında teslim etmek için elinden geleni yapar, ancak herhangi bir garanti vermez.
