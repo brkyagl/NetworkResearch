@@ -664,3 +664,10 @@ Yukarıdaki tartışmalarımızda, kuyruğun sonsuz sayıda paket tutabileceğin
 
 Bir uç sistem açısından, bir paket kaybı, ağ çekirdeğine iletilmiş ancak hedefteki ağdan asla çıkmamış gibi görünecektir. Kaybolan paketlerin oranı, trafik yoğunluğu arttıkça artar. Bu nedenle, bir düğümdeki performans genellikle yalnızca gecikme açısından değil, aynı zamanda paket kaybı olasılığı açısından da ölçülür. Sonraki bölümlerde tartışacağımız gibi, tüm verilerin sonunda kaynaktan hedefe aktarılmasını sağlamak için kaybolan bir paket uçtan uca bazda yeniden iletilebilir.
 
+#### Uçtan Uca Gecikme (End-to-End Delay)
+
+Bu noktaya kadar olan tartışmamız düğüm gecikmesine, yani tek bir yönlendiricideki gecikmeye odaklandı. Şimdi de kaynaktan hedefe olan toplam gecikmeyi ele alalım. Bu kavramı anlamak için, kaynak ana bilgisayar ile hedef ana bilgisayar arasında N - 1 adet yönlendirici olduğunu varsayalım. Ayrıca, şimdilik ağın sıkışık olmadığını (böylece kuyruk gecikmelerinin ihmal edilebilir olduğunu), her yönlendiricide ve kaynak ana bilgisayarda işleme gecikmesinin d<sub>proc</sub> olduğunu, her yönlendiriciden ve kaynak ana bilgisayardan çıkan iletim hızının R bit/sn olduğunu ve her bağlantıdaki yayılmanın d<sub>prop</sub> olduğunu varsayalım. Düğüm gecikmeleri birikerek uçtan uca gecikmeyi verir:
+
+d<sub>uçtan-uca</sub> = N ⋅ (d<sub>proc</sub> + d<sub>trans</sub> + d<sub>prop</sub>)  
+
+Burada, tekrar belirtmek gerekirse, d<sub>trans</sub> = L/R'dir ve L paket boyutudur. 
