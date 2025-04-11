@@ -603,3 +603,9 @@ Bir yandan, gerçekliğin fiziksel yasalarının gecikme ve kayıplara neden olm
 Öte yandan, bilgisayar ağlarında bu sorunlar olduğu için, bu sorunlarla nasıl başa çıkılacağı konusunda pek çok büyüleyici konu vardır—
 bilgisayar ağları üzerine bir dersi doldurmaya ve binlerce doktora tezini motive etmeye yetecek kadar çok konu! 
 Bu bölümde, bilgisayar ağlarındaki gecikmeyi, kaybı ve verimi incelemeye ve ölçmeye başlayacağız.
+
+#### Paket Anahtarlamalı Ağlarda Gecikmeye Genel Bakış
+
+Hatırlayacağınız gibi, bir paket bir ana bilgisayarda (kaynak) başlar, bir dizi yönlendiriciden (router) geçer ve yolculuğunu başka bir ana bilgisayarda (hedef) sonlandırır. Bir paket bu yol boyunca bir düğümden(nodec) (ana bilgisayar veya yönlendirici) sonraki düğüme (ana bilgisayar veya yönlendirici) giderken, yol üzerindeki her düğümde çeşitli **gecikmeler** yaşar. Bu gecikmelerin en önemlileri şunlardır: **düğüm işleme gecikmesi (nodal processing delay)**, **kuyruk gecikmesi (queuing delay)**, **iletim gecikmesi (transmission delay)** ve **yayılma gecikmesi (propagation delay)**. Bu gecikmelerin tümü bir araya gelerek **toplam düğüm gecikmesini**(total nodal delay) oluşturur.
+
+Arama, Web'de gezinme, e-posta, haritalar, anlık mesajlaşma ve **VoIP (voice-over-IP)** gibi birçok internet uygulamasının performansı, ağ gecikmelerinden büyük ölçüde etkilenir. Paket anahtarlama ve bilgisayar ağlarını derinlemesine anlamak için, bu gecikmelerin doğasını ve önemini kavramamız gerekir.
