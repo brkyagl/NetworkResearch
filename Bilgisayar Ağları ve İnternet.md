@@ -671,3 +671,12 @@ Bu noktaya kadar olan tartışmamız düğüm gecikmesine, yani tek bir yönlend
 d<sub>uçtan-uca</sub> = N ⋅ (d<sub>proc</sub> + d<sub>trans</sub> + d<sub>prop</sub>)  
 
 Burada, tekrar belirtmek gerekirse, d<sub>trans</sub> = L/R'dir ve L paket boyutudur. 
+
+#### Traceroute
+
+Bir bilgisayar ağındaki uçtan uca gecikmeyi uygulamalı olarak deneyimlemek için Traceroute programını kullanabiliriz. Traceroute, herhangi bir internet ana bilgisayarında çalışabilen basit bir programdır. Kullanıcı bir hedef ana bilgisayar adı (hostname) belirttiğinde, kaynak ana bilgisayardaki program bu hedefe doğru birden fazla özel paket gönderir. Bu paketler hedefe doğru ilerlerken bir dizi yönlendiriciden geçerler. Bir yönlendirici bu özel paketlerden birini aldığında, kaynağa yönlendiricinin adını ve adresini içeren kısa bir mesaj geri gönderir.
+
+Daha spesifik olarak, kaynak ile hedef arasında N - 1 adet yönlendirici olduğunu varsayalım. Kaynak daha sonra ağa, her biri nihai hedefe adreslenmiş N adet özel paket gönderecektir. Bu N özel paket 1'den N'ye kadar numaralandırılır, ilk paket 1 ve son paket N olarak işaretlenir. n'inci yönlendirici, n olarak işaretlenmiş n'inci paketi aldığında, yönlendirici paketi hedefine doğru iletmez, bunun yerine kaynağa bir mesaj geri gönderir. Hedef ana bilgisayar N'inci paketi aldığında, o da kaynağa bir mesaj geri gönderir.
+
+Kaynak, bir paket gönderdiği zaman ile karşılık gelen dönüş mesajını aldığı zaman arasındaki süreyi kaydeder; ayrıca mesajı döndüren yönlendiricinin (veya hedef ana bilgisayarın) adını ve adresini de kaydeder. Bu şekilde, kaynak, paketlerin kaynaktan hedefe akarken izlediği yolu yeniden oluşturabilir ve kaynak, tüm ara yönlendiricilere olan gidiş-dönüş gecikmelerini belirleyebilir. Traceroute aslında az önce açıklanan deneyi üç kez tekrarlar, bu nedenle kaynak aslında hedefe 3 ⋅ N paket gönderir.  RFC 1393, Traceroute'u ayrıntılı olarak açıklamaktadır. 
+
