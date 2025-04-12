@@ -680,3 +680,20 @@ Daha spesifik olarak, kaynak ile hedef arasında N - 1 adet yönlendirici olduğ
 
 Kaynak, bir paket gönderdiği zaman ile karşılık gelen dönüş mesajını aldığı zaman arasındaki süreyi kaydeder; ayrıca mesajı döndüren yönlendiricinin (veya hedef ana bilgisayarın) adını ve adresini de kaydeder. Bu şekilde, kaynak, paketlerin kaynaktan hedefe akarken izlediği yolu yeniden oluşturabilir ve kaynak, tüm ara yönlendiricilere olan gidiş-dönüş gecikmelerini belirleyebilir. Traceroute aslında az önce açıklanan deneyi üç kez tekrarlar, bu nedenle kaynak aslında hedefe 3 ⋅ N paket gönderir.  RFC 1393, Traceroute'u ayrıntılı olarak açıklamaktadır. 
 
+İşte Traceroute programının bir çıktı örneği; burada rota, benim kaynağımdan Google DNS sunucusuna (8.8.8.8) yapılmıştır.
+
+Çıktı altı sütuna sahiptir: birinci sütun yukarıda açıklanan n değeridir, yani rotadaki yönlendiricinin numarası; ikinci sütun yönlendiricinin adıdır; üçüncü sütun yönlendiricinin adresidir (xxx.xxx.xxx.xxx biçiminde); son üç sütun ise üç deney için gidiş-dönüş gecikmeleridir. Kaynak herhangi bir yönlendiriciden üçten az mesaj alırsa (ağdaki paket kaybı nedeniyle), Traceroute yönlendirici numarasının hemen yanına bir yıldız işareti koyar ve o yönlendirici için üçten az gidiş-dönüş süresi bildirir.
+
+![resim](https://i.ibb.co/vCX3SRRK/Trace-Route-Google.png)
+
+Kaynak ile hedef arasında 11 yönlendirici bulunmaktadır (sonuncusu hedef). Bu yönlendiricilerin bazılarının adı varken, hepsinin adresleri vardır. Örneğin, 1. Yönlendiricinin adı HUAWEI-COMPUTER.mshome.net ve adresi 172.19.112.1'dir. Bu yönlendirici için sağlanan verilere baktığımızda, üç denemenin ilkinde kaynak ile yönlendirici arasındaki gidiş-dönüş gecikmesinin 0.690 ms olduğunu görüyoruz. Sonraki iki deneme için gidiş-dönüş gecikmeleri 0.512 ve 0.444 ms idi.
+
+İkinci hop'ta (192.168.1.1) bir denemede zaman aşımı yaşanmış (asterisk ile belirtilmiş). Üçüncü hop'ta (195.87.128.29) gidiş-dönüş gecikmeleri sırasıyla 17.520 ms, 17.448 ms ve 17.355 ms olarak ölçülmüş. Dördüncü hop'ta ise üç denemede de yanıt alınamamış.
+
+Beşinci hop'ta (84.44.91.157) gecikmeler 27.157 ms, 37.057 ms ve 27.109 ms olarak kaydedilmiş. Altıncı hop'ta (10.135.50.250) ise 36.997 ms, 33.941 ms ve 33.909 ms değerleri görülüyor. Yedinci hop'ta (ae3-17-xcr1.ise.cw.net) gecikmeler 33.894 ms, 18.600 ms ve 18.561 ms olarak ölçülmüş. Burada "ise" ifadesi, bu yönlendiricinin İstanbul'da olabileceğini düşündürüyor.
+
+Sekizinci hop'ta (ae29-xcr1.sof.cw.net) gecikmeler 38.561 ms, 28.919 ms ve 28.888 ms olarak kaydedilmiş. "sof" ifadesi ise bu yönlendiricinin Sofya'da olabileceğine işaret ediyor, bu da Türkiye'den sonra bir yurt dışı geçiş olduğunu gösteriyor. Dokuzuncu hop'ta ilk denemede zaman aşımı yaşanmış, sonraki iki denemede ise farklı Google IP adreslerine (209.85.168.146 ve 209.85.149.140) ulaşılmış, bu da yük dengelemesi veya farklı yönlendirme yollarının olabileceğini gösteriyor. Onuncu hop'ta ise üç denemede de yanıt alınamamış.
+
+Son olarak, on birinci hop'ta hedefe (dns.google, yani 8.8.8.8) ulaşılmış ve gecikmeler 39.497 ms, 39.558 ms ve 39.408 ms olarak ölçülmüş. Burada da farklı bir Google IP adresi (72.14.237.137) gözlemleniyor.
+
+Bu gidiş-dönüş gecikmeleri, iletim gecikmeleri, yayılma gecikmeleri, yönlendirici işleme gecikmeleri ve kuyruk gecikmesi dahil olmak üzere az önce tartışılan tüm gecikmeleri içerir. Kuyruk gecikmesi zamanla değiştiği için, farklı denemelerde farklı gecikme süreleri gözlemlenmiştir. Ayrıca, bazı hop'larda yaşanan zaman aşımları (asteriskler), o yönlendiricilere ulaşmada sorunlar yaşandığını veya o yönlendiricilerin ICMP yanıtlarını engellediğini gösterebilir. Özellikle 7. ve 8. yönlendiriciler arasındaki gecikme artışı, Türkiye ile Bulgaristan arasındaki olası bir fiber optik bağlantıdan kaynaklanan nispeten büyük bir yayılma gecikmesine işaret edebilir.
