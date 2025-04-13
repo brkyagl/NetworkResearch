@@ -734,3 +734,24 @@ R<sub>s</sub> = 2 Mbps, R<sub>c</sub> = 1 Mbps, R = 5 Mbps ve ortak bağlantın�
 Şimdiye kadarki tartışmamızdan, internetin son derece karmaşık bir sistem olduğu açıkça görülmektedir. 
 İnternetin birçok parçası olduğunu gördük: sayısız **application** ve **protocol**, çeşitli türde **end system**, **packet switch** ve çeşitli türde **link-level media**. Bu muazzam karmaşıklık göz önüne alındığında, bir ağ mimarisini veya en azından ağ mimarisi hakkındaki tartışmamızı organize etmek için herhangi bir umut var mı? Neyse ki, her iki sorunun cevabı da evettir.
 
+#### Katmanlı Mimari (Layered Architecture)
+
+İnternet mimarisi hakkındaki düşüncelerimizi organize etmeye çalışmadan önce, insani bir benzetme arayalım. 
+Aslında, günlük hayatımızda sürekli olarak karmaşık sistemlerle uğraşıyoruz. 
+Örneğin, birisi sizden havayolu sistemini tanımlamanızı isteseydi, hayal edin. 
+Bilet satış görevlileri, bagaj kontrol görevlileri, kapı personeli, pilotlar, uçaklar, hava trafik kontrolü ve uçakları yönlendirmek için dünya çapında bir sistemi olan bu karmaşık sistemi tanımlamak için yapıyı nasıl bulurdunuz? 
+Bu sistemi tanımlamanın bir yolu, bir havayoluyla uçarken attığınız (veya başkalarının sizin için attığı) bir dizi eylemi anlatmak olabilir. 
+Biletinizi satın alırsınız, bagajınızı kontrol ettirirsiniz, kapıya gidersiniz ve sonunda uçağa binersiniz. Uçak kalkar ve hedefine yönlendirilir. 
+Uçağınız indikten sonra, kapıda uçaktan inersiniz ve bagajınızı alırsınız. 
+Yolculuk kötü geçtiyse, uçuş hakkında bilet satış görevlisine şikayette bulunursunuz (çabanız için hiçbir şey almadan). 
+Şimdiden burada bilgisayar ağı ile bazı benzerlikler görebiliyoruz: Havayolu tarafından kaynaktan hedefe taşınıyorsunuz; bir paket internette kaynak ana bilgisayardan hedef ana bilgisayara gönderilir. Ancak aradığımız tam olarak bu benzetme değil. Örneğin bir benzetme, iki uçta da bir biletleme işlevi olduğunu görüyoruz; ayrıca zaten bileti olan yolcular için bir bagaj işlevi ve zaten bileti olan ve bagajı kontrol edilmiş yolcular için bir kapı işlevi de var. 
+Kapıdan geçmiş yolcular için (yani, zaten bileti olan, bagajı kontrol edilmiş ve kapıdan geçmiş yolcular), bir kalkış ve iniş işlevi vardır ve uçuş sırasında bir uçak yönlendirme işlevi vardır. Her katmanın, altındaki katmanlarla birlikte bir işlevsellik, bir hizmet uyguladığına dikkat edin. 
+Biletleme katmanında ve altında, bir kişinin havayolu gişesinden diğer havayolu gişesine transferi gerçekleştirilir. 
+Bagaj katmanında ve altında, bir kişinin ve bagajının bagaj kontrolünden bagaj teslimine transferi gerçekleştirilir. 
+Bagaj katmanının bu hizmeti yalnızca zaten bileti olan bir kişiye sağladığına dikkat edin. Kapı katmanında, bir kişinin ve bagajının kalkış kapısından varış kapısına transferi gerçekleştirilir. Kalkış/iniş katmanında, insanların ve bagajlarının pistten piste transferi gerçekleştirilir. Her katman, (1) o katman içinde belirli eylemleri gerçekleştirerek (örneğin, kapı katmanında, insanları bir uçağa yükleme ve indirme) ve (2) doğrudan altındaki katmanın hizmetlerini kullanarak (örneğin, kapı katmanında, kalkış/iniş katmanının pistten piste yolcu transfer hizmetini kullanarak) hizmetini sağlar.
+
+Katmanlı bir mimari, büyük ve karmaşık bir sistemin iyi tanımlanmış, belirli bir bölümünü tartışmamıza olanak tanır. 
+Bu basitleştirme, modülerlik sağlayarak ve katmanın sağladığı hizmetin uygulamasını değiştirmeyi çok daha kolay hale getirerek önemli bir değere sahiptir. 
+Katman üstündeki katmana aynı hizmeti sağladığı ve altındaki katmandan aynı hizmetleri kullandığı sürece, bir katmanın uygulaması değiştirildiğinde sistemin geri kalanı değişmeden kalır. (Unutmayın ki, bir hizmetin uygulamasını değiştirmek, hizmetin kendisini değiştirmekten çok farklıdır!) 
+Örneğin, kapı işlevleri değiştirilirse (örneğin, insanların boylarına göre uçağa binmesi ve inmesi sağlanırsa), havayolu sisteminin geri kalanı değişmeden kalacaktır çünkü kapı katmanı hala aynı işlevi (insanları yükleme ve indirme) sağlamaktadır; sadece bu işlevi değişiklikten sonra farklı bir şekilde uygulamaktadır. Sürekli güncellenen büyük ve karmaşık sistemler için, bir hizmetin uygulamasını sistemin diğer bileşenlerini etkilemeden değiştirebilme yeteneği, katmanlamanın bir diğer önemli avantajıdır.
+
