@@ -835,3 +835,4 @@ Datagramların kaynaktan hedefe gitmek için tipik olarak birkaç bağlantıdan 
 Bağlantı katmanının görevi tüm framleri bir ağ elemanından bitişik bir ağ elemanına taşımak iken, fiziksel katmanın görevi frame içindeki tek tek bitleri bir düğümden diğerine taşımaktır. Bu katmandaki protokoller de bağlantıya bağımlıdır ve ayrıca bağlantının gerçek **iletim ortamına (transmission medium)** (örneğin, bükümlü çift bakır tel, tek modlu fiber optik) bağlıdır.
 
 Örneğin, Ethernet'in birçok **fiziksel katman protokolü (physical-layer protocols)** vardır: bükümlü çift bakır tel için bir tane, koaksiyel kablo için başka bir tane, fiber için bir tane ve benzeri. Her durumda, bir bit bağlantı üzerinden farklı bir şekilde taşınır.
+
