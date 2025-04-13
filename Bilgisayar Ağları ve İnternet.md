@@ -788,3 +788,12 @@ Katmanlamanın olası bir dezavantajı, bir katmanın alt katmanların yaptığ�
 
 Farklı katmanlardaki protokollerin tümüne birlikte **protokol yığını (protocol stack)** adı verilir. 
 **İnternet protokol yığını (Internet protocol stack)**, beş temel katmandan oluşur: **fiziksel (physical)**, **bağlantı (link)**, **ağ (network)**, **taşıma (transport)** ve **uygulama (application)** katmanları.
+
+#### Uygulama Katmanı (Application Layer)
+
+Uygulama katmanı, ağ uygulamalarının ve onların protokollerinin bulunduğu yerdir. 
+İnternetin uygulama katmanı, HTTP protokolü (Web belgesi isteme ve aktarma için), SMTP (e-posta mesajlarının aktarılması için) ve FTP (iki uç sistem arasında dosya aktarımı için) gibi birçok protokol içerir.
+
+Ayrıca, github.com gibi internet uç sistemleri için insan dostu isimlerin 32 bitlik ağ adresine çevrilmesi gibi bazı ağ işlevlerinin de belirli bir uygulama katmanı protokolü olan **alan adı sistemi (DNS - domain name system)** yardımıyla yapıldığını göreceğiz. 
+
+Bir uygulama katmanı protokolü, birden fazla uç sisteme yayılmıştır. Bir uç sistemdeki uygulama, protokolü kullanarak diğer uç sistemdeki uygulama ile bilgi paketleri alışverişinde bulunur. Uygulama katmanındaki bu bilgi paketine **mesaj (message)** diyeceğiz.
