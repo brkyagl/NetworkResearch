@@ -755,3 +755,36 @@ Bu basitleştirme, modülerlik sağlayarak ve katmanın sağladığı hizmetin u
 Katman üstündeki katmana aynı hizmeti sağladığı ve altındaki katmandan aynı hizmetleri kullandığı sürece, bir katmanın uygulaması değiştirildiğinde sistemin geri kalanı değişmeden kalır. (Unutmayın ki, bir hizmetin uygulamasını değiştirmek, hizmetin kendisini değiştirmekten çok farklıdır!) 
 Örneğin, kapı işlevleri değiştirilirse (örneğin, insanların boylarına göre uçağa binmesi ve inmesi sağlanırsa), havayolu sisteminin geri kalanı değişmeden kalacaktır çünkü kapı katmanı hala aynı işlevi (insanları yükleme ve indirme) sağlamaktadır; sadece bu işlevi değişiklikten sonra farklı bir şekilde uygulamaktadır. Sürekli güncellenen büyük ve karmaşık sistemler için, bir hizmetin uygulamasını sistemin diğer bileşenlerini etkilemeden değiştirebilme yeteneği, katmanlamanın bir diğer önemli avantajıdır.
 
+#### Protokol Katmanlaması (Protocol Layering)
+
+Havayolları konusunu bir kenara bırakalım ve şimdi ağ protokollerine odaklanalım. 
+Ağ protokollerinin tasarımına bir yapı kazandırmak için, ağ tasarımcıları protokolleri—ve bu protokolleri uygulayan ağ donanımını ve yazılımını—katmanlar halinde düzenlerler. Tıpkı havayolu mimarisindeki her işlevin bir katmana ait olması gibi, her protokol de katmanlardan birine aittir.
+Yine, bir katmanın üstündeki katmana sunduğu hizmetlerle—bir katmanın sözde **hizmet modeli (service model)**—ilgileniyoruz. 
+Havayolu örneğimizde olduğu gibi, her katman hizmetini şu şekilde sağlar: (1) o katman içinde belirli eylemleri gerçekleştirerek ve (2) doğrudan altındaki katmanın hizmetlerini kullanarak.
+
+Örneğin, katman n tarafından sağlanan hizmetler, mesajların ağın bir ucundan diğer ucuna güvenilir bir şekilde teslim edilmesini içerebilir. 
+Bu, katman n - 1'in güvenilir olmayan uçtan uca mesaj teslim hizmeti kullanılarak ve kaybolan mesajları tespit edip yeniden iletmek için katman n işlevselliği eklenerek gerçekleştirilebilir.
+
+Bir protokol katmanı **yazılımda (software)**, **donanımda (hardware)** veya ikisinin birleşimiyle uygulanabilir. 
+**Uygulama katmanı protokolleri (application-layer protocols)**—örneğin HTTP ve SMTP—neredeyse her zaman uç sistemlerde yazılımda uygulanır. Aynı şekilde **taşıma katmanı protokolleri (transport-layer protocols)** de.
+
+**Fiziksel katman (physical layer)** ve **veri bağlantı katmanı (data link layer)** belirli bir bağlantı üzerinden iletişimi yönetmekle sorumludur. 
+Bu nedenle, genellikle belirli bir bağlantıyla ilişkili bir **ağ arabirim kartında (network interface card)** (örneğin, Ethernet veya WiFi arabirim kartları) uygulanırlar. **Ağ katmanı (network layer)** ise sıklıkla donanım ve yazılımın birlikte kullanıldığı bir uygulamadır.
+
+Ayrıca, tıpkı katmanlı havayolu sistemindeki farklı görevlerin (biletleme, bagaj kontrolü, uçuş kontrolü vb.) sistemi oluşturan çeşitli yerlere (havaalanları, kontrol merkezleri gibi) dağıtılması gibi, bir katman n protokolü de ağı oluşturan farklı cihazlara ve sistemlere yayılmıştır.
+
+Yani, genellikle bir katman n protokolünün bir parçası, ağdaki uç sistemlerde (bilgisayarlar, telefonlar gibi), paket anahtarlarında (yönlendiriciler, anahtarlar gibi) ve diğer ağ bileşenlerinde bulunur. Örneğin, internet protokolünün (IP) bir kısmı bilgisayarlarımızda çalışırken, bir kısmı da internet trafiğini yönlendiren yönlendiricilerde aktif olarak görev yapar.
+
+**Protokol katmanlaması (Protocol layering)**, sistemleri anlamak ve yönetmek için bize kavramsal ve yapısal kolaylıklar sağlar [RFC 3439]. 
+Gördüğümüz gibi, katmanlama sayesinde karmaşık bir sistemi farklı parçalar halinde inceleyebiliriz. 
+**Modülerlik (Modularity)** özelliği sayesinde, sistemin bir bölümünü değiştirmek veya güncellemek gerektiğinde diğer bölümlerden bağımsız hareket edebiliriz. 
+Bu da sistemin genelini etkilemeden iyileştirmeler yapmayı kolaylaştırır.
+
+Ancak, bazı araştırmacılar ve ağ uzmanları katmanlama fikrine tamamen katılmamaktadır [Wakeman 1992]. 
+Katmanlamanın olası bir dezavantajı, bir katmanın alt katmanların yaptığı işi tekrar edebilmesidir. 
+Örneğin, birçok protokol yığını hem bağlantı düzeyinde (örneğin, bir kablo üzerindeki hataları düzeltme) hem de uçtan uca düzeyde (kaynaktan hedefe veri teslimini sağlama) hata kurtarma mekanizmalarına sahip olabilir. Bu da gereksiz bir karmaşıklığa yol açabilir.
+
+İkinci bir potansiyel dezavantaj ise, bir katmandaki bir işlevin çalışması için başka bir katmanda bulunan bilgilere (örneğin, bir zaman damgası değeri) ihtiyaç duyabilmesidir. Bu durum, katmanların birbirinden bağımsız olma prensibine aykırıdır ve bazen verimsizliğe neden olabilir.
+
+Farklı katmanlardaki protokollerin tümüne birlikte **protokol yığını (protocol stack)** adı verilir. 
+**İnternet protokol yığını (Internet protocol stack)**, beş temel katmandan oluşur: **fiziksel (physical)**, **bağlantı (link)**, **ağ (network)**, **taşıma (transport)** ve **uygulama (application)** katmanları.
