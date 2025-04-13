@@ -830,3 +830,8 @@ Bağlantı katmanı protokollerine örnek olarak Ethernet, WiFi ve kablo erişim
 Datagramların kaynaktan hedefe gitmek için tipik olarak birkaç bağlantıdan geçmesi gerektiğinden, bir datagram rotası boyunca farklı bağlantılarda farklı bağlantı katmanı protokolleri tarafından işlenebilir. Örneğin, bir datagram bir bağlantıda Ethernet tarafından, bir sonraki bağlantıda ise PPP(Noktadan Noktaya İletişim Protokolü) tarafından işlenebilir. Ağ katmanı, farklı bağlantı katmanı protokollerinden farklı hizmetler alacaktır. 
 (bağlantı katmanı paketlerine **frame (çerçeve)** diyeceğiz.)
 
+#### Fiziksel Katman (Physical Layer)
+
+Bağlantı katmanının görevi tüm framleri bir ağ elemanından bitişik bir ağ elemanına taşımak iken, fiziksel katmanın görevi frame içindeki tek tek bitleri bir düğümden diğerine taşımaktır. Bu katmandaki protokoller de bağlantıya bağımlıdır ve ayrıca bağlantının gerçek **iletim ortamına (transmission medium)** (örneğin, bükümlü çift bakır tel, tek modlu fiber optik) bağlıdır.
+
+Örneğin, Ethernet'in birçok **fiziksel katman protokolü (physical-layer protocols)** vardır: bükümlü çift bakır tel için bir tane, koaksiyel kablo için başka bir tane, fiber için bir tane ve benzeri. Her durumda, bir bit bağlantı üzerinden farklı bir şekilde taşınır.
