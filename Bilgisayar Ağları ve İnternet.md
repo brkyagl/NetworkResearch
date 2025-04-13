@@ -797,3 +797,36 @@ Uygulama katmanı, ağ uygulamalarının ve onların protokollerinin bulunduğu 
 Ayrıca, github.com gibi internet uç sistemleri için insan dostu isimlerin 32 bitlik ağ adresine çevrilmesi gibi bazı ağ işlevlerinin de belirli bir uygulama katmanı protokolü olan **alan adı sistemi (DNS - domain name system)** yardımıyla yapıldığını göreceğiz. 
 
 Bir uygulama katmanı protokolü, birden fazla uç sisteme yayılmıştır. Bir uç sistemdeki uygulama, protokolü kullanarak diğer uç sistemdeki uygulama ile bilgi paketleri alışverişinde bulunur. Uygulama katmanındaki bu bilgi paketine **mesaj (message)** diyeceğiz.
+
+#### Taşıma Katmanı (Transport Layer)
+
+İnternetin taşıma katmanı, uygulama katmanı mesajlarını uygulama uç noktaları arasında taşır. 
+İnternette, uygulama katmanı mesajlarını taşıyabilen iki taşıma protokolü bulunur: TCP ve UDP.
+
+TCP, uygulamalarına bağlantı odaklı bir hizmet sunar. Bu hizmet, uygulama katmanı mesajlarının hedefe garantili olarak teslim edilmesini ve akış kontrolünü (yani, gönderici/alıcı hız eşleşmesi) içerir. TCP ayrıca uzun mesajları daha kısa parçalara (segmentlere) böler ve ağ sıkışık olduğunda kaynağın iletim hızını yavaşlatmasını sağlayan bir tıkanıklık kontrol mekanizması sunar.
+
+UDP protokolü ise uygulamalarına bağlantısız bir hizmet sunar. Bu, güvenilirlik, akış kontrolü ve tıkanıklık kontrolü sağlamayan, temel bir hizmettir.
+(bir taşıma katmanı paketine **segment** diyeceğiz.)
+
+#### Ağ Katmanı (Network Layer)
+
+İnternetin ağ katmanı, **datagram (datagram)** olarak bilinen ağ katmanı paketlerini bir ana bilgisayardan diğerine taşımaktan sorumludur. 
+Kaynak ana bilgisayardaki İnternet taşıma katmanı protokolü (TCP veya UDP), bir taşıma katmanı segmentini ve bir hedef adresi ağ katmanına iletir; tıpkı sizin posta servisine bir hedef adres içeren bir mektup vermeniz gibi. Ağ katmanı daha sonra segmenti hedef ana bilgisayardaki taşıma katmanına teslim etme hizmetini sağlar.
+
+İnternetin ağ katmanı, datagramdaki alanları ve uç sistemlerin ve yönlendiricilerin bu alanlar üzerinde nasıl hareket ettiğini tanımlayan ünlü **IP protokolünü (IP protocol)** içerir. Yalnızca bir IP protokolü vardır ve bir ağ katmanına sahip tüm İnternet bileşenleri IP protokolünü çalıştırmalıdır.
+
+İnternetin ağ katmanı ayrıca datagramların kaynaklar ve hedefler arasında izleyeceği yolları belirleyen **yönlendirme protokollerini (routing protocols)** içerir. İnternet'te birçok yönlendirme protokolü bulunur. Daha önce gördüğümüz gibi, İnternet bir ağlar ağıdır ve bir ağ içinde, ağ yöneticisi istediği herhangi bir yönlendirme protokolünü çalıştırabilir. Ağ katmanı hem IP protokolünü hem de çok sayıda yönlendirme protokolünü içerse de, genellikle basitçe **IP katmanı (IP layer)** olarak adlandırılır ve bu da IP'nin İnternet'i birbirine bağlayan temel unsur olduğunu yansıtır.
+
+#### Bağlantı Katmanı (Link Layer)
+
+İnternetin ağ katmanı, bir datagramı kaynak ile hedef arasındaki bir dizi yönlendirici üzerinden yönlendirir. 
+Bir paketi rotadaki bir düğümden (ana bilgisayar veya yönlendirici) bir sonraki düğüme taşımak için, ağ katmanı, bağlantı katmanının hizmetlerine güvenir. Özellikle, her düğümde ağ katmanı datagramı bağlantı katmanına indirir ve bağlantı katmanı datagramı rota üzerindeki bir sonraki düğüme teslim eder. Bu sonraki düğümde, bağlantı katmanı datagramı ağ katmanına geri yukarı iletir.
+
+Bağlantı katmanı tarafından sağlanan hizmetler, bağlantı üzerinde kullanılan belirli **bağlantı katmanı protokolüne (link-layer protocol)** bağlıdır. 
+Örneğin, bazı bağlantı katmanı protokolleri, bir bağlantı üzerinden, gönderen düğümden alıcı düğüme güvenilir teslimat sağlar. 
+Bu güvenilir teslimat hizmetinin, bir uç sistemden diğerine güvenilir teslimat sağlayan TCP'nin güvenilir teslimat hizmetinden farklı olduğuna dikkat edin.
+
+Bağlantı katmanı protokollerine örnek olarak Ethernet, WiFi ve kablo erişim ağının DOCSIS protokolü verilebilir. 
+Datagramların kaynaktan hedefe gitmek için tipik olarak birkaç bağlantıdan geçmesi gerektiğinden, bir datagram rotası boyunca farklı bağlantılarda farklı bağlantı katmanı protokolleri tarafından işlenebilir. Örneğin, bir datagram bir bağlantıda Ethernet tarafından, bir sonraki bağlantıda ise PPP(Noktadan Noktaya İletişim Protokolü) tarafından işlenebilir. Ağ katmanı, farklı bağlantı katmanı protokollerinden farklı hizmetler alacaktır. 
+(bağlantı katmanı paketlerine **frame (çerçeve)** diyeceğiz.)
+
