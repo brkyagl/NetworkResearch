@@ -728,3 +728,9 @@ Bu 10 indirmenin şu anda ağdaki tek trafik olduğunu varsayalım. Çekirdektek
 Bu bağlantının iletim hızını R ile gösterelim. Tüm sunucu erişim bağlantılarının aynı R<sub>s</sub> hızına, tüm istemci erişim bağlantılarının aynı R<sub>c</sub> hızına ve R hızındaki ortak bağlantı dışındaki çekirdekteki tüm bağlantıların iletim hızlarının R<sub>s</sub>, R<sub>c</sub> ve R'den çok daha büyük olduğunu varsayalım. Şimdi soruyoruz, indirmelerin verimleri nelerdir? Açıkçası, ortak bağlantının hızı R büyükse—diyelim ki hem R<sub>s</sub> hem de R<sub>c</sub>'den yüz kat daha büyükse—o zaman her indirme için verim yine min{R<sub>s</sub>, R<sub>c</sub>} olacaktır. 
 Peki ya ortak bağlantının hızı R<sub>s</sub> ve R<sub>c</sub> ile aynı mertebedeyse? Bu durumda verim ne olacaktır? Belirli bir örneğe bakalım. 
 R<sub>s</sub> = 2 Mbps, R<sub>c</sub> = 1 Mbps, R = 5 Mbps ve ortak bağlantının iletim hızını 10 indirme arasında eşit olarak paylaştırdığını varsayalım. O zaman her indirme için darboğaz artık erişim ağında değil, bunun yerine her indirmeye yalnızca 500 kbps verim sağlayan çekirdekteki paylaşılan bağlantıdır. Böylece, her indirme için uçtan uca verim şimdi 500 kbps'ye düşürülmüştür.
+
+#### Protokol Katmanları ve Hizmet Modelleri
+
+Şimdiye kadarki tartışmamızdan, internetin son derece karmaşık bir sistem olduğu açıkça görülmektedir. 
+İnternetin birçok parçası olduğunu gördük: sayısız **application** ve **protocol**, çeşitli türde **end system**, **packet switch** ve çeşitli türde **link-level media**. Bu muazzam karmaşıklık göz önüne alındığında, bir ağ mimarisini veya en azından ağ mimarisi hakkındaki tartışmamızı organize etmek için herhangi bir umut var mı? Neyse ki, her iki sorunun cevabı da evettir.
+
