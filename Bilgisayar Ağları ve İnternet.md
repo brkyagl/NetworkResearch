@@ -879,3 +879,19 @@ Bir kez malware cihazımıza bulaştığında, dosyalarımızı silmek ve sosyal
 
 Günümüzdeki malware'in çoğu **self-replicating (kendini kopyalayan)** türdedir: bir bilgisayara bulaştıktan sonra, o bilgisayardan internet üzerinden diğer bilgisayarlara girmeye çalışır ve yeni bulaştığı bilgisayarlardan da daha fazla bilgisayara girmeye çalışır. Bu şekilde, kendini kopyalayan malware çok hızlı bir şekilde yayılabilir.
 
+#### Kötü Niyetli Kişiler Sunuculara ve Ağ Altyapısına Saldırabilir
+
+Bir diğer geniş güvenlik tehdidi sınıfı da **denial-of-service (DoS)** saldırıları olarak bilinir. 
+Adından da anlaşılacağı gibi, bir DoS saldırısı bir ağı, ana bilgisayarı veya başka bir altyapı parçasını yasal kullanıcılar için kullanılamaz hale getirir. 
+Web sunucuları, e-posta sunucuları, DNS sunucuları ve kurumsal ağlar DoS saldırılarına maruz kalabilir. Digital Attack Map sitesi, dünya çapındaki en büyük günlük DoS saldırılarını görselleştirmemize olanak tanır [DAM 2020]. 
+
+Çoğu internet DoS saldırısı üç kategoriden birine girer:
+
+* **Vulnerability attack (Zafiyet saldırısı).** Bu, hedefteki bir ana bilgisayarda çalışan savunmasız bir uygulamaya veya işletim sistemine birkaç iyi hazırlanmış mesaj göndermeyi içerir. Savunmasız bir uygulamaya veya işletim sistemine doğru paket sırası gönderilirse, hizmet durabilir veya daha kötüsü, ana bilgisayar çökebilir.
+  
+* **Bandwidth flooding (Bant genişliği sel baskını).** Saldırgan, hedeflenen ana bilgisayara çok sayıda paket gönderir—o kadar çok paket gönderir ki, hedefin erişim bağlantısı tıkanır ve yasal paketlerin sunucuya ulaşması engellenir.
+  
+* **Connection flooding (Bağlantı sel baskını).** Saldırgan, hedefteki ana bilgisayarda çok sayıda yarı açık veya tam açık TCP bağlantısı kurar. Ana bilgisayar bu sahte bağlantılarla o kadar dolabilir ki, yasal bağlantıları kabul etmeyi durdurur.
+
+Şimdi bant genişliği sel baskını saldırısını daha ayrıntılı olarak inceleyelim. Gecikme ve kayıp analizi tartışmamızı hatırlarsak, sunucunun R bps'lik bir erişim hızına sahip olması durumunda, saldırganın zarar vermek için yaklaşık R bps hızında trafik göndermesi gerektiği açıktır. R çok büyükse, tek bir saldırı kaynağı sunucuya zarar verecek kadar trafik üretemeyebilir. Ayrıca, tüm trafik tek bir kaynaktan geliyorsa, yukarı akıştaki bir yönlendirici saldırıyı tespit edebilir ve trafik sunucuya yaklaşmadan önce o kaynaktan gelen tüm trafiği engelleyebilir. **distributed DoS (DDoS) saldırısında (dağıtılmış hizmet engelleme saldırısı)**, saldırgan birden fazla kaynağı kontrol eder ve her kaynağın hedefi trafikle bombardıman etmesini sağlar. Bu yaklaşımla, hizmeti felç etmek için kontrol edilen tüm kaynaklardaki toplam trafik hızının yaklaşık olarak R olması gerekir. Binlerce ele geçirilmiş ana bilgisayara sahip botnet'leri kullanan DDoS saldırıları günümüzde yaygın bir olaydır [DAM 2020]. DDoS saldırılarını tek bir ana bilgisayardan gelen bir DoS saldırısına kıyasla tespit etmek ve savunmak çok daha zordur.
+
