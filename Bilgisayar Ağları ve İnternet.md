@@ -860,3 +860,14 @@ Posta odası ayrıca bu dış zarfa gönderen ve alıcı şubelerin adreslerini 
 
 Kapsülleme süreci bazen daha karmaşık olabilir. Örneğin, büyük bir mesaj birden fazla taşıma katmanı segmentine bölünebilir (ve bu segmentler de ağ katmanında daha küçük parçalara ayrılabilir). Alıcı tarafta ise bu segmentlerin ve parçaların tekrar birleştirilmesi gerekir.
 
+#### Saldırı Altındaki Ağlar (Networks Under Attack)
+
+Günümüzde internet, büyük ve küçük şirketler, üniversiteler ve devlet kurumları dahil olmak üzere birçok kuruluş için hayati önem taşımaktadır. 
+Birçok birey de profesyonel, sosyal ve kişisel faaliyetlerinin çoğu için internete güvenmektedir. 
+Şu anda giysilerden ev aletlerine kadar milyarlarca "nesne" internete bağlı durumdadır. 
+Ancak tüm bu fayda ve heyecanın arkasında karanlık bir taraf da var. Bu tarafta "kötü niyetli kişiler hEkıRRR ABİLER", internete bağlı bilgisayarlarımıza zarar vererek, gizliliğimizi ihlal ederek ve güvendiğimiz internet servislerini kullanılamaz hale getirerek günlük hayatımızda kaos yaratmaya çalışmaktadır.
+
+**Ağ güvenliği (network security)** alanı, kötü niyetli kişilerin bilgisayar ağlarına nasıl saldırabileceği ve bilgisayar ağları konusunda uzmanlaşacak olan bizlerin bu saldırılara karşı ağları nasıl savunabileceği, hatta daha iyisi, bu tür saldırılara karşı en baştan bağışık yeni yapılar nasıl tasarlayabileceğimiz hakkındadır. Mevcut saldırıların sıklığı ve çeşitliliği ile gelecekteki yeni ve daha yıkıcı saldırıların tehdidi göz önüne alındığında, ağ güvenliği bilgisayar ağları alanında merkezi bir konu haline gelmiştir.
+
+Henüz bilgisayar ağları ve internet protokolleri konusunda uzmanlığımız olmadığı için, burada günümüzün daha yaygın güvenlik sorunlarından bazılarını inceleyerek başlayacağız. Bu, sonraki bölümlerdeki daha kapsamlı tartışmalar için iştahımızı kabartacaktır. Bu nedenle, burada basitçe şu soruları sorarak başlıyoruz: Ne gibi sorunlar ortaya çıkabilir? Bilgisayar ağları nasıl savunmasızdır? Günümüzde en yaygın saldırı türlerinden bazıları nelerdir?
+
