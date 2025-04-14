@@ -871,3 +871,11 @@ Ancak tüm bu fayda ve heyecanın arkasında karanlık bir taraf da var. Bu tara
 
 Henüz bilgisayar ağları ve internet protokolleri konusunda uzmanlığımız olmadığı için, burada günümüzün daha yaygın güvenlik sorunlarından bazılarını inceleyerek başlayacağız. Bu, sonraki bölümlerdeki daha kapsamlı tartışmalar için iştahımızı kabartacaktır. Bu nedenle, burada basitçe şu soruları sorarak başlıyoruz: Ne gibi sorunlar ortaya çıkabilir? Bilgisayar ağları nasıl savunmasızdır? Günümüzde en yaygın saldırı türlerinden bazıları nelerdir?
 
+#### Kötü Niyetli Kişiler İnternet Üzerinden Bilgisayarınıza Zararlı Yazılım Bulaştırabilir
+
+Cihazlarımızı internete bağlıyoruz çünkü internetten veri almak/göndermek istiyoruz. Buna Instagram gönderileri, internet arama sonuçları, müzik dinleme, video konferans görüşmeleri, film izleme ve benzeri her türlü güzel şey dahil. Ancak ne yazık ki, tüm bu güzel şeylerle birlikte, cihazlarımıza girip bulaşabilen zararlı şeyler de geliyor—bunlara topluca **malware (zararlı yazılım)** diyoruz.
+
+Bir kez malware cihazımıza bulaştığında, dosyalarımızı silmek ve sosyal güvenlik numaralarımız, şifrelerimiz ve tuş vuruşlarımız gibi özel bilgilerimizi toplayan ve sonra bunları (elbette internet üzerinden!) kötü niyetli kişilere geri gönderen **spyware (casus yazılım)** yüklemek de dahil olmak üzere her türlü kötü şeyi yapabilir. Ele geçirilmiş bilgisayarımız ayrıca binlerce benzer şekilde ele geçirilmiş cihazdan oluşan ve topluca **botnet** olarak bilinen bir ağa dahil edilebilir. Kötü niyetli kişiler bu botnet'leri kontrol eder ve hedefteki bilgisayarlara karşı spam e-posta dağıtımı veya **distributed denial-of-service (DDoS) saldırıları** (yakında tartışılacak) için kullanır.
+
+Günümüzdeki malware'in çoğu **self-replicating (kendini kopyalayan)** türdedir: bir bilgisayara bulaştıktan sonra, o bilgisayardan internet üzerinden diğer bilgisayarlara girmeye çalışır ve yeni bulaştığı bilgisayarlardan da daha fazla bilgisayara girmeye çalışır. Bu şekilde, kendini kopyalayan malware çok hızlı bir şekilde yayılabilir.
+
