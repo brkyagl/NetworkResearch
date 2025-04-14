@@ -836,3 +836,27 @@ Bağlantı katmanının görevi tüm framleri bir ağ elemanından bitişik bir 
 
 Örneğin, Ethernet'in birçok **fiziksel katman protokolü (physical-layer protocols)** vardır: bükümlü çift bakır tel için bir tane, koaksiyel kablo için başka bir tane, fiber için bir tane ve benzeri. Her durumda, bir bit bağlantı üzerinden farklı bir şekilde taşınır.
 
+#### Kapsülleme (Encapsulation)
+
+Veri, gönderenin bilgisayarındaki protokol katmanlarından aşağıya doğru iner. Eğer yolda bir bağlantı katmanı anahtarı (switch) veya bir yönlendirici (router) varsa, bu cihazların da kendi protokol katmanlarından geçer. Sonunda veri, alıcının bilgisayarındaki protokol katmanlarından yukarıya doğru çıkarak hedef uygulamaya ulaşır. Unutmayın ki, yönlendiriciler ve bağlantı katmanı anahtarları da birer paket anahtarıdır.
+
+Tıpkı normal bilgisayarlar gibi, yönlendiriciler ve bağlantı katmanı anahtarları da kendi ağ donanımlarını ve yazılımlarını katmanlar halinde düzenlerler. 
+Ancak bu cihazlar, protokol yığınındaki tüm katmanları kullanmazlar. Genellikle sadece en alt katmanları çalıştırırlar. Örneğin, bağlantı katmanı anahtarları sadece ilk iki katmanı (Fiziksel ve Bağlantı Katmanı) kullanır. Yönlendiriciler ise ilk üç katmanı (Fiziksel, Bağlantı ve Ağ Katmanı) kullanır. 
+Bu, internet yönlendiricilerinin IP protokolünü (3. katman protokolü) çalıştırabildiği anlamına gelirken, bağlantı katmanı anahtarlarının bunu yapamadığı anlamına gelir. Bağlantı katmanı anahtarlarının IP adreslerini anlamadığını ama Ethernet adresleri gibi 2. katman adreslerini tanıyabildiğini göreceğiz. 
+Normal bilgisayarlar (ana bilgisayarlar) ise beş katmanın tamamını kullanır. Bu durum, internet yapısının karmaşıklığının daha çok ağın uç noktalarında (yani kullanıcıların bilgisayarlarında ve sunucularda) yoğunlaştığı fikriyle uyumludur.
+
+Veriyi göndermek isteyen bir bilgisayarda, uygulama katmanındaki bir program (örneğin web tarayıcısı) bir mesaj oluşturur. 
+Bu mesaj, taşıma katmanına gönderilir. Taşıma katmanı, bu mesaja alıcı taraftaki taşıma katmanı tarafından kullanılacak bazı ek bilgiler ekler. 
+İşte bu eklenen bilgi ve orijinal uygulama mesajı bir araya gelerek **taşıma katmanı segmentini** oluşturur. 
+Yani taşıma katmanı, uygulama mesajını "kapsülemiş" olur. Bu ek bilgiler sayesinde alıcı taraftaki doğru uygulama mesajı alabilir ve mesajın yolda herhangi bir değişikliğe uğrayıp uğramadığını kontrol edebilir.
+
+Daha sonra taşıma katmanı bu segmenti ağ katmanına gönderir. Ağ katmanı, gönderenin ve alıcının IP adresleri gibi bilgileri içeren kendi başlığını ekleyerek bir **ağ katmanı datagramı** oluşturur. Bu datagram da bir sonraki adımda bağlantı katmanına gönderilir. Bağlantı katmanı da (tabii ki!) kendi başlık bilgilerini ekleyerek bir **bağlantı katmanı çerçevesi (frame)** oluşturur. Gördüğümüz gibi, her katmanda bir paketin iki ana bölümü vardır: başlık (header) ve yük (payload). Yük genellikle bir üst katmandan gelen paketin kendisidir.
+
+Bu durumu anlamak için şöyle bir benzetme yapabiliriz: Bir şirketin bir şubesinden diğerine posta yoluyla bir not göndermek istediğinizi düşünün. 
+Not, uygulama katmanı mesajına benzer. Ayşe, notu Burak'ın adının ve departmanının yazdığı bir iç zarfa koyar. 
+Bu iç zarf, taşıma katmanı segmentine benzer—alıcının bilgileri (başlık) içerir ve notu (yük) kapsüller. 
+Gönderen şubenin posta odası bu iç zarfı aldığında, onu normal postayla göndermeye uygun başka bir zarfın içine koyar. 
+Posta odası ayrıca bu dış zarfa gönderen ve alıcı şubelerin adreslerini yazar. İşte bu dış zarf, datagrama benzer—taşıma katmanı segmentini (iç zarfı), o da orijinal notu (yük) kapsüller. Posta servisi bu dış zarfı alıcı şubenin posta odasına teslim eder. Orada, kapsül çıkarma (de-encapsulation) işlemi başlar. Posta odası iç zarfı çıkarır ve Burak'a iletir. Son olarak Burak da zarfı açar ve notu okur.
+
+Kapsülleme süreci bazen daha karmaşık olabilir. Örneğin, büyük bir mesaj birden fazla taşıma katmanı segmentine bölünebilir (ve bu segmentler de ağ katmanında daha küçük parçalara ayrılabilir). Alıcı tarafta ise bu segmentlerin ve parçaların tekrar birleştirilmesi gerekir.
+
