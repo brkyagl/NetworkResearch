@@ -974,3 +974,56 @@ Fransız hükümetinin isteyen her Fransız hanesine ücretsiz bir Minitel termi
 Minitel siteleri, bir telefon rehberi sitesi gibi ücretsiz sitelerin yanı sıra, her kullanıcıdan kullanıma dayalı bir ücret alan özel siteleri de içeriyordu. 1990'ların ortalarında zirveye ulaştığında, ev bankacılığından özel araştırma veri tabanlarına kadar 20.000'den fazla hizmet sunuyordu. 
 Minitel, çoğu Amerikalı interneti duymadan 10 yıl önce Fransız evlerinin büyük bir bölümünde bulunuyordu.
 
+#### İnternet Patlaması: 1990'lar
+
+1990'lar, internetin devam eden evrimini ve yakında gerçekleşecek olan ticarileşmesini simgeleyen bir dizi olayla başladı. 
+İnternetin atası olan ARPAnet artık var olmamaya başladı. 1991'de NSFNET, NSFNET'in ticari amaçlarla kullanımına ilişkin kısıtlamalarını kaldırdı. 
+NSFNET'in kendisi de 1995'te hizmet dışı bırakılacak ve internet omurga trafiği ticari **Internet Service Providers (İnternet Servis Sağlayıcıları)** tarafından taşınacaktı.
+
+1990'ların ana olayı, **World Wide Web (Dünya Çapında Ağ)** uygulamasının ortaya çıkışı oldu. 
+Bu, interneti dünya çapında milyonlarca insanın evine ve iş yerine taşıdı. Web, bugün kanıksadığımız arama motorları (örneğin Google ve Bing), internet ticareti (örneğin Amazon ve eBay) ve sosyal ağlar (örneğin Facebook) dahil olmak üzere yüzlerce yeni uygulamanın etkinleştirilmesi ve kullanıma sunulması için bir platform görevi gördü.
+
+Web, 1989 ile 1991 yılları arasında CERN'de Tim Berners-Lee tarafından [Berners-Lee 1989], Vannevar Bush'un 1940'lardaki [Bush 1945] ve Ted Nelson'ın 1960'lardan beri [Xanadu 2012] hipermetin üzerine yaptığı önceki çalışmalardan kaynaklanan fikirlere dayanarak icat edildi. 
+Berners-Lee ve ortakları, Web'in dört temel bileşeni olan HTML, HTTP, bir Web sunucusu ve bir tarayıcının ilk sürümlerini geliştirdiler. 
+1993'ün sonlarına doğru yaklaşık iki yüz Web sunucusu faaliyetteydi ve bu sunucu koleksiyonu, gelmekte olan şeyin sadece bir habercisiydi. 
+Bu sıralarda Marc Andreessen de dahil olmak üzere birçok araştırmacı GUI arayüzlerine sahip Web tarayıcıları geliştiriyordu. 
+Andreessen, Jim Clark ile birlikte daha sonra Netscape Communications Corporation [Cusumano 1998; Quittner 1998] haline gelen Mosaic Communications'ı kurdu. 1995'e gelindiğinde, üniversite öğrencileri günlük olarak Web'de gezinmek için Netscape tarayıcılarını kullanıyorlardı. Aynı sıralarda büyük ve küçük şirketler Web sunucuları işletmeye ve Web üzerinden ticaret yapmaya başladılar. 1996'da Microsoft tarayıcı yapmaya başladı ve bu da birkaç yıl sonra Microsoft'un kazandığı Netscape ve Microsoft arasındaki tarayıcı savaşını başlattı [Cusumano 1998].
+
+1990'ların ikinci yarısı, büyük şirketlerin ve binlerce **startup (girişim)**'ın internet ürünleri ve hizmetleri yarattığı, internet için muazzam bir büyüme ve inovasyon dönemiydi. Milenyumun sonunda internet, dört temel uygulama da dahil olmak üzere yüzlerce popüler uygulamayı destekliyordu:
+
+* E-posta, ekler ve Web erişimli e-posta dahil
+* Web, Web'de gezinme ve internet ticareti dahil
+* İletişim listeleriyle anlık mesajlaşma
+* Napster tarafından öncülük edilen MP3'lerin eşler arası dosya paylaşımı
+
+İlginç bir şekilde, ilk iki temel uygulama araştırma topluluğundan gelirken, son iki uygulama birkaç genç girişimci tarafından yaratıldı.
+
+1995'ten 2001'e kadar olan dönem, finansal piyasalarda internet için inişli çıkışlı bir yolculuktu. 
+Henüz karlı bile olmadan, yüzlerce internet girişimi halka arz edildi ve borsada işlem görmeye başladı. 
+Birçok şirket, önemli bir gelir akışına sahip olmadan milyarlarca dolar değerinde değerlendirildi. İnternet hisseleri 2000-2001'de çöktü ve birçok startup kapandı. Yine de, Microsoft, Cisco, Yahoo, eBay, Google ve Amazon dahil olmak üzere bir dizi şirket internet alanında büyük kazananlar olarak ortaya çıktı.
+
+#### Yeni Milenyum
+
+21. yüzyılın ilk yirmi yılında, belki de internet ve internete bağlı akıllı telefonlar kadar toplumu dönüştüren başka bir teknoloji olmamıştır.
+Bilgisayar ağlarındaki yenilikler de hızla devam etmektedir. Hem erişim ağlarında hem de ağ omurgalarında daha hızlı yönlendiricilerin ve daha yüksek iletim hızlarının kullanıma sunulması da dahil olmak üzere her alanda ilerleme kaydedilmektedir. Ancak aşağıdaki gelişmeler özellikle dikkat çekmektedir:
+
+* Milenyumun başından beri, evlere yönelik geniş bant internet erişiminin agresif bir şekilde yaygınlaştığını görüyoruz—sadece kablolu modemler ve DSL değil, aynı zamanda eve kadar fiber ve şimdi de 5G sabit kablosuz. Bu yüksek hızlı internet erişimi, kullanıcı tarafından oluşturulan videoların (örneğin YouTube), isteğe bağlı film ve televizyon programları akışının (örneğin Netflix) ve çok kişili video konferansların (örneğin Skype, Facetime ve Google Hangouts) dağıtımı da dahil olmak üzere zengin video uygulamaları için zemin hazırladı.
+  
+* Yüksek hızlı kablosuz internet erişiminin artan yaygınlığı, sadece hareket halindeyken sürekli bağlantıda kalmayı mümkün kılmakla kalmıyor, aynı zamanda Yelp, Tinder ve Waze gibi yeni konuma özel uygulamaları da mümkün kılıyor. İnternete bağlanan kablosuz cihaz sayısı, 2011 yılında kablolu cihaz sayısını aştı.
+Bu yüksek hızlı kablosuz erişim, internete sürekli ve kablosuz erişimin keyfini çıkaran el bilgisayarlarının (iPhone'lar, Android'ler, iPad'ler vb.) hızla ortaya çıkması için zemin hazırladı.
+  
+* Facebook, Instagram, Twitter ve Çin'de çok popüler olan WeChat gibi çevrimiçi sosyal ağlar, internetin üzerinde devasa insan ağları yarattı.
+Bu sosyal ağların birçoğu mesajlaşmanın yanı sıra fotoğraf paylaşımı için de yaygın olarak kullanılmaktadır. Günümüzde birçok internet kullanıcısı öncelikle bir veya daha fazla sosyal ağ içinde "yaşamaktadır". Çevrimiçi sosyal ağlar, API'leri aracılığıyla mobil ödemeler ve dağıtılmış oyunlar dahil olmak üzere yeni ağ bağlantılı uygulamalar için platformlar oluşturmaktadır.
+  
+* Google ve Microsoft gibi çevrimiçi hizmet sağlayıcıları, yalnızca küresel olarak dağıtılmış veri merkezlerini birbirine bağlamakla kalmayıp, aynı zamanda alt kademe İSS'lerle doğrudan eşleşerek interneti mümkün olduğunca baypas etmek için kendi kapsamlı özel ağlarını kurdular.
+Sonuç olarak, Google, arama sonuçlarını ve e-posta erişimini neredeyse anında, sanki veri merkezleri kullanıcının kendi bilgisayarında çalışıyormuş gibi sağlamaktadır.
+
+* Birçok internet ticaret şirketi artık uygulamalarını "bulut"ta—örneğin Amazon'un EC2'sinde, Microsoft'un Azure'unda veya Alibaba Cloud'da—çalıştırıyor. Birçok şirket ve üniversite de internet uygulamalarını (örneğin e-posta ve web barındırma) buluta taşıdı. Bulut şirketleri, yalnızca ölçeklenebilir bilgi işlem ve depolama ortamları sağlamakla kalmaz, aynı zamanda uygulamalara yüksek performanslı özel ağlarına örtülü erişim de sağlar.
+
+#### Özet
+
+Bu bölümde gerçekten de çok fazla konu ele aldık! Özellikle interneti ve genel olarak bilgisayar ağlarını oluşturan çeşitli donanım ve yazılımlara baktık. Ağa en dışından, uç sistemlere ve uygulamalara, ve uç sistemlerde çalışan uygulamalara sağlanan taşıma hizmetine bakarak başladık. Ayrıca erişim ağında tipik olarak bulunan bağlantı katmanı teknolojilerini ve fiziksel ortamları inceledik. Ardından ağın içine, ağ çekirdeğine daha derinlemesine daldık ve bir telekomünikasyon ağı üzerinden veri taşımak için kullanılan iki temel yaklaşım olan paket anahtarlama ve devre anahtarlamayı belirledik ve her bir yaklaşımın güçlü ve zayıf yönlerini inceledik. İnternetin küresel yapısını da inceleyerek, internetin bir ağlar ağı olduğunu öğrendik. İnternetin, üst ve alt katman İSS'lerinden oluşan hiyerarşik yapısının, binlerce ağı içerecek şekilde ölçeklenmesine olanak sağladığını gördük.
+
+Bu giriş bölümünün ikinci kısmında, bilgisayar ağları alanının merkezinde yer alan çeşitli konuları inceledik. İlk olarak, paket anahtarlamalı bir ağdaki gecikme, verim ve paket kaybının nedenlerini inceledik. İletim, yayılma ve kuyruk gecikmeleri ile verim için basit nicel modeller geliştirdik; bu yazı boyunca ödev problemlerinde bu gecikme modellerini yoğun bir şekilde kullanacağız. Ardından, bu araştırmalar boyunca tekrar değineceğimiz ağ oluşturmanın temel mimari prensipleri olan protokol katmanlama ve hizmet modellerini inceledik. Ayrıca, günümüz internetindeki daha yaygın güvenlik saldırılarından bazılarına genel bir bakış attık. Bu ilk bölümün kendisi, bilgisayar ağları konusunda mini bir ders niteliğindedir.
+
+Evet, bu ilk bölümde gerçekten de çok fazla yol katettik! Biraz bunalmış hissediyorsanız endişelenmeyin. Sonraki bölümlerde tüm bu fikirlere çok daha ayrıntılı olarak tekrar döneceğiz (bu bir tehdit değil, bir söz!). 
