@@ -952,3 +952,25 @@ TCP'nin ilk sürümleri, uç sistem yeniden iletimi yoluyla verinin güvenilir v
 
 DARPA internetle ilgili araştırmalarına ek olarak, birçok başka önemli ağ etkinliği de devam ediyordu. 
 Hawaii'de Norman Abramson, Hawaii Adaları'ndaki birden fazla uzak noktanın birbirleriyle iletişim kurmasını sağlayan paket tabanlı bir radyo ağı olan ALOHAnet'i geliştiriyordu. ALOHA protokolü [Abramson 1970], coğrafi olarak dağılmış kullanıcıların tek bir yayın iletişim ortamını (bir radyo frekansı) paylaşmasına olanak tanıyan ilk **multiple-access protocol (çoklu erişim protokolü)**'ydü. Metcalfe ve Boggs, kablolu paylaşımlı yayın ağları için **Ethernet protocol (Ethernet protokolü)**'nü [Metcalfe 1976] geliştirirken Abramson'ın çoklu erişim protokolü çalışmalarından yararlandılar. İlginç bir şekilde, Metcalfe ve Boggs'un Ethernet protokolü, birden fazla PC'yi, yazıcıyı ve paylaşılan diskleri bağlama ihtiyacından doğmuştu [Perkins 1994]. Yirmi beş yıl önce, PC devrimi ve ağların patlamasından çok önce, Metcalfe ve Boggs bugünün PC LAN'larının temellerini atıyorlardı o zamandan bu yana 47 yıl geçti.
+
+#### Ağların Çoğalması: 1980–1990
+
+1970'lerin sonuna gelindiğinde, ARPAnet'e yaklaşık iki yüz ana bilgisayar bağlıydı. 
+1980'lerin sonuna gelindiğinde ise, bugünün internetine çok benzeyen bir ağlar birliği olan halka açık internete bağlı ana bilgisayar sayısı yüz bine ulaşacaktı. 1980'ler muazzam bir büyüme dönemi olacaktı.
+
+Bu büyümenin büyük bir kısmı, üniversiteleri birbirine bağlayan bilgisayar ağları oluşturmaya yönelik birkaç farklı çabadan kaynaklandı. 
+BITNET, Kuzeydoğu'daki çeşitli üniversiteler arasında e-posta ve dosya transferleri sağladı. 
+ARPAnet'e erişimi olmayan üniversite araştırmacılarını birbirine bağlamak için CSNET (bilgisayar bilimi ağı) kuruldu. 
+1986'da, NSF sponsorluğundaki süper bilgisayar merkezlerine erişim sağlamak için NSFNET oluşturuldu. 
+Başlangıçta 56 kbps'lik bir backbone(omurga - çekirdek ağ) hızına sahip olan NSFNET'in omurgası, on yılın sonuna doğru 1.5 Mbps hızında çalışacak ve bölgesel ağları birbirine bağlayan birincil omurga görevi görecekti.
+
+ARPAnet topluluğunda, bugünün internet mimarisinin birçok son parçası yerine oturuyordu. 
+1 Ocak 1983'te TCP/IP'nin ARPAnet için yeni standart ana bilgisayar protokolü olarak resmi olarak kullanıma sunulması gerçekleşti (NCP protokolünün yerini aldı). NCP'den TCP/IP'ye geçiş [RFC 801] önemli bir olaydı—o tarihten itibaren tüm ana bilgisayarların TCP/IP'ye geçmesi zorunlu hale getirildi. 
+1980'lerin sonlarında, ana bilgisayar tabanlı tıkanıklık kontrolünü uygulamak için TCP'ye önemli eklemeler yapıldı [Jacobson 1988]. 
+İnsan tarafından okunabilir bir internet adı (örneğin, github.com) ile 32 bitlik IP adresi arasındaki eşlemeyi sağlayan DNS de geliştirildi [RFC 1034].
+
+ARPAnet'in bu gelişimine (ki bu büyük ölçüde bir ABD girişimiydi) paralel olarak, 1980'lerin başında Fransızlar, veri ağlarını herkesin evine getirmeyi amaçlayan iddialı bir proje olan Minitel projesini başlattılar. Fransız hükümeti tarafından desteklenen Minitel sistemi, halka açık bir paket anahtarlamalı ağdan (X.25 protokol ailesine dayanıyordu), Minitel sunucularından ve dahili düşük hızlı modemlere sahip ucuz terminallerden oluşuyordu. 
+Fransız hükümetinin isteyen her Fransız hanesine ücretsiz bir Minitel terminali vermesiyle Minitel 1984'te büyük bir başarı yakaladı. 
+Minitel siteleri, bir telefon rehberi sitesi gibi ücretsiz sitelerin yanı sıra, her kullanıcıdan kullanıma dayalı bir ücret alan özel siteleri de içeriyordu. 1990'ların ortalarında zirveye ulaştığında, ev bankacılığından özel araştırma veri tabanlarına kadar 20.000'den fazla hizmet sunuyordu. 
+Minitel, çoğu Amerikalı interneti duymadan 10 yıl önce Fransız evlerinin büyük bir bölümünde bulunuyordu.
+
