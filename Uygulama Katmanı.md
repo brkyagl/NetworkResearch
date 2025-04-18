@@ -455,3 +455,68 @@ Sonraki oturumlarda, tarayıcı sunucuya bir çerez başlığı iletir ve böyle
 Çerezler genellikle kullanıcı için internet alışveriş deneyimini basitleştirse de, gizlilik ihlali olarak da değerlendirilebildikleri için tartışmalıdırlar. 
 Az önce gördüğümüz gibi, çerezler ve kullanıcı tarafından sağlanan hesap bilgilerinin bir kombinasyonunu kullanarak, bir Web sitesi bir kullanıcı hakkında çok şey öğrenebilir ve potansiyel olarak bu bilgiyi üçüncü bir tarafa (**third party**) satabilir.
 
+#### Web Önbellekleme (Web Caching)
+
+Bir Web önbelleği (**Web cache**)—aynı zamanda bir **proxy server (proxy sunucusu)** olarak da adlandırılır—bir kaynak Web sunucusu (**origin Web server**) adına HTTP isteklerini karşılayan bir ağ varlığıdır. Web önbelleğinin kendi disk depolama alanı (**disk storage**) vardır ve yakın zamanda istenen nesnelerin (**objects**) kopyalarını bu depolama alanında tutar. Bir kullanıcının tarayıcısı (**browser**), kullanıcının tüm HTTP isteklerinin ilk olarak Web önbelleğine yönlendirilecek şekilde yapılandırılabilir [RFC 7234]. Bir tarayıcı yapılandırıldıktan sonra, tarayıcının bir nesne için her isteği ilk olarak Web önbelleğine yönlendirilir. Örnek olarak, bir tarayıcının http://www.redberks.com/muck.gif nesnesini istediğini varsayalım. 
+
+İşte olanlar:
+
+1. Tarayıcı, Web önbelleğiyle bir TCP bağlantısı (**TCP connection**) kurar ve nesne için bir HTTP isteği (**HTTP request**) gönderir.
+2. Web önbelleği, nesnenin yerel olarak depolanmış bir kopyasına sahip olup olmadığını kontrol eder. Varsa, Web önbelleği nesneyi bir HTTP yanıt mesajı (**HTTP response message**) içinde istemci tarayıcısına (**client browser**) döndürür.
+3. Web önbelleğinde nesne yoksa, Web önbelleği kaynak sunucuya, yani www.redberks.com'a bir TCP bağlantısı açar. Web önbelleği daha sonra nesne için bir HTTP isteğini önbellekten sunucuya giden TCP bağlantısına (**cache-to-server TCP connection**) gönderir. Bu isteği aldıktan sonra, kaynak sunucu nesneyi bir HTTP yanıtı içinde Web önbelleğine gönderir.
+4. Web önbelleği nesneyi aldığında, yerel depolama alanına (**local storage**) bir kopyasını kaydeder ve bir kopyayı, bir HTTP yanıt mesajı içinde, istemci tarayıcısına (istemci tarayıcısı ve Web önbelleği arasındaki mevcut TCP bağlantısı üzerinden) gönderir.
+
+Bir önbelleğin aynı anda hem sunucu hem de istemci olduğunu unutmayın. Tarayıcılardan istek aldığında ve yanıt gönderdiğinde sunucudur. 
+Kaynak sunucuya istek gönderdiğinde ve ondan yanıt aldığında ise istemcidir.
+
+Tipik olarak bir Web önbelleği, bir İSS (**ISP**) tarafından satın alınır ve kurulur. 
+Örneğin, bir üniversite kampüs ağına bir önbellek kurabilir ve tüm kampüs tarayıcılarını önbelleğe işaret edecek şekilde yapılandırabilir. 
+Veya büyük bir konut İSS'si (Comcast gibi) ağına bir veya daha fazla önbellek kurabilir ve gönderdiği tarayıcıları kurulu önbelleklere işaret edecek şekilde önceden yapılandırabilir.
+
+Web önbellekleme, iki nedenle İnternet'te yaygınlaşmıştır. Birincisi, bir Web önbelleği istemci isteği için yanıt süresini (**response time**) önemli ölçüde azaltabilir, özellikle istemci ve kaynak sunucu arasındaki darboğaz bant genişliği (**bottleneck bandwidth**) istemci ve önbellek arasındaki darboğaz bant genişliğinden çok daha azsa. İstemci ve önbellek arasında yüksek hızlı bir bağlantı varsa (ki genellikle böyledir) ve önbellekte istenen nesne varsa, önbellek nesneyi istemciye hızla teslim edebilir. İkincisi, yakında bir örnekle göstereceğimiz gibi, Web önbellekleri bir kurumun İnternet'e erişim bağlantısındaki trafiği önemli ölçüde azaltabilir. Trafiği azaltarak, kurum (örneğin, bir şirket veya bir üniversite) bant genişliğini o kadar hızlı yükseltmek zorunda kalmaz, böylece maliyetleri azaltır. Ayrıca, Web önbellekleri bir bütün olarak İnternet'teki Web trafiğini önemli ölçüde azaltabilir, böylece tüm uygulamalar için performansı artırır.
+
+Önbelleklerin faydalarını daha derinlemesine anlamak için, Bir örnek düşünelim, iki ağ tane var—kurumsal ağı ve halka açık İnternet'in geri kalanı.
+Kurumsal ağ yüksek hızlı bir LAN'dır (**LAN**). Kurumsal ağdaki bir yönlendirici (**router**) ve İnternet'teki bir yönlendirici, 15 Mbps'lik bir bağlantıyla bağlanmıştır. Kaynak sunucular İnternet'e bağlıdır ancak dünyanın her yerine dağılmış durumdadır.
+Ortalama nesne boyutunun 1 Mbits olduğunu ve kurumun tarayıcılarından kaynak sunuculara olan ortalama istek hızının saniyede 15 istek olduğunu varsayalım. 
+HTTP istek mesajlarının ihmal edilebilir derecede küçük olduğunu ve bu nedenle ağlarda veya erişim bağlantısında (kurumsal yönlendiriciden İnternet yönlendiricisine) trafik oluşturmadığını varsayalım. Ayrıca erişim bağlantısının İnternet tarafındaki yönlendiricinin bir HTTP isteğini (bir IP datagramı içinde) ilettiği andan yanıtı (tipik olarak birçok IP datagramı içinde) aldığı ana kadar geçen sürenin ortalama iki saniye olduğunu varsayalım. 
+Gayri resmi olarak, bu son gecikmeyi "İnternet gecikmesi" (**Internet delay**) olarak adlandırıyoruz.
+
+Toplam yanıt süresi—yani, tarayıcının bir nesneyi istemesinden nesneyi almasına kadar geçen süre—LAN gecikmesi (**LAN delay**), erişim gecikmesi (**access delay**) (yani, iki yönlendirici arasındaki gecikme) ve İnternet gecikmesinin toplamıdır. Şimdi bu gecikmeyi tahmin etmek için çok kaba bir hesaplama yapalım.
+
+LAN üzerindeki trafik yoğunluğu (**traffic intensity**) 
+
+```
+(15 istek/sn) * (1 Mbits/istek) / (100 Mbps) = 0.15
+```
+
+iken, erişim bağlantısı üzerindeki trafik yoğunluğu (İnternet yönlendiricisinden kurumsal yönlendiriciye)
+
+```
+(15 istek/sn) * (1 Mbits/istek) / (15 Mbps) = 1
+```
+
+Bir LAN üzerindeki 0.15'lik bir trafik yoğunluğu genellikle en fazla on milisaniyelik gecikmeye neden olur; bu nedenle LAN gecikmesini ihmal edebiliriz. 
+Ancak, trafik yoğunluğu 1'e yaklaştığında (erişim bağlantısı durumunda olduğu gibi), bir bağlantıdaki gecikme çok büyük olur ve sınırsız artar. 
+Bu nedenle, istekleri karşılamak için ortalama yanıt süresi dakikalar mertebesinde olacaktır, hatta daha fazla olabilir, bu da kurumun kullanıcıları için kabul edilemezdir. Açıkçası bir şeyler yapılmalıdır.
+
+Bir olası çözüm, erişim hızını 15 Mbps'den örneğin 100 Mbps'ye çıkarmaktır. Bu, erişim bağlantısındaki trafik yoğunluğunu 0.15'e düşürecektir, bu da iki yönlendirici arasında ihmal edilebilir gecikmelere dönüşür. Bu durumda, toplam yanıt süresi kabaca iki saniye, yani İnternet gecikmesi olacaktır. 
+Ancak bu çözüm aynı zamanda kurumun erişim bağlantısını 15 Mbps'den 100 Mbps'ye yükseltmesi gerektiği anlamına gelir, bu da maliyetli bir öneridir.
+
+Şimdi erişim bağlantısını yükseltmeyip bunun yerine kurumsal ağa bir Web önbelleği kurma alternatif çözümünü düşünelim. 
+İsabet oranları (**Hit rates**)—bir önbellek tarafından karşılanan isteklerin oranı—pratikte tipik olarak 0.2 ila 0.7 arasında değişir. 
+Örnek olması açısından, bu kurum için önbelleğin %0.4'lük bir isabet oranı sağladığını varsayalım.
+İstemciler ve önbellek aynı yüksek hızlı LAN'a bağlı olduğu için, isteklerin %40'ı neredeyse anında, örneğin 10 milisaniye içinde, önbellek tarafından karşılanacaktır. Bununla birlikte, isteklerin kalan %60'ı hala kaynak sunucular tarafından karşılanmalıdır. 
+Ancak istenen nesnelerin sadece %60'ı erişim bağlantısından geçtiğinde, erişim bağlantısındaki trafik yoğunluğu 1.0'dan 0.6'ya düşer. 
+Tipik olarak, 0.8'den düşük bir trafik yoğunluğu, 15 Mbps'lik bir bağlantıda düşük bir gecikmeye, örneğin on milisaniyelik bir gecikmeye karşılık gelir. 
+Bu gecikme, iki saniyelik İnternet gecikmesiyle karşılaştırıldığında ihmal edilebilir düzeydedir. 
+
+Bu hususlar göz önüne alındığında, ortalama gecikme bu nedenle şöyledir:
+
+```
+0.4 * (0.01 saniye) + 0.6 * (2.01 saniye)
+```
+
+Bu, 1.2 saniyeden biraz daha fazladır. Dolayısıyla, bu ikinci çözüm, ilk çözümden daha da düşük bir yanıt süresi sağlar ve kurumun İnternet'e olan bağlantısını yükseltmesini gerektirmez. Kurumun elbette bir Web önbelleği satın alması ve kurması gerekir. Ancak bu maliyet düşüktür—birçok önbellek, ucuz PC'lerde çalışan kamu malı yazılımları kullanır.
+
+İçerik Dağıtım Ağları (CDN'ler) (**Content Distribution Networks (CDNs)**) aracılığıyla, Web önbellekleri İnternet'te giderek daha önemli bir rol oynamaktadır. Bir CDN şirketi, İnternet genelinde birçok coğrafi olarak dağıtılmış önbellek kurar, böylece trafiğin büyük bir kısmını yerelleştirir. Paylaşılan CDN'ler (Akamai ve Limelight gibi) ve özel CDN'ler (Google ve Netflix gibi) vardır. 
+
