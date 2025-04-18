@@ -319,3 +319,42 @@ Bu nesne istekleri, bekleyen yanıtlara yanıt beklemeden art arda yapılabilir 
 HTTP spesifikasyonları [RFC 1945; RFC 7230; RFC 7540], HTTP mesaj formatlarının (**HTTP message formats**) tanımlarını içerir. 
 İki tür HTTP mesajı (**HTTP messages**) vardır: istek mesajları (**request messages**) ve yanıt mesajları (**response messages**). 
 
+#### HTTP İstek Mesajı
+
+Aşağıda tipik bir HTTP istek mesajı örneği verilmiştir:
+
+```
+GET /home.html HTTP/1.1
+Host: www.redberks.com
+Connection: close
+User-agent: Mozilla/5.0
+Accept-language: tr
+```
+
+Bu basit istek mesajını yakından inceleyerek birçok şey öğrenebiliriz. Öncelikle, mesajın sıradan ASCII metniyle yazıldığını görüyoruz, böylece sıradan bir bilgisayar okuryazarı tarafından okunabilir. 
+İkinci olarak, mesajın beş satırdan oluştuğunu ve her satırın ardından bir satır başı (**carriage return**) ve bir satır besleme (**line feed**) geldiğini görüyoruz. 
+Son satırın ardından ek bir satır başı ve satır besleme gelir. Bu özel istek mesajı beş satır olmasına rağmen, bir istek mesajı daha fazla veya en az bir satıra sahip olabilir. 
+Bir HTTP istek mesajının ilk satırına istek satırı (**request line**) denir; sonraki satırlar başlık satırlarıdır (**header lines**). 
+İstek satırının üç alanı vardır: method alanı (**method field**), URL alanı (**URL field**) ve HTTP versiyon alanı (**HTTP version field**). 
+Method alanı, GET, POST, HEAD, PUT ve DELETE dahil olmak üzere birkaç farklı değer alabilir. HTTP istek mesajlarının büyük çoğunluğu GET methodunu kullanır.
+GET methodu, tarayıcı istenen nesneyi talep ettiğinde kullanılır ve istenen nesne URL alanında belirtilir. Bu örnekte, tarayıcı `/home.html` nesnesini talep ediyor. Versiyon kendi kendini açıklayıcıdır; bu örnekte tarayıcı HTTP/1.1 versiyonunu kullanmaktadır.
+
+Şimdi örnekteki başlık satırlarına bakalım. `Host: www.redberks.com` başlık satırı, nesnenin bulunduğu ana bilgisayarı belirtir. 
+Sunucuya zaten bir TCP bağlantısı kurulmuş olduğundan bu başlık satırının gereksiz olduğunu düşünebilirsiniz. Ancak, host başlık satırı tarafından sağlanan bilgi Web proxy önbellekleri (**Web proxy caches**) tarafından gereklidir. `Connection: close` başlık satırını ekleyerek, tarayıcı sunucuya kalıcı bağlantılarla (**persistent connections**) uğraşmak istemediğini söyler; istenen nesneyi gönderdikten sonra sunucunun bağlantıyı kapatmasını ister. `User-agent:` başlık satırı, kullanıcı ajanını (**User agent**), yani sunucuya istekte bulunan tarayıcı türünü belirtir. 
+Burada kullanıcı ajanı Mozilla/5.0, bir Firefox tarayıcısıdır. Bu başlık satırı kullanışlıdır çünkü sunucu, aynı nesnenin farklı versiyonlarını farklı kullanıcı ajanlarına gönderebilir. (Her versiyon aynı URL ile adreslenir.) Son olarak, `Accept-language:` başlığı, sunucuda böyle bir nesne mevcutsa, kullanıcının nesnenin Türkçe versiyonunu almayı tercih ettiğini gösterir; aksi takdirde sunucu varsayılan versiyonunu göndermelidir. `Accept-language:` başlığı, HTTP'de bulunan birçok içerik anlaşması başlığından (**content negotiation headers**) sadece biridir.
+
+Bir örneğe baktıktan sonra, şimdi bir istek mesajının genel formatına bakalım. Genel formatın önceki örneğimize yakından uyduğunu görelim. 
+Ancak, başlık satırlarından (ve ek satır başı ve satır beslemeden) sonra bir "varlık gövdesi" (**entity body**) olduğunu bilin. Varlık gövdesi GET methodunda boştur, ancak POST methodunda kullanılır. 
+Bir HTTP istemcisi, kullanıcı bir formu doldurduğunda—örneğin, bir kullanıcı bir arama motoruna arama kelimeleri sağladığında—sıklıkla POST methodunu kullanır. 
+Bir POST mesajıyla, kullanıcı sunucudan hala bir Web sayfası talep ediyor, ancak Web sayfasının belirli içeriği kullanıcının form alanlarına girdiği şeye bağlıdır. 
+Eğer method alanının değeri POST ise, varlık gövdesi kullanıcının form alanlarına girdiği şeyi içerir.
+
+Bir formla oluşturulan bir isteğin mutlaka POST methodunu kullanması gerekmediğini belirtmezsek eksik kalırdık. 
+Bunun yerine, HTML formları (**HTML forms**) genellikle GET methodunu kullanır ve girilen veriyi (**inputted data**) (form alanlarındaki) istenen URL'ye dahil eder. 
+Örneğin, bir form GET methodunu kullanıyorsa, iki alanı varsa ve iki alana girilenler "Monster" ve "Huawei" ise, URL yapısı `www.redberks.com/computersearch?monster&huawei` şeklinde olacaktır. 
+Günlük Web gezintinizde muhtemelen bu tür uzatılmış URL'ler fark etmişsinizdir.
+
+HEAD methodu GET methoduna benzer. Sunucu HEAD methodu ile bir istek aldığında, bir HTTP mesajı ile yanıt verir ancak istenen nesneyi dışarıda bırakır. 
+Uygulama geliştiricileri hata ayıklama için genellikle HEAD methodunu kullanır. PUT methodu genellikle Web yayınlama araçlarıyla (**Web publishing tools**) birlikte kullanılır. 
+Bir kullanıcının belirli bir Web sunucusunda (**Web server**) belirli bir yola (dizine) bir nesne yüklemesine (**upload**) olanak tanır.
+PUT methodu ayrıca nesneleri Web sunucularına yüklemesi gereken uygulamalar tarafından da kullanılır. DELETE methodu, bir kullanıcının veya bir uygulamanın bir Web sunucusundaki bir nesneyi silmesine (**delete**) olanak tanır.
