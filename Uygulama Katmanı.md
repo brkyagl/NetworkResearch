@@ -520,3 +520,61 @@ Bu, 1.2 saniyeden biraz daha fazladır. Dolayısıyla, bu ikinci çözüm, ilk �
 
 İçerik Dağıtım Ağları (CDN'ler) (**Content Distribution Networks (CDNs)**) aracılığıyla, Web önbellekleri İnternet'te giderek daha önemli bir rol oynamaktadır. Bir CDN şirketi, İnternet genelinde birçok coğrafi olarak dağıtılmış önbellek kurar, böylece trafiğin büyük bir kısmını yerelleştirir. Paylaşılan CDN'ler (Akamai ve Limelight gibi) ve özel CDN'ler (Google ve Netflix gibi) vardır. 
 
+#### Koşullu GET (The Conditional GET)
+
+Önbellekleme (**caching**) kullanıcı tarafından algılanan yanıt sürelerini azaltabilse de, yeni bir sorun ortaya çıkarır—önbellekte bulunan bir nesnenin kopyası bayat (**stale**) olabilir. Başka bir deyişle, Web sunucusunda barındırılan nesne, istemcide önbelleğe alındığından beri değiştirilmiş olabilir. 
+Neyse ki, HTTP'nin bir önbelleğin nesnelerinin güncel olduğunu doğrulamasını sağlayan bir mekanizması vardır. 
+Bu mekanizmaya **koşullu GET (conditional GET)** [RFC 7232] denir. 
+Bir HTTP istek mesajı (**HTTP request message**) şu durumlarda sözde koşullu GET mesajıdır: (1) istek mesajı GET methodunu kullanıyorsa ve (2) istek mesajı bir `If-Modified-Since:` başlık satırı içeriyorsa.
+
+Koşullu GET'in nasıl çalıştığını göstermek için bir örnek üzerinden geçelim. 
+İlk olarak, istekte bulunan bir tarayıcı adına, bir proxy önbellek (**proxy cache**) bir Web sunucusuna bir istek mesajı gönderir:
+
+```
+
+GET /computer/hp.gif HTTP/1.1
+Host: [www.redberks.com](https://www.google.com/search?q=https://www.redberks.com)
+
+```
+
+İkinci olarak, Web sunucusu istenen nesne ile birlikte önbelleğe bir yanıt mesajı (**response message**) gönderir:
+
+```
+
+HTTP/1.1 200 OK
+Date: Sat, 3 Oct 2025 15:39:29
+Server: Apache/1.3.0 (Unix)
+Last-Modified: Wed, 9 Sep 2025 09:23:24
+Content-Type: image/gif
+(data data data data data ...)
+
+```
+
+Önbellek nesneyi istekte bulunan tarayıcıya iletir, ancak aynı zamanda nesneyi yerel olarak önbelleğe alır. 
+Daha da önemlisi, önbellek nesneyle birlikte son değiştirilme tarihini (**last-modified date**) de saklar. 
+Üçüncü olarak, bir hafta sonra başka bir tarayıcı aynı nesneyi önbellek aracılığıyla ister ve nesne hala önbellektedir. 
+Bu nesnenin geçen hafta Web sunucusunda değiştirilmiş olabileceği için, önbellek bir koşullu GET göndererek bir güncellik kontrolü yapar. 
+Özellikle, önbellek şunu gönderir:
+
+```
+
+GET /computer/hp.gif  HTTP/1.1
+Host: [www.redberks.com](https://www.google.com/search?q=https://www.redberks.com)
+If-modified-since: Wed, 9 Sep 2025 09:23:24
+
+```
+
+`If-modified-since:` başlık satırının değerinin, bir hafta önce sunucu tarafından gönderilen `Last-Modified:` başlık satırının değeriyle tam olarak aynı olduğuna dikkat edin. Bu koşullu GET, sunucuya nesneyi yalnızca belirtilen tarihten sonra değiştirildiyse göndermesini söyler. Nesnenin `9 Eylül 2025 09:23:24`'ten beri değiştirilmediğini varsayalım. Ardından, dördüncü olarak, Web sunucusu önbelleğe bir yanıt mesajı gönderir:
+
+```
+
+HTTP/1.1 304 Not Modified
+Date: Sat, 10 Oct 2025 15:39:29
+Server: Apache/1.3.0 (Unix)
+(empty entity body)
+
+```
+
+Koşullu GET'e yanıt olarak, Web sunucusunun hala bir yanıt mesajı gönderdiğini ancak yanıt mesajına istenen nesneyi dahil etmediğini görüyoruz. 
+İstenen nesneyi dahil etmek yalnızca bant genişliğini (**bandwidth**) boşa harcar ve kullanıcı tarafından algılanan yanıt süresini (**user-perceived response time**) artırır, özellikle nesne büyükse. Bu son yanıt mesajının durum satırında (**status line**) `304 Not Modified` yazdığına dikkat edin, bu da önbelleğe (proxy önbelleğinin (**proxy cache’s**) ) önbelleğe alınmış kopyasını istekte bulunan tarayıcıya iletebileceğini söyler.
+
