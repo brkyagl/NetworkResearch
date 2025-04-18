@@ -274,3 +274,33 @@ Birçok İnternet uygulamasında, istemci ve sunucu uzun bir süre iletişim kur
 Uygulamaya ve uygulamanın nasıl kullanıldığına bağlı olarak, istek dizisi art arda, düzenli aralıklarla periyodik olarak veya aralıklı olarak yapılabilir. 
 Bu istemci-sunucu etkileşimi TCP üzerinden gerçekleşirken, uygulama geliştiricisinin önemli bir karar vermesi gerekir—her istek/yanıt çifti ayrı bir TCP bağlantısı (**TCP connection**) üzerinden mi gönderilmeli, yoksa tüm istekler ve bunlara karşılık gelen yanıtlar aynı TCP bağlantısı üzerinden mi gönderilmelidir? İlk yaklaşımda, uygulamanın kalıcı olmayan bağlantılar (**non-persistent connections**) kullandığı söylenir; ikinci yaklaşımda ise kalıcı bağlantılar (**persistent connections**). Bu tasarım sorununu derinlemesine anlamak için, kalıcı bağlantıların avantajlarını ve dezavantajlarını, hem kalıcı olmayan hem de kalıcı bağlantıları kullanabilen HTTP bağlamında inceleyelim. HTTP, varsayılan modunda kalıcı bağlantılar kullanmasına rağmen, HTTP istemcileri ve sunucuları bunun yerine kalıcı olmayan bağlantıları kullanacak şekilde yapılandırılabilir.
 
+#### Kalıcı Olmayan Bağlantılarla HTTP
+
+Kalıcı olmayan bağlantılar durumunda, bir Web sayfasını sunucudan istemciye aktarma adımlarını inceleyelim. 
+Sayfanın bir temel HTML dosyasından ve 10 JPEG görüntüsünden oluştuğunu ve bu 11 nesnenin tamamının aynı sunucuda bulunduğunu varsayalım. 
+Ayrıca, temel HTML dosyasının URL'sinin şu olduğunu varsayalım: `http://www.redberks.com/home.index`
+
+İşte olanlar:
+
+1. HTTP istemci süreci, HTTP için varsayılan port numarası olan 80 numaralı portta `www.redberks.com` sunucusuna bir TCP bağlantısı başlatır.
+TCP bağlantısıyla ilişkili olarak, istemcide bir soket ve sunucuda bir soket olacaktır.
+
+2. HTTP istemcisi, soketi aracılığıyla sunucuya bir HTTP istek mesajı (**HTTP request message**) gönderir. İstek mesajı `/home.index` yol adını (**path name**) içerir. 
+
+3. HTTP sunucu süreci, soketi aracılığıyla istek mesajını alır, depolama alanından (RAM veya disk) `/home.index` nesnesini alır, nesneyi bir HTTP yanıt mesajına (**HTTP response message**) kapsüller ve yanıt mesajını soketi aracılığıyla istemciye gönderir.
+
+4. HTTP sunucu süreci, TCP'ye TCP bağlantısını kapatmasını söyler. (Ancak TCP, istemcinin yanıt mesajını bozulmadan (**intact**) aldığından emin olana kadar bağlantıyı fiilen sonlandırmaz.)
+
+5. HTTP istemcisi yanıt mesajını alır. TCP bağlantısı sonlanır. Mesaj, kapsüllenmiş nesnenin bir HTML dosyası olduğunu belirtir. İstemci, dosyayı yanıt mesajından çıkarır, HTML dosyasını inceler ve 10 JPEG nesnesine referansları bulur.
+
+6. İlk dört adım, referans verilen her bir JPEG nesnesi için tekrarlanır. Tarayıcı Web sayfasını aldıkça, sayfayı kullanıcıya görüntüler. İki farklı tarayıcı, bir Web sayfasını biraz farklı şekillerde yorumlayabilir (yani kullanıcıya görüntüleyebilir). HTTP'nin bir Web sayfasının bir istemci tarafından nasıl yorumlandığıyla hiçbir ilgisi yoktur. HTTP spesifikasyonları ([RFC 1945] ve [RFC 7540]), yalnızca istemci HTTP programı ile sunucu HTTP programı arasındaki iletişim protokolünü tanımlar.
+
+Yukarıdaki adımlar, sunucunun nesneyi gönderdikten sonra her TCP bağlantısının kapatıldığı kalıcı olmayan bağlantıların (**non-persistent connections**) kullanımını göstermektedir—bağlantı diğer nesneler için kalıcı olmaz. HTTP/1.0, kalıcı olmayan TCP bağlantıları kullanır. Her kalıcı olmayan TCP bağlantısının tam olarak bir istek mesajı ve bir yanıt mesajı taşıdığını unutmayın. 
+Böylece, bu örnekte, bir kullanıcı Web sayfasını istediğinde 11 TCP bağlantısı oluşturulur.
+
+Yukarıda açıklanan adımlarda, istemcinin 10 JPEG'yi 10 seri TCP bağlantısı üzerinden mi yoksa JPEG'lerin bazılarının paralel TCP bağlantıları (**parallel TCP connections**) üzerinden mi aldığını bilerek muğlak tuttuk. Gerçekten de, kullanıcılar bazı tarayıcıları paralellik derecesini kontrol etmek için yapılandırabilirler. Tarayıcılar birden fazla TCP bağlantısı açabilir ve Web sayfasının farklı kısımlarını birden fazla bağlantı üzerinden isteyebilirler. Bir sonraki bölümde göreceğimiz gibi, paralel bağlantıların (**parallel connections**) kullanılması yanıt süresini (**response time**) kısaltır.
+
+Devam etmeden önce, istemcinin temel HTML dosyasını istediği andan itibaren tüm dosyanın istemci tarafından alınana kadar geçen süreyi tahmin etmek için hızlı bir hesaplama yapalım. 
+Bu amaçla, küçük bir paketin istemciden sunucuya ve sonra tekrar istemciye gitmesi için geçen süre olan gidiş-dönüş süresini (RTT) (**round-trip time (RTT)**) tanımlıyoruz. 
+RTT, paket yayılma gecikmelerini (**packet-propagation delays**), ara yönlendirici ve anahtarlardaki paket kuyruklama gecikmelerini (**packet-queuing delays**), ve paket işleme gecikmelerini (**packet-processing delays**) içerir. Şimdi bir kullanıcı bir köprü bağlantıya (**hyperlink**) tıkladığında ne olduğunu düşünelim. Bu durum tarayıcının tarayıcı ve Web sunucusu arasında bir TCP bağlantısı başlatmasına neden olur; bu bir "üçlü el sıkışma" (**three-way handshake**) içerir—istemci sunucuya küçük bir TCP segmenti gönderir, sunucu onaylar (**acknowledges**) ve küçük bir TCP segmenti ile yanıt verir, ve son olarak istemci sunucuya geri onaylar (**acknowledgment**). Üçlü el sıkışmanın ilk iki kısmı bir RTT sürer. El sıkışmanın ilk iki kısmını tamamladıktan sonra, istemci HTTP istek mesajını üçlü el sıkışmanın üçüncü kısmı (onay) ile birleştirerek TCP bağlantısına gönderir. İstek mesajı sunucuya ulaştığında, sunucu HTML dosyasını TCP bağlantısına gönderir. Bu HTTP istek/yanıtı bir RTT daha alır. 
+Dolayısıyla, kabaca, toplam yanıt süresi iki RTT artı HTML dosyasının sunucudaki iletim süresidir (**transmission time**).
