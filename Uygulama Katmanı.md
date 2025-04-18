@@ -418,3 +418,40 @@ Başlık satırlarının toplamının sadece küçük bir kısmını ele aldık.
 Bir tarayıcı, bir istek mesajına hangi başlık satırlarını dahil edeceğine nasıl karar verir? Bir Web sunucusu, bir yanıt mesajına hangi başlık satırlarını dahil edeceğine nasıl karar verir? Bir tarayıcı, tarayıcı türü ve sürümü, tarayıcının kullanıcı yapılandırması ve tarayıcının şu anda önbelleğe alınmış (**cached**), ancak muhtemelen güncel olmayan, bir nesne sürümüne sahip olup olmadığına bağlı olarak başlık satırları oluşturacaktır. 
 Web sunucuları benzer şekilde davranır: Farklı ürünler (**products**), sürümler (**versions**) ve yapılandırmalar (**configurations**) vardır, bunların hepsi yanıt mesajlarına hangi başlık satırlarının dahil edileceğini etkiler.
 
+#### Kullanıcı-Sunucu Etkileşimi: Çerezler (Cookies)
+
+Yukarıda bir HTTP sunucusunun durumsuz (**stateless**) olduğunu belirtmiştik. 
+Bu, sunucu tasarımını basitleştirir ve mühendislerin binlerce eşzamanlı TCP bağlantısını yönetebilen yüksek performanslı Web sunucuları geliştirmesine olanak tanımıştır. Ancak, bir Web sitesinin kullanıcıları tanımlaması genellikle istenir, ya sunucu kullanıcı erişimini kısıtlamak istediği için ya da kullanıcı kimliğine bağlı olarak içerik sunmak istediği için. Bu amaçlarla HTTP çerezleri (**cookies**) kullanır. [RFC 6265]'te tanımlanan çerezler, sitelerin kullanıcıları takip etmesine olanak tanır. Çoğu büyük ticari Web sitesi bugün çerez kullanmaktadır.
+
+Çerez teknolojisinin dört bileşeni vardır: (1) HTTP yanıt mesajında bir çerez başlık satırı (**cookie header line**); (2) HTTP istek mesajında bir çerez başlık satırı; (3) kullanıcının uç sisteminde tutulan ve kullanıcının tarayıcısı (**user’s browser**) tarafından yönetilen bir çerez dosyası (**cookie file**); ve (4) Web sitesinde bir arka uç veritabanı (**back-end database**). Çerezlerin nasıl çalıştığına dair bir örnek üzerinden geçelim. 
+Susan'ın, ev bilgisayarından İnternet Explorer kullanarak Web'e her zaman erişen bir kullanıcının, Amazon.com ile ilk kez iletişim kurduğunu varsayalım. 
+Diyelim ki daha önce eBay sitesini ziyaret etmiş. İstek Amazon Web sunucusuna (**Amazon Web server**) geldiğinde, sunucu benzersiz bir kimlik numarası (**identification number**) oluşturur ve arka uç veritabanında bu kimlik numarasıyla indekslenmiş bir giriş yaratır. 
+Amazon Web sunucusu daha sonra Susan'ın tarayıcısına yanıt verir ve HTTP yanıtına kimlik numarasını içeren bir `Set-cookie:` başlığı ekler. 
+Örneğin, başlık satırı şöyle olabilir:
+
+`Set-cookie: 1678891298`
+
+Susan'ın tarayıcısı HTTP yanıt mesajını aldığında, `Set-cookie:` başlığını görür. 
+Tarayıcı daha sonra yönettiği özel çerez dosyasına bir satır ekler. Bu satır, sunucunun ana bilgisayar adını ve `Set-cookie:` başlığındaki kimlik numarasını içerir. Susan'ın daha önce eBay sitesini ziyaret ettiği için çerez dosyasında eBay için zaten bir giriş olduğunu unutmayın. 
+Susan Amazon sitesinde gezinmeye devam ettikçe, her Web sayfası istediğinde tarayıcısı çerez dosyasına başvurur, bu site için kimlik numarasını alır ve HTTP isteğine kimlik numarasını içeren bir çerez başlık satırı koyar. 
+Özellikle, Amazon sunucusuna yaptığı her HTTP isteği şu başlık satırını içerir:
+
+`Cookie: 1678891298`
+
+Bu şekilde, Amazon sunucusu Susan'ın Amazon sitesindeki etkinliğini takip edebilir. 
+Amazon Web sitesi Susan'ın adını tam olarak bilmese de, 1678891298 numaralı kullanıcının hangi sayfaları, hangi sırayla ve hangi zamanlarda ziyaret ettiğini tam olarak bilir! Amazon, alışveriş sepeti hizmetini (**shopping cart service**) sağlamak için çerezleri kullanır—Amazon, Susan'ın satın almayı düşündüğü tüm ürünlerin bir listesini tutabilir, böylece oturum sonunda hepsini topluca ödeyebilir.
+
+Susan bir hafta sonra Amazon sitesine geri dönerse, tarayıcısı istek mesajlarına `Cookie: 1678891298` başlık satırını eklemeye devam edecektir. 
+Amazon ayrıca, Susan'a geçmişte Amazon'da ziyaret ettiği Web sayfalarına dayanarak ürünler önerir. 
+Susan Amazon'a tam adını, e-posta adresini, posta adresini ve kredi kartı bilgilerini vererek kaydolursa, 
+Amazon bu bilgileri veritabanına ekleyebilir ve böylece Susan'ın adını kimlik numarasıyla (ve geçmişte sitede ziyaret ettiği tüm sayfalarla!) ilişkilendirebilir. Amazon ve diğer e-ticaret siteleri "tek tıklamayla alışveriş" (**one-click shopping**) hizmetini bu şekilde sunar—Susan sonraki bir ziyarette bir ürün satın almayı seçtiğinde, adını, kredi kartı numarasını veya adresini tekrar girmesine gerek kalmaz.
+
+Bu tartışmadan, çerezlerin bir kullanıcıyı tanımlamak için kullanılabileceğini görüyoruz. 
+Bir kullanıcı bir siteyi ilk ziyaret ettiğinde, bir kullanıcı kimliği (muhtemelen adı) sağlayabilir. 
+Sonraki oturumlarda, tarayıcı sunucuya bir çerez başlığı iletir ve böylece kullanıcıyı sunucuya tanıtır.
+Çerezler böylece durumsuz HTTP'nin üzerine bir kullanıcı oturumu katmanı (**user session layer**) oluşturmak için kullanılabilir. 
+Örneğin, bir kullanıcı Web tabanlı bir e-posta uygulamasına (**Web-based e-mail application**) (Hotmail gibi) giriş yaptığında, tarayıcı sunucuya çerez bilgisi gönderir ve sunucunun uygulamanın oturumu boyunca kullanıcıyı tanımlamasına olanak tanır.
+
+Çerezler genellikle kullanıcı için internet alışveriş deneyimini basitleştirse de, gizlilik ihlali olarak da değerlendirilebildikleri için tartışmalıdırlar. 
+Az önce gördüğümüz gibi, çerezler ve kullanıcı tarafından sağlanan hesap bilgilerinin bir kombinasyonunu kullanarak, bir Web sitesi bir kullanıcı hakkında çok şey öğrenebilir ve potansiyel olarak bu bilgiyi üçüncü bir tarafa (**third party**) satabilir.
+
