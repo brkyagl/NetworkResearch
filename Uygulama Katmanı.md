@@ -578,3 +578,51 @@ Server: Apache/1.3.0 (Unix)
 Koşullu GET'e yanıt olarak, Web sunucusunun hala bir yanıt mesajı gönderdiğini ancak yanıt mesajına istenen nesneyi dahil etmediğini görüyoruz. 
 İstenen nesneyi dahil etmek yalnızca bant genişliğini (**bandwidth**) boşa harcar ve kullanıcı tarafından algılanan yanıt süresini (**user-perceived response time**) artırır, özellikle nesne büyükse. Bu son yanıt mesajının durum satırında (**status line**) `304 Not Modified` yazdığına dikkat edin, bu da önbelleğe (proxy önbelleğinin (**proxy cache’s**) ) önbelleğe alınmış kopyasını istekte bulunan tarayıcıya iletebileceğini söyler.
 
+#### HTTP/2
+
+2015 yılında standartlaştırılan HTTP/2 [RFC 7540], 1997'de standartlaştırılan HTTP/1.1'den sonraki ilk yeni HTTP versiyonu oldu. 
+Standartlaşmadan bu yana HTTP/2 hızla benimsendi; 2020'de en popüler 10 milyon web sitesinin %40'ından fazlası HTTP/2'yi destekliyordu [W3Techs]. 
+Google Chrome, Internet Explorer, Safari, Opera ve Firefox dahil olmak üzere çoğu tarayıcı da HTTP/2'yi desteklemektedir.
+
+HTTP/2'nin birincil hedefleri, tek bir TCP bağlantısı (**single TCP connection**) üzerinden istek ve yanıt çoklamayı (**request and response multiplexing**) etkinleştirerek algılanan gecikmeyi (**latency**) azaltmak, istek önceliklendirme (**request prioritization**) ve sunucu itme (**server push**) sağlamak ve HTTP başlık alanlarının (**HTTP header fields**) verimli sıkıştırılmasını sağlamaktır. HTTP/2, HTTP methodlarını, durum kodlarını (**status codes**), URL'leri veya başlık alanlarını değiştirmez. Bunun yerine, HTTP/2 verinin istemci ve sunucu arasında nasıl formatlandığını ve taşındığını değiştirir.
+
+HTTP/2 ihtiyacını anlamak için, HTTP/1.1'in kalıcı TCP bağlantıları (**persistent TCP connections**) kullandığını ve bir Web sayfasının sunucudan istemciye tek bir TCP bağlantısı üzerinden gönderilmesine olanak tanıdığını hatırlayın. Web sayfası başına yalnızca bir TCP bağlantısı olmasıyla, sunucudaki soket sayısı azalır ve taşınan her Web sayfası ağ bant genişliğinden (**network bandwidth**) adil bir pay alır (aşağıda tartışıldığı gibi). 
+Ancak Web tarayıcısı geliştiricileri, bir Web sayfasındaki tüm nesneleri tek bir TCP bağlantısı üzerinden göndermenin Birleştirme Başlangıcı (Head of Line - HOL) engelleme sorunu (**Head of Line (HOL) blocking problem**) olduğunu hızla keşfetti. 
+HOL engellemesini anlamak için, bir HTML temel sayfası, Web sayfasının üst kısmına yakın büyük bir video klibi ve videonun altında birçok küçük nesne içeren bir Web sayfası düşünün. Ayrıca, sunucu ile istemci arasındaki yolda düşük-orta hızlı bir darboğaz bağlantısı (**bottleneck link**) (örneğin, düşük hızlı bir kablosuz bağlantı (**low-speed wireless link**)) olduğunu varsayalım. Tek bir TCP bağlantısı kullanılarak, video klibi darboğaz bağlantısından geçerken uzun zaman alacak, küçük nesneler ise video klibin arkasında beklerken gecikecektir; yani, sıranın başındaki video klibi arkasındaki küçük nesneleri engellemektedir. 
+HTTP/1.1 tarayıcıları tipik olarak birden çok paralel TCP bağlantısı (**parallel TCP connections**) açarak bu sorunu aşar, böylece aynı web sayfasındaki nesnelerin tarayıcıya paralel olarak gönderilmesini sağlarlar. Bu şekilde, küçük nesneler tarayıcıya çok daha hızlı ulaşabilir ve işlenebilir, böylece kullanıcı tarafından algılanan gecikme azalır.
+
+Ayrıntılı olarak tartışılan TCP tıkanıklık kontrolü (**TCP congestion control**), tarayıcılara tek bir kalıcı bağlantı yerine birden çok paralel TCP bağlantısı kullanmak için istenmeyen bir teşvik de sağlar. Çok kaba bir ifadeyle, TCP tıkanıklık kontrolü, bir darboğaz bağlantısını paylaşan her TCP bağlantısına o bağlantının mevcut bant genişliğinden (**link bandwidth**) eşit bir pay vermeyi amaçlar; bu nedenle, bir darboğaz bağlantısı üzerinden çalışan n TCP bağlantısı varsa, her bağlantı bant genişliğinin yaklaşık 1/n'sini alır. Tek bir Web sayfasını taşımak için birden çok paralel TCP bağlantısı açarak, tarayıcı "hile yapabilir" ve bağlantı bant genişliğinden daha büyük bir pay alabilir. Birçok HTTP/1.1 tarayıcısı, yalnızca HOL engellemesini atlatmakla kalmayıp aynı zamanda daha fazla bant genişliği elde etmek için altıya kadar paralel TCP bağlantısı açar.
+
+HTTP/2'nin birincil hedeflerinden biri, tek bir Web sayfasını taşımak için paralel TCP bağlantılarından kurtulmak (veya en azından sayılarını azaltmak) tır. 
+Bu, sunucularda açılması ve sürdürülmesi gereken soket sayısını azaltmakla kalmaz, aynı zamanda TCP tıkanıklık kontrolünün amaçlandığı gibi çalışmasına da olanak tanır. Ancak bir Web sayfasını taşımak için yalnızca bir TCP bağlantısıyla, HTTP/2'nin HOL engellemesini önlemek için dikkatlice tasarlanmış mekanizmalara ihtiyacı vardır.
+
+#### HTTP/2 Çerçeveleme (Framing)
+
+HTTP/2'nin HOL engelleme (**HOL blocking**) çözümü, her mesajı küçük çerçevelere (**frames**) bölmek ve aynı TCP bağlantısı (**TCP connection**) üzerinde istek ve yanıt mesajlarını araya almaktır (**interleave**). Bunu anlamak için, bir büyük video klip ve örneğin 8 küçük nesneden oluşan bir Web sayfası örneğini tekrar ele alalım. Dolayısıyla, bu Web sayfasını görmek isteyen herhangi bir tarayıcıdan sunucu 9 eşzamanlı istek alacaktır. 
+Bu isteklerin her biri için sunucunun tarayıcıya 9 rakip HTTP yanıt mesajı göndermesi gerekir. 
+Tüm çerçevelerin sabit uzunlukta olduğunu, video klibin 1000 çerçeveden oluştuğunu ve küçük nesnelerin her birinin iki çerçeveden oluştuğunu varsayalım. 
+Çerçeve araya alma (**interleave**) ile, video klibinden bir çerçeve gönderdikten sonra, küçük nesnelerin her birinin ilk çerçeveleri gönderilir. 
+Ardından video klibin ikinci çerçevesini gönderdikten sonra, küçük nesnelerin her birinin son çerçeveleri gönderilir. 
+Böylece, tüm küçük nesneler toplam 18 çerçeve gönderildikten sonra gönderilir. Eğer araya alma kullanılmasaydı, küçük nesneler ancak 1016 çerçeve gönderildikten sonra gönderilebilirdi. Bu nedenle HTTP/2 çerçeveleme mekanizması (**framing mechanism**) kullanıcı tarafından algılanan gecikmeyi (**user-perceived delay**) önemli ölçüde azaltabilir.
+
+Bir HTTP mesajını bağımsız çerçevelere bölme, araya alma ve ardından diğer uçta yeniden birleştirme yeteneği, HTTP/2'nin en önemli geliştirmesidir. 
+Çerçeveleme, HTTP/2 protokolünün çerçeveleme alt katmanı (**framing sub-layer**) tarafından yapılır. 
+Bir sunucu bir HTTP yanıtı göndermek istediğinde, yanıt çerçeveleme alt katmanı tarafından işlenir ve burada çerçevelere ayrılır. 
+Yanıtın başlık alanı (**header field**) bir çerçeve olur ve mesajın gövdesi (**body**) bir veya daha fazla ek çerçeveye ayrılır. 
+Yanıtın çerçeveleri daha sonra sunucudaki çerçeveleme alt katmanı tarafından diğer yanıtların çerçeveleriyle araya alınır ve tek kalıcı TCP bağlantısı üzerinden gönderilir. Çerçeveler istemciye ulaştığında, ilk olarak çerçeveleme alt katmanında orijinal yanıt mesajlarına yeniden birleştirilir ve ardından tarayıcı tarafından her zamanki gibi işlenir. Benzer şekilde, bir istemcinin HTTP istekleri de çerçevelere ayrılır ve araya alınır.
+
+Her HTTP mesajını bağımsız çerçevelere bölmenin yanı sıra, çerçeveleme alt katmanı çerçeveleri ikili olarak da kodlar (**binary encodes**). 
+İkili protokoller (**binary protocols**), ayrıştırması (**parse**) daha verimlidir, biraz daha küçük çerçevelere yol açar ve hatalara daha az eğilimlidir.
+
+#### Yanıt Mesajı Önceliklendirme ve Sunucu İtme (Server Pushing)
+
+Mesaj önceliklendirme (**Message prioritization**), geliştiricilerin (**developers**) uygulama performansını (**application performance**) daha iyi optimize etmek için isteklerin göreceli önceliğini özelleştirmelerine olanak tanır. Az önce öğrendiğimiz gibi, çerçeveleme alt katmanı (**framing sub-layer**), aynı isteyiciye (**requestor**) yönelik paralel veri akışları (**parallel streams of data**) halinde mesajlar düzenler. 
+Bir istemci sunucuya eşzamanlı istekler (**concurrent requests**) gönderdiğinde, her mesaja 1 ila 256 arasında bir ağırlık (**weight**) atayarak istediği yanıtları (**responses**) önceliklendirebilir (**prioritize**). Daha yüksek sayı daha yüksek önceliği gösterir. Sunucu bu ağırlıkları kullanarak en yüksek önceliğe sahip yanıtlar için çerçeveleri önce gönderebilir. Buna ek olarak, istemci ayrıca, bağlı olduğu mesajın kimliğini belirterek her mesajın diğer mesajlara olan bağımlılığını (**message’s dependency**) da belirtir.
+
+HTTP/2'nin bir diğer özelliği, bir sunucunun tek bir istemci isteği (**single client request**) için birden fazla yanıt (**response**) gönderebilmesidir. 
+Yani, orijinal isteğe (**original request**) verilen yanıta ek olarak, sunucu istemcinin her birini talep etmek zorunda kalmadan istemciye ek nesneleri itebilir (**push additional objects**). Bu, HTML temel sayfasının (**HTML base page**) Web sayfasını tamamen oluşturmak (**render the Web page**) için gerekli olacak nesneleri belirtmesi sayesinde mümkündür. Dolayısıyla, bu nesneler için HTTP isteklerini (**HTTP requests**) beklemek yerine, sunucu HTML sayfasını analiz edebilir (**analyze**), gerekli nesneleri belirleyebilir ve bu nesneler için açık istekler (**explicit requests**) almadan önce bunları istemciye gönderebilir. Sunucu itme (**Server push**), açık istekleri beklemeden kaynaklanan ek gecikmeyi (**latency**) ortadan kaldırır.
+
+#### HTTP/3
+
+İlerleyen konularda ele alınan QUIC, yalın UDP protokolü üzerinde uygulama katmanında (**application layer**) uygulanan yeni bir "taşıma" protokolüdür (**transport protocol**). QUIC, mesaj çoklama (araya alma) (**message multiplexing (interleaving)**), akış başına akış kontrolü (**per-stream flow control**) ve düşük gecikmeli bağlantı kurma (**low-latency connection establishment**) gibi HTTP için arzu edilen çeşitli özelliklere sahiptir. HTTP/3, QUIC üzerinde çalışmak üzere tasarlanmış yepyeni bir HTTP protokolüdür (**HTTP protocol**). 2020 itibarıyla HTTP/3, İnternet taslaklarında (**Internet drafts**) açıklanmıştır ve henüz tam olarak standartlaştırılmamıştır (**standardized**). HTTP/2 özelliklerinin (**HTTP/2 features**) çoğu (mesaj araya alma gibi) QUIC tarafından üstlenilmiştir, bu da HTTP/3 için daha basit ve modern bir tasarım sağlamıştır.
+
