@@ -314,3 +314,8 @@ HTTP/1.1 kalıcı bağlantılarında (**HTTP/1.1 persistent connections**), sunu
 Aynı istemci ve sunucu arasındaki sonraki istekler ve yanıtlar aynı bağlantı üzerinden gönderilebilir. Özellikle, tüm bir Web sayfası (yukarıdaki örnekte, temel HTML dosyası ve 10 görüntü) tek bir kalıcı TCP bağlantısı üzerinden gönderilebilir. Dahası, aynı sunucuda bulunan birden fazla Web sayfası da tek bir kalıcı TCP bağlantısı üzerinden sunucudan aynı istemciye gönderilebilir. 
 Bu nesne istekleri, bekleyen yanıtlara yanıt beklemeden art arda yapılabilir (**pipelining**). Tipik olarak, HTTP sunucusu belirli bir süre kullanılmadığında (yapılandırılabilir bir zaman aşımı aralığı (**timeout interval**) sonunda) bağlantıyı kapatır. Sunucu, art arda gelen istekleri aldığında, nesneleri art arda gönderir. HTTP'nin varsayılan modu, pipelining ile kalıcı bağlantıları kullanır. 
 
+#### HTTP Mesaj Formatı
+
+HTTP spesifikasyonları [RFC 1945; RFC 7230; RFC 7540], HTTP mesaj formatlarının (**HTTP message formats**) tanımlarını içerir. 
+İki tür HTTP mesajı (**HTTP messages**) vardır: istek mesajları (**request messages**) ve yanıt mesajları (**response messages**). 
+
