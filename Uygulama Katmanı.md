@@ -268,3 +268,9 @@ Ayrıca, istemci-sunucu uygulama mimarisini (**client-server application archite
 HTTP'nin orijinal versiyonu HTTP/1.0 olarak adlandırılır ve 1990'ların başlarına dayanır [RFC 1945]. HTTP işlemlerinin çoğu HTTP/1.1 üzerinden gerçekleşmektedir [RFC 7230]. 
 Ancak, giderek artan sayıda tarayıcı ve Web sunucusu, HTTP/2 [RFC 7540] adı verilen yeni bir HTTP sürümünü de desteklemektedir. 
 
+### Kalıcı Olmayan ve Kalıcı Bağlantılar
+
+Birçok İnternet uygulamasında, istemci ve sunucu uzun bir süre iletişim kurar, istemci bir dizi istekte bulunur ve sunucu her bir isteğe yanıt verir.
+Uygulamaya ve uygulamanın nasıl kullanıldığına bağlı olarak, istek dizisi art arda, düzenli aralıklarla periyodik olarak veya aralıklı olarak yapılabilir. 
+Bu istemci-sunucu etkileşimi TCP üzerinden gerçekleşirken, uygulama geliştiricisinin önemli bir karar vermesi gerekir—her istek/yanıt çifti ayrı bir TCP bağlantısı (**TCP connection**) üzerinden mi gönderilmeli, yoksa tüm istekler ve bunlara karşılık gelen yanıtlar aynı TCP bağlantısı üzerinden mi gönderilmelidir? İlk yaklaşımda, uygulamanın kalıcı olmayan bağlantılar (**non-persistent connections**) kullandığı söylenir; ikinci yaklaşımda ise kalıcı bağlantılar (**persistent connections**). Bu tasarım sorununu derinlemesine anlamak için, kalıcı bağlantıların avantajlarını ve dezavantajlarını, hem kalıcı olmayan hem de kalıcı bağlantıları kullanabilen HTTP bağlamında inceleyelim. HTTP, varsayılan modunda kalıcı bağlantılar kullanmasına rağmen, HTTP istemcileri ve sunucuları bunun yerine kalıcı olmayan bağlantıları kullanacak şekilde yapılandırılabilir.
+
