@@ -358,3 +358,63 @@ HEAD methodu GET methoduna benzer. Sunucu HEAD methodu ile bir istek aldığınd
 Uygulama geliştiricileri hata ayıklama için genellikle HEAD methodunu kullanır. PUT methodu genellikle Web yayınlama araçlarıyla (**Web publishing tools**) birlikte kullanılır. 
 Bir kullanıcının belirli bir Web sunucusunda (**Web server**) belirli bir yola (dizine) bir nesne yüklemesine (**upload**) olanak tanır.
 PUT methodu ayrıca nesneleri Web sunucularına yüklemesi gereken uygulamalar tarafından da kullanılır. DELETE methodu, bir kullanıcının veya bir uygulamanın bir Web sunucusundaki bir nesneyi silmesine (**delete**) olanak tanır.
+
+#### HTTP Yanıt Mesajı
+
+Aşağıda tipik bir HTTP yanıt mesajı verilmiştir. Bu yanıt mesajı, az önce tartışılan örnek istek mesajının yanıtı olabilir.
+
+```
+HTTP/1.1 200 OK
+Connection: close
+Date: Tue, 29 Aug 2025 15:44:04 GMT
+Server: Apache/2.2.3 (CentOS)
+Last-Modified: Tue, 29 Aug 2025 15:11:03 GMT
+Content-Length: 6821
+Content-Type: text/html
+(data data data data data ...)
+```
+
+Bu yanıt mesajını dikkatlice inceleyelim. Üç bölümden oluşur: başlangıçta bir durum satırı (**status line**), altı başlık satırı (**header lines**) ve ardından varlık gövdesi (**entity body**). Varlık gövdesi mesajın ana içeriğidir—istenen nesnenin kendisini içerir (data data data data data ... ile temsil edilir). 
+Durum satırının üç alanı vardır: protokol versiyon alanı (**protocol version field**), bir durum kodu (**status code**) ve buna karşılık gelen bir durum mesajı (**status message**). Bu örnekte, durum satırı sunucunun HTTP/1.1 kullandığını ve her şeyin OK olduğunu (yani, sunucunun istenen nesneyi bulduğunu ve gönderdiğini) belirtir.
+
+Şimdi başlık satırlarına bakalım. Sunucu, mesajı gönderdikten sonra TCP bağlantısını kapatacağını istemciye bildirmek için `Connection: close` başlık satırını kullanır. `Date:` başlık satırı, HTTP yanıtının sunucu tarafından oluşturulup gönderildiği zamanı ve tarihi belirtir. 
+Bunun nesnenin oluşturulduğu veya en son değiştirildiği zaman olmadığını unutmayın; bu, sunucunun nesneyi dosya sisteminden aldığı, nesneyi yanıt mesajına yerleştirdiği ve yanıt mesajını gönderdiği zamandır. `Server:` başlık satırı, mesajın bir Apache Web sunucusu tarafından oluşturulduğunu belirtir; bu, HTTP istek mesajındaki `User-agent:` başlık satırına benzer. `Last-Modified:` başlık satırı, nesnenin oluşturulduğu veya en son değiştirildiği zamanı ve tarihi belirtir. Yakında daha ayrıntılı olarak ele alacağımız `Last-Modified:` başlığı, hem yerel istemcide hem de ağ önbellek sunucularında (**network cache servers**) (proxy sunucuları (**proxy servers**) olarak da bilinir) nesne önbelleğe alma (**object caching**) için kritiktir. `Content-Length:` başlık satırı, gönderilen nesnenin bayt cinsinden boyutunu belirtir. `Content-Type:` başlık satırı, varlık gövdesindeki nesnenin HTML metni olduğunu belirtir. (Nesne türü resmi olarak `Content-Type:` başlığı ile belirtilir, dosya uzantısı ile değil.)
+
+Bir örneğe baktıktan sonra, şimdi bir yanıt mesajının genel formatını inceleyelim. 
+Yanıt mesajının bu genel formatı, önceki yanıt mesajı örneğiyle eşleşmektedir. Durum kodları ve bunlarla ilişkili ifadeler hakkında birkaç ek söz söyleyelim. Durum kodu ve ilişkili ifade, isteğin sonucunu gösterir. Bazı yaygın durum kodları (**status codes**) ve ilişkili ifadeler şunlardır:
+
+```
+* **200 OK:** İstek başarılı oldu ve bilgi yanıtta döndürüldü.
+* **301 Moved Permanently:** İstenen nesne kalıcı olarak taşınmıştır; yeni URL, yanıt mesajının `Location:` başlığında belirtilir. İstemci yazılımı yeni URL'yi otomatik olarak alacaktır.
+* **400 Bad Request:** Bu, isteğin sunucu tarafından anlaşılamadığını belirten genel bir hata kodudur.
+* **404 Not Found:** İstenen belge bu sunucuda mevcut değildir.
+* **505 HTTP Version Not Supported:** İstenen HTTP protokol versiyonu sunucu tarafından desteklenmemektedir.
+```
+
+Gerçek bir HTTP yanıt mesajı görmek ister misiniz? Bu şiddetle tavsiye edilir ve yapması çok kolaydır! 
+İlk olarak favori Web sunucunuza Telnet (**Telnet**) yapın. Ardından, sunucuda barındırılan bir nesne için tek satırlık bir istek mesajı yazın. 
+Örneğin, bir komut istemine (**command prompt**) erişiminiz varsa şunu yazın:
+
+```bash
+telnet httpbin.org 80
+```
+
+Ardından şunu yazın:
+
+```
+GET /forms/post HTTP/1.1
+Host: httpbin.org 
+```
+
+![resim](https://i.ibb.co/7xDCT9td/Telnet-Http-Req.png)
+
+(Son satırı yazdıktan sonra satır başı tuşuna iki kez basın.) Bu, httpbin.org ana bilgisayarının 80 numaralı portuna bir TCP bağlantısı açar ve ardından HTTP istek mesajını gönderir. Bu temel HTML dosyasını içeren bir yanıt mesajı görmelisiniz(httpbin sitesinin form pathi). 
+Sadece HTTP mesaj satırlarını görmek ve nesnenin kendisini almak istemiyorsanız, GET yerine HEAD yazın.
+
+HTTP istek ve yanıt mesajlarında kullanılabilecek bir dizi başlık satırını tartıştık. 
+HTTP spesifikasyonu, tarayıcılar, Web sunucuları ve ağ önbellek sunucuları tarafından eklenebilecek çok, çok daha fazla başlık satırı tanımlar. 
+Başlık satırlarının toplamının sadece küçük bir kısmını ele aldık. Aşağıda birkaçını daha ve ağ Web önbelleğe almayı tartışırken birkaç küçük sayısını daha ele alacağız. HTTP protokolü, başlıkları ve durum kodları dahil olmak üzere oldukça okunaklı ve kapsamlı bir tartışma [Krishnamurthy 2001]'de verilmiştir.
+
+Bir tarayıcı, bir istek mesajına hangi başlık satırlarını dahil edeceğine nasıl karar verir? Bir Web sunucusu, bir yanıt mesajına hangi başlık satırlarını dahil edeceğine nasıl karar verir? Bir tarayıcı, tarayıcı türü ve sürümü, tarayıcının kullanıcı yapılandırması ve tarayıcının şu anda önbelleğe alınmış (**cached**), ancak muhtemelen güncel olmayan, bir nesne sürümüne sahip olup olmadığına bağlı olarak başlık satırları oluşturacaktır. 
+Web sunucuları benzer şekilde davranır: Farklı ürünler (**products**), sürümler (**versions**) ve yapılandırmalar (**configurations**) vardır, bunların hepsi yanıt mesajlarına hangi başlık satırlarının dahil edileceğini etkiler.
+
