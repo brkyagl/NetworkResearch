@@ -626,3 +626,91 @@ Yani, orijinal isteğe (**original request**) verilen yanıta ek olarak, sunucu 
 
 İlerleyen konularda ele alınan QUIC, yalın UDP protokolü üzerinde uygulama katmanında (**application layer**) uygulanan yeni bir "taşıma" protokolüdür (**transport protocol**). QUIC, mesaj çoklama (araya alma) (**message multiplexing (interleaving)**), akış başına akış kontrolü (**per-stream flow control**) ve düşük gecikmeli bağlantı kurma (**low-latency connection establishment**) gibi HTTP için arzu edilen çeşitli özelliklere sahiptir. HTTP/3, QUIC üzerinde çalışmak üzere tasarlanmış yepyeni bir HTTP protokolüdür (**HTTP protocol**). 2020 itibarıyla HTTP/3, İnternet taslaklarında (**Internet drafts**) açıklanmıştır ve henüz tam olarak standartlaştırılmamıştır (**standardized**). HTTP/2 özelliklerinin (**HTTP/2 features**) çoğu (mesaj araya alma gibi) QUIC tarafından üstlenilmiştir, bu da HTTP/3 için daha basit ve modern bir tasarım sağlamıştır.
 
+## İnternette Elektronik Posta
+
+Elektronik posta, İnternet'in başlangıcından beri mevcuttur. İnternet bebeklik dönemindeyken en popüler uygulamaydı [Segaller 1998] ve yıllar içinde daha karmaşık ve güçlü hale geldi. İnternet'in en önemli ve en çok kullanılan uygulamalarından biri olmaya devam etmektedir.
+
+Sıradan posta gibi, e-posta da eşzamansız bir iletişim ortamıdır—insanlar mesajları kendileri için uygun olduğunda gönderir ve okur, diğer insanların programlarıyla koordinasyon sağlamak zorunda kalmazlar. Postanın aksine, elektronik posta hızlıdır, dağıtımı kolaydır ve ucuzdur. 
+Modern e-posta, ekli mesajlar (**messages with attachments**), köprü bağlantılar (**hyperlinks**), HTML formatlı metin (**HTML-formatted text**) ve gömülü fotoğraflar gibi birçok güçlü özelliğe sahiptir.
+
+Bu bölümde, İnternet e-postasının kalbinde yer alan uygulama katmanı protokollerini (**application-layer protocols**) inceleyeceğiz. 
+Ancak bu protokollerin derinlemesine tartışmasına dalmadan önce, İnternet posta sistemine ve temel bileşenlerine üst düzey bir bakış atalım.
+
+İnternet posta sistemine üst düzey bir bakış, üç ana bileşenden oluşur: kullanıcı ajanları (**user agents**), posta sunucuları (**mail servers**) ve Basit Posta Transfer Protokolü (SMTP) (**Simple Mail Transfer Protocol (SMTP)**). 
+Şimdi bu bileşenlerin her birini, gönderen Alice'in, alıcı Bob'a bir e-posta mesajı (**e-mail message**) gönderdiği bağlamda açıklayalım. 
+Kullanıcı ajanları, kullanıcıların mesajları okumasına (**read**), yanıtlamasına (**reply to**), iletmesine (**forward**), kaydetmesine (**save**) ve oluşturmasına (**compose messages**) olanak tanır. E-posta için kullanıcı ajanlarına örnek olarak Microsoft Outlook, Apple Mail, Web tabanlı Gmail (**Web-based Gmail**), bir akıllı telefonda (**smartphone**) çalışan Gmail Uygulaması (**Gmail App**) vb. verilebilir. 
+Alice mesajını oluşturmayı bitirdiğinde (**composing her message**), kullanıcı ajanı mesajı kendi posta sunucusuna gönderir ve mesaj orada posta sunucusunun giden mesaj kuyruğuna (**outgoing message queue**) yerleştirilir. Bob bir mesajı okumak istediğinde, kullanıcı ajanı mesajı kendi posta sunucusundaki posta kutusundan (**mailbox**) alır.
+
+Posta sunucuları, e-posta altyapısının çekirdeğini oluşturur. Bob gibi her alıcının, posta sunucularından birinde bulunan bir posta kutusu vardır. 
+Bob'un posta kutusu, kendisine gönderilen mesajları yönetir ve saklar. Tipik bir mesaj yolculuğuna gönderenin kullanıcı ajanında başlar, sonra gönderenin posta sunucusuna gider ve ardından alıcının posta sunucusuna giderek alıcının posta kutusuna bırakılır. 
+Bob, posta kutusundaki mesajlara erişmek istediğinde, posta kutusunu içeren posta sunucusu Bob'u (kullanıcı adı (**username**) ve şifresiyle (**password**)) doğrular. Alice'in posta sunucusu ayrıca Bob'un posta sunucusundaki hatalarla da başa çıkmalıdır. 
+Alice'in sunucusu Bob'un sunucusuna posta teslim edemezse, Alice'in sunucusu mesajı bir mesaj kuyruğunda (**message queue**) bekletir ve daha sonra mesajı transfer etmeye çalışır. Yeniden denemeler genellikle 30 dakika kadar aralıklarla yapılır; birkaç gün sonra başarı sağlanamazsa, sunucu mesajı siler ve gönderene (Alice'e) bir e-posta mesajıyla bildirir.
+
+SMTP, İnternet elektronik postası için ana uygulama katmanı protokolüdür (**application-layer protocol**). 
+Postayı gönderenin posta sunucusundan alıcının posta sunucusuna transfer etmek için TCP'nin güvenilir veri transferi hizmetini (**reliable data transfer service of TCP**) kullanır. Çoğu uygulama katmanı protokolü gibi, SMTP'nin de iki tarafı vardır: gönderenin posta sunucusunda çalışan bir istemci tarafı (**client side**) ve alıcının posta sunucusunda çalışan bir sunucu tarafı (**server side**).
+SMTP'nin hem istemci hem de sunucu tarafları her posta sunucusunda çalışır. Bir posta sunucusu diğer posta sunucularına posta gönderdiğinde, bir SMTP istemcisi gibi davranır. Bir posta sunucusu diğer posta sunucularından posta aldığında, bir SMTP sunucusu gibi davranır.
+
+#### SMTP
+
+RFC 5321'de tanımlanan SMTP, İnternet elektronik postasının kalbinde yer alır. 
+Yukarıda belirtildiği gibi, SMTP mesajları gönderenlerin posta sunucularından (**mail servers**) alıcıların posta sunucularına aktarır. 
+SMTP, HTTP'den çok daha eskidir. (Orijinal SMTP RFC'si 1982'ye kadar uzanır ve SMTP ondan çok daha önce de vardı.) 
+İnternet'teki yaygınlığı ile kanıtlandığı gibi SMTP'nin çok sayıda harika özelliği olmasına rağmen, yine de belirli arkaik özelliklere sahip eski bir teknolojidir. Örneğin, tüm posta mesajlarının gövdesini (**body**) (yalnızca başlıkları (**headers**) değil) basit 7 bit ASCII ile sınırlar. 
+Bu kısıtlama, iletim kapasitesinin az olduğu ve kimsenin büyük ekler veya büyük resim, ses veya video dosyaları e-postalamadığı 1980'lerin başlarında mantıklıydı. Ancak bugün, multimedya çağında, 7 bit ASCII kısıtlaması biraz sıkıntılıdır—binary multimedya verilerinin SMTP üzerinden gönderilmeden önce ASCII'ye kodlanmasını gerektirir; ve karşılık gelen ASCII mesajının SMTP aktarımından sonra tekrar binary decode edilmesini gerektirir. 
+Hatırlayın ki HTTP, multimedya verilerinin aktarımdan önce ASCII kodlanmasını gerektirmez.
+
+SMTP'nin temel işleyişini göstermek için yaygın bir senaryoyu adım adım inceleyelim. 
+Alice'in Bob'a basit bir ASCII mesajı göndermek istediğini varsayalım.
+
+1. Alice e-posta için kullanıcı ajanını (**user agent**) çalıştırır, Bob'un e-posta adresini (**e-mail address**) sağlar (örneğin, bob@gmail.com), bir mesaj oluşturur ve kullanıcı ajanına mesajı göndermesi talimatını verir.
+2. Alice'in kullanıcı ajanı mesajı posta sunucusuna gönderir ve mesaj orada bir mesaj kuyruğuna (**message queue**) yerleştirilir.
+3. Alice'in posta sunucusunda çalışan SMTP istemci tarafı (**client side**), mesajı mesaj kuyruğunda görür. Bob'un posta sunucusunda çalışan bir SMTP sunucusuna (**SMTP server**) bir TCP bağlantısı (**TCP connection**) açar.
+4. Bazı başlangıç SMTP el sıkışmasından (**SMTP handshaking**) sonra, SMTP istemcisi Alice'in mesajını TCP bağlantısına gönderir.
+5. Bob'un posta sunucusunda, SMTP'nin sunucu tarafı (**server side**) mesajı alır. Bob'un posta sunucusu daha sonra mesajı Bob'un posta kutusuna (**mailbox**) yerleştirir.
+6. Bob, uygun olduğunda mesajı okumak için kullanıcı ajanını çalıştırır.
+
+İki posta sunucusu dünyanın zıt uçlarnda bulunsa bile, SMTP'nin normalde posta göndermek için ara posta sunucularını (**intermediate mail servers**) kullanmadığını gözlemlemek önemlidir. Alice'in sunucusu Hong Kong'da ve Bob'un sunucusu St. Louis'de ise, TCP bağlantısı Hong Kong ve St. Louis sunucuları arasında doğrudan bir bağlantıdır. Özellikle, Bob'un posta sunucusu kapalıysa, mesaj Alice'in posta sunucusunda kalır ve yeni bir deneme bekler—mesaj herhangi bir ara posta sunucusuna yerleştirilmez.
+
+Şimdi SMTP'nin bir mesajı gönderen posta sunucusundan alan posta sunucusuna nasıl aktardığına daha yakından bakalım. 
+SMTP protokolünün, yüz yüze insan etkileşimleri için kullanılan protokollere birçok benzerliği olduğunu göreceğiz. 
+İlk olarak, istemci SMTP (gönderen posta sunucusu ana bilgisayarında çalışıyor), alan posta sunucusu ana bilgisayarında çalışan sunucu SMTP'sinde 25 numaralı porta bir bağlantı kurması için TCP'ye talimat verir. Sunucu kapalıysa, istemci daha sonra tekrar dener. 
+Bu bağlantı kurulduktan sonra, sunucu ve istemci bir uygulama katmanı el sıkışması (**application-layer handshaking**) gerçekleştirir—tıpkı insanların birinden diğerine bilgi aktarmadan önce genellikle kendilerini tanıttığı gibi, SMTP istemcileri ve sunucuları bilgi aktarmadan önce kendilerini tanıtırlar. 
+Bu SMTP el sıkışma aşamasında, SMTP istemcisi gönderenin (mesajı oluşturan kişinin) e-posta adresini ve alıcının e-posta adresini belirtir. 
+SMTP istemcisi ve sunucusu birbirlerine kendilerini tanıttıktan sonra, istemci mesajı gönderir. 
+SMTP, mesajı sunucuya hatasız ulaştırmak için TCP'nin güvenilir veri transferi hizmetine güvenebilir. 
+İstemci, sunucuya göndermesi gereken başka mesajları varsa, aynı TCP bağlantısı üzerinden bu işlemi tekrarlar; aksi takdirde, TCP'ye bağlantıyı kapatması talimatını verir.
+
+Şimdi bir SMTP istemcisi (C) ve bir SMTP sunucusu (S) arasında değiş tokuş edilen mesajların örnek bir dökümüne göz atalım. 
+İstemcinin ana bilgisayar adı redberks.tr ve sunucunun ana bilgisayar adı sakarya.edu'dur. 
+C: ile başlayan ASCII metin satırları, istemcinin TCP soketine tam olarak gönderdiği satırlardır ve S: ile başlayan ASCII metin satırları, sunucunun TCP soketine tam olarak gönderdiği satırlardır. Aşağıdaki döküm, TCP bağlantısı kurulur kurulmaz başlar.
+
+```
+S: 220 sakarya.edu
+C: HELLO redberks.tr
+S: 250 Hello redberks.tr, pleased to meet you
+C: MAIL FROM: [email address removed]
+S: 250 [email address removed] ... Sender ok
+C: RCPT TO: [email address removed]
+S: 250 [email address removed] ... Recipient ok
+C: DATA
+S: 354 Enter mail, end with "." on a line by itself
+C: Her şey yolunda mı?
+C: Gelmem gerekiyor mu?
+C: .
+S: 250 Message accepted for delivery
+C: QUIT
+S: 221 sakarya.edu closing connection
+````
+
+Yukarıdaki örnekte, istemci redberks.tr posta sunucusundan sakarta.edu posta sunucusuna bir mesaj ("Her şey yolunda mı? Gelmem gerekiyor mu?") göndermektedir. Diyaloğun bir parçası olarak, istemci beş komut yayınladı: HELLO, MAIL FROM, RCPT TO, DATA ve QUIT. Bu komutlar kendi kendini açıklayıcıdır. 
+İstemci ayrıca sunucuya mesajın sonunu belirten tek bir noktadan oluşan bir satır gönderir. (ASCII jargonunda, her mesaj CRLF.CRLF ile biter, burada CR ve LF sırasıyla satır başı (**carriage return**) ve satır besleme (**line feed**) anlamına gelir.) Sunucu, her komuta bir yanıt kodu (**reply code**) ve bazı (isteğe bağlı) İngilizce açıklamalar içeren yanıtlar yayınlar. Burada SMTP'nin kalıcı bağlantılar (**persistent connections**) kullandığını belirtmek gerekir: Eğer gönderen posta sunucusunun aynı alan posta sunucusuna göndermesi gereken birden fazla mesaj varsa, tüm mesajları aynı TCP bağlantısı üzerinden gönderebilir. 
+Her mesaj için, istemci süreci yeni bir `MAIL FROM: redberks.tr` ile başlatır, mesajın sonunu bağımsız bir nokta ile belirtir ve tüm mesajlar gönderildikten sonra QUIT komutunu verir.
+
+Bir SMTP sunucusuyla doğrudan bir diyalog kurmak için Telnet kullanmanız şiddetle tavsiye edilir. Bunu yapmak için şunu yazın:
+
+```bash
+telnet smtp.gmail.com 25
+````
+
+Burada `smtp.gmail.com`, yerel bir posta sunucusunun (**local mail server**) adıdır. Bunu yaptığınızda, yerel ana bilgisayarınız (**local host**) ile posta sunucusu arasında sadece bir TCP bağlantısı kurmuş olursunuz. Bu satırı yazdıktan sonra, sunucudan hemen 220 yanıtını almalısınız. 
+Ardından, uygun zamanlarda SMTP komutları olan HELO, MAIL FROM, RCPT TO, DATA, CRLF.CRLF ve QUIT komutlarını yayınlayın. 
