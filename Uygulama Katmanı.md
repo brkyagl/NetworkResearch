@@ -686,7 +686,7 @@ C: ile başlayan ASCII metin satırları, istemcinin TCP soketine tam olarak gö
 
 ```
 S: 220 sakarya.edu
-C: HELLO redberks.tr
+C: HELO redberks.tr
 S: 250 Hello redberks.tr, pleased to meet you
 C: MAIL FROM: [email address removed]
 S: 250 [email address removed] ... Sender ok
@@ -702,7 +702,7 @@ C: QUIT
 S: 221 sakarya.edu closing connection
 ````
 
-Yukarıdaki örnekte, istemci redberks.tr posta sunucusundan sakarta.edu posta sunucusuna bir mesaj ("Her şey yolunda mı? Gelmem gerekiyor mu?") göndermektedir. Diyaloğun bir parçası olarak, istemci beş komut yayınladı: HELLO, MAIL FROM, RCPT TO, DATA ve QUIT. Bu komutlar kendi kendini açıklayıcıdır. 
+Yukarıdaki örnekte, istemci redberks.tr posta sunucusundan sakarta.edu posta sunucusuna bir mesaj ("Her şey yolunda mı? Gelmem gerekiyor mu?") göndermektedir. Diyaloğun bir parçası olarak, istemci beş komut yayınladı: HELO(HELLO KISA), MAIL FROM, RCPT TO, DATA ve QUIT. Bu komutlar kendi kendini açıklayıcıdır. 
 İstemci ayrıca sunucuya mesajın sonunu belirten tek bir noktadan oluşan bir satır gönderir. (ASCII jargonunda, her mesaj CRLF.CRLF ile biter, burada CR ve LF sırasıyla satır başı (**carriage return**) ve satır besleme (**line feed**) anlamına gelir.) Sunucu, her komuta bir yanıt kodu (**reply code**) ve bazı (isteğe bağlı) İngilizce açıklamalar içeren yanıtlar yayınlar. Burada SMTP'nin kalıcı bağlantılar (**persistent connections**) kullandığını belirtmek gerekir: Eğer gönderen posta sunucusunun aynı alan posta sunucusuna göndermesi gereken birden fazla mesaj varsa, tüm mesajları aynı TCP bağlantısı üzerinden gönderebilir. 
 Her mesaj için, istemci süreci yeni bir `MAIL FROM: redberks.tr` ile başlatır, mesajın sonunu bağımsız bir nokta ile belirtir ve tüm mesajlar gönderildikten sonra QUIT komutunu verir.
 
@@ -714,3 +714,39 @@ telnet smtp.gmail.com 25
 
 Burada `smtp.gmail.com`, yerel bir posta sunucusunun (**local mail server**) adıdır. Bunu yaptığınızda, yerel ana bilgisayarınız (**local host**) ile posta sunucusu arasında sadece bir TCP bağlantısı kurmuş olursunuz. Bu satırı yazdıktan sonra, sunucudan hemen 220 yanıtını almalısınız. 
 Ardından, uygun zamanlarda SMTP komutları olan HELO, MAIL FROM, RCPT TO, DATA, CRLF.CRLF ve QUIT komutlarını yayınlayın. 
+
+#### Posta Mesaj Formatları
+
+Alice, Bob'a sıradan bir posta mektubu (**snail-mail letter**) yazdığında, mektubun üst kısmına Bob'un adresi, kendi iade adresi (**return address**) ve tarih gibi her türlü ek başlık bilgisini (**peripheral header information**) ekleyebilir. Benzer şekilde, bir e-posta mesajı (**e-mail message**) bir kişiden diğerine gönderildiğinde, mesajın gövdesinden (**body**) önce ek bilgi içeren bir başlık (**header**) gelir. Bu ek bilgi, RFC 5322'de tanımlanan bir dizi başlık satırı (**header lines**) içinde bulunur. Başlık satırları ve mesajın gövdesi boş bir satırla (**blank line**) (yani CRLF ile) ayrılır. 
+RFC 5322, posta başlık satırlarının tam formatını ve anlamsal yorumlarını belirtir. HTTP'de olduğu gibi, her başlık satırı, bir anahtar kelimeyi (**keyword**) takiben iki nokta üst üste ve ardından bir değer içeren okunabilir metin içerir. Anahtar kelimelerin bazıları zorunlu, diğerleri ise isteğe bağlıdır. Her başlığın bir `From:` başlık satırı ve bir `To:` başlık satırı olmalıdır; bir başlık, bir `Subject:` başlık satırı ve diğer isteğe bağlı başlık satırlarını da içerebilir. Bu başlık satırlarının, incelediğimiz SMTP komutlarından (**SMTP commands**) farklı olduğunu (hatta "from" ve "to" gibi bazı ortak kelimeler içerseler bile) not etmek önemlidir. O bölümde yer alan komutlar, SMTP el sıkışma protokolünün (**SMTP handshaking protocol**) bir parçasıydı; bu bölümde incelenen başlık satırları ise posta mesajının kendisinin bir parçasıdır.
+
+Tipik bir mesaj başlığı (**message header**) şöyle görünür:
+
+```
+
+From: [email address removed]
+To: [email address removed]
+Subject: Hal ve hatır sorma.
+
+```
+
+Mesaj başlığından sonra boş bir satır gelir; ardından mesaj gövdesi (ASCII olarak) gelir. Tartışıldığı gibi, `Subject:` başlık satırı da dahil olmak üzere bazı başlık satırları içeren bir mesajı bir posta sunucusuna göndermek için Telnet (**Telnet**) kullanmalısınız. Bunu yapmak için, `telnet serverName(herhangi bir server) 25` komutunu verin.
+
+#### Posta Erişim Protokolleri
+
+SMTP, mesajı Alice'in posta sunucusundan (**Alice’s mail server**) Bob'un posta sunucusuna (**Bob’s mail server**) teslim ettikten sonra, mesaj Bob'un posta kutusuna (**Bob’s mailbox**) yerleştirilir. 
+Bob'un (alıcı) kullanıcı ajanını (**user agent**) yerel ana bilgisayarında (**local host**) (örneğin, akıllı telefonunda (**smartphone**) veya PC'sinde) çalıştırdığı düşünüldüğünde, yerel ana bilgisayarına bir posta sunucusu (**mail server**) da yerleştirmeyi düşünmek doğaldır. Bu yaklaşımla, Alice'in posta sunucusu Bob'un PC'si ile doğrudan iletişim kurardı. 
+Ancak bu yaklaşımın bir sorunu var. Bir posta sunucusunun posta kutularını yönettiğini ve SMTP'nin istemci ve sunucu taraflarını çalıştırdığını hatırlayın. 
+Eğer Bob'un posta sunucusu yerel ana bilgisayarında olsaydı, Bob'un ana bilgisayarının yeni posta almak için sürekli açık kalması ve İnternet'e bağlı olması gerekirdi, ki yeni posta her an gelebilir. 
+Bu birçok İnternet kullanıcısı için pratik değildir. Bunun yerine, tipik bir kullanıcı yerel ana bilgisayarında bir kullanıcı ajanı çalıştırır, ancak posta kutusuna her zaman açık, paylaşılan bir posta sunucusunda (**always on shared mail server**) saklanan posta kutusuna erişir. Bu posta sunucusu diğer kullanıcılarla paylaşılır.
+
+Şimdi bir e-posta mesajının Alice'ten Bob'a gönderilirken izlediği yolu düşünelim. Az önce öğrendik ki yol boyunca bir noktada e-posta mesajının Bob'un posta sunucusuna bırakılması gerekiyor. 
+Bu, Alice'in kullanıcı ajanının (**sender’s user agent**) mesajı doğrudan Bob'un posta sunucusuna göndermesiyle basitçe yapılabilirdi. Ancak, tipik olarak gönderenin kullanıcı ajanı doğrudan alıcının posta sunucusuyla iletişim kurmaz. Bunun yerine, Alice'in kullanıcı ajanı, e-posta mesajını kendi posta sunucusuna teslim etmek için SMTP veya HTTP kullanır, ardından Alice'in posta sunucusu SMTP'yi (bir SMTP istemcisi olarak) kullanarak e-posta mesajını Bob'un posta sunucusuna iletir. Neden iki adımlı prosedür (**two-step procedure**)? Esas olarak Alice'in posta sunucusu aracılığıyla iletilmeden, Alice'in kullanıcı ajanının ulaşılamayan hedef posta sunucusuna (**unreachable destination mail server**) karşı herhangi bir çaresi olmaması nedeniyle. 
+Alice'in e-postayı önce kendi posta sunucusuna bırakmasını sağlayarak, Alice'in posta sunucusu Bob'un posta sunucusu çalışır hale gelene kadar mesajı Bob'un posta sunucusuna göndermeyi tekrar tekrar deneyebilir, örneğin her 30 dakikada bir. (Ve eğer Alice'in posta sunucusu kapalıysa, o zaman sistem yöneticisine (**system administrator**) şikayet etme imkanı vardır!)
+
+Ama yapbozun hala eksik bir parçası var! Bob gibi, yerel ana bilgisayarında bir kullanıcı ajanı çalıştıran bir alıcı, posta sunucusunda duran mesajlarını nasıl alır? 
+Bob'un kullanıcı ajanının mesajları almak için SMTP kullanamayacağını unutmayın, çünkü mesajları almak bir çekme işlemi (**pull operation**) iken, SMTP bir itme protokolüdür (**push protocol**).
+
+Bugün, Bob'un bir posta sunucusundan e-postasını almasının iki yaygın yolu vardır. Eğer Bob Web tabanlı e-posta (**Web-based e-mail**) veya bir akıllı telefon uygulaması (**smartphone app**) (Gmail gibi) kullanıyorsa, kullanıcı ajanı Bob'un e-postasını almak için HTTP kullanacaktır. Bu durum, Bob'un posta sunucusunun bir HTTP arayüzüne (**HTTP interface**) ve ayrıca bir SMTP arayüzüne (**SMTP interface**) (Alice'in posta sunucusuyla iletişim kurmak için) sahip olmasını gerektirir. Tipik olarak Microsoft Outlook gibi posta istemcilerinde kullanılan alternatif yöntem ise RFC 3501'de tanımlanan İnternet Posta Erişim Protokolü (IMAP) (**Internet Mail Access Protocol (IMAP)**)'ni kullanmaktır. Hem HTTP hem de IMAP yaklaşımları, Bob'un posta sunucusunda tutulan klasörleri (**folders**) yönetmesine olanak tanır. 
+Bob, oluşturduğu klasörlere mesajları taşıyabilir, mesajları silebilir (**delete messages**), mesajları önemli olarak işaretleyebilir (**mark messages as important**) vb.
+
