@@ -750,3 +750,56 @@ Bob'un kullanıcı ajanının mesajları almak için SMTP kullanamayacağını u
 Bugün, Bob'un bir posta sunucusundan e-postasını almasının iki yaygın yolu vardır. Eğer Bob Web tabanlı e-posta (**Web-based e-mail**) veya bir akıllı telefon uygulaması (**smartphone app**) (Gmail gibi) kullanıyorsa, kullanıcı ajanı Bob'un e-postasını almak için HTTP kullanacaktır. Bu durum, Bob'un posta sunucusunun bir HTTP arayüzüne (**HTTP interface**) ve ayrıca bir SMTP arayüzüne (**SMTP interface**) (Alice'in posta sunucusuyla iletişim kurmak için) sahip olmasını gerektirir. Tipik olarak Microsoft Outlook gibi posta istemcilerinde kullanılan alternatif yöntem ise RFC 3501'de tanımlanan İnternet Posta Erişim Protokolü (IMAP) (**Internet Mail Access Protocol (IMAP)**)'ni kullanmaktır. Hem HTTP hem de IMAP yaklaşımları, Bob'un posta sunucusunda tutulan klasörleri (**folders**) yönetmesine olanak tanır. 
 Bob, oluşturduğu klasörlere mesajları taşıyabilir, mesajları silebilir (**delete messages**), mesajları önemli olarak işaretleyebilir (**mark messages as important**) vb.
 
+## DNS—İnternet'in Dizin Hizmeti
+
+Biz insanlar birçok şekilde tanımlanabiliriz. Örneğin, doğum belgelerimizde yazan adlarla tanımlanabiliriz. 
+Sosyal güvenlik numaralarımızla tanımlanabiliriz. Sürücü belgesi numaralarımızla tanımlanabiliriz. 
+Her biri insanları tanımlamak için kullanılabilse de, belirli bir bağlamda bir tanımlayıcı diğerinden daha uygun olabilir. 
+Örneğin, IRS'deki bilgisayarlar (Amerika Birleşik Devletleri'nin o meşhur vergi toplama kurumu) doğum belgesindeki adlar yerine sabit uzunluklu sosyal güvenlik numaralarını kullanmayı tercih eder. Öte yandan, sıradan insanlar sosyal güvenlik numaraları yerine daha akılda kalıcı olan doğum belgesindeki adları tercih ederler. (Gerçekten de, "Merhaba. Adım 999-231-987-54. Eşimle tanışın, 999-231-987-55" dediğinizi hayal edebilir misiniz?)
+
+Tıpkı insanların birçok şekilde tanımlanabildiği gibi, İnternet ana bilgisayarları (**Internet hosts**) da öyle. 
+Bir ana bilgisayar için tanımlayıcılardan biri ana bilgisayar adıdır (**hostname**). www.facebook.com, www.google.com, sakarya.edu gibi ana bilgisayar adları akılda kalıcıdır ve bu nedenle insanlar tarafından takdir edilir. Ancak, ana bilgisayar adları, ana bilgisayarın İnternet içindeki konumu hakkında çok az (veya hiç) bilgi sağlar. (www.redberks.tr gibi ülke kodu .tr ile biten bir ana bilgisayar adı, ana bilgisayarın muhtemelen Türkiye'de olduğunu söyler, ancak daha fazla bir şey söylemez.) Ayrıca, ana bilgisayar adları değişken uzunluklu alfasayısal karakterlerden oluşabildiği için, yönlendiriciler (**routers**) tarafından işlenmesi zor olacaktır. Bu nedenlerle, ana bilgisayarlar aynı zamanda sözde IP adresleri (**IP addresses**) ile de tanımlanır.
+
+Bir IP adresi dört bayttan (**bytes**) oluşur ve katı bir hiyerarşik yapıya (**hierarchical structure**) sahiptir. 
+Bir IP adresi 121.7.106.83 gibi görünür, burada her nokta ondalık gösterimde 0'dan 255'e kadar ifade edilen baytlardan birini ayırır. 
+Bir IP adresi hiyerarşiktir, çünkü adresi soldan sağa doğru taradığımızda, ana bilgisayarın İnternet'te (yani, ağlar ağında hangi ağ içinde) nerede bulunduğuna dair giderek daha spesifik bilgi elde ederiz. Benzer şekilde, bir posta adresini alttan üste doğru taradığımızda, alıcının nerede bulunduğuna dair giderek daha spesifik bilgi elde ederiz.
+
+#### DNS Tarafından Sağlanan Hizmetler
+
+Bir ana bilgisayarı (**host**) tanımlamanın iki yolu olduğunu az önce gördük—bir ana bilgisayar adı (**hostname**) ve bir IP adresi (**IP address**) ile. 
+İnsanlar daha akılda kalıcı olan ana bilgisayar adı tanımlayıcısını tercih ederken, yönlendiriciler (**routers**) sabit uzunluklu, hiyerarşik yapılı IP adreslerini tercih eder. Bu tercihleri uzlaştırmak için, ana bilgisayar adlarını IP adreslerine çeviren bir dizin hizmetine (**directory service**) ihtiyacımız var. Bu, İnternet'in alan adı sisteminin (DNS) (**domain name system (DNS)**) ana görevidir. 
+DNS, (1) bir DNS sunucuları (**DNS servers**) hiyerarşisinde uygulanan dağıtılmış bir veritabanı (**distributed database**) ve (2) ana bilgisayarların (**hosts**) dağıtılmış veritabanını sorgulamasına (**query**) olanak tanıyan bir uygulama katmanı protokolüdür (**application-layer protocol**). 
+DNS sunucuları genellikle Berkeley Internet Name Domain (BIND) yazılımını [BIND 2020] çalıştıran UNIX makineleridir (**UNIX machines**). 
+DNS protokolü UDP (**UDP**) üzerinde çalışır ve 53 numaralı portu (**port 53**) kullanır.
+
+DNS, kullanıcı tarafından sağlanan ana bilgisayar adlarını IP adreslerine çevirmek için HTTP (**HTTP**) ve SMTP (**SMTP**) dahil olmak üzere diğer uygulama katmanı protokolleri tarafından yaygın olarak kullanılır. Örnek olarak, bir kullanıcının ana bilgisayarında çalışan bir tarayıcının (yani, bir HTTP istemcisinin) www.redberks.com/index.html URL'sini istediğinde ne olduğunu düşünelim. Kullanıcının ana bilgisayarının Web sunucusu (**Web server**) www.redberks.com'a bir HTTP istek mesajı (**HTTP request message**) gönderebilmesi için, kullanıcının ana bilgisayarı önce www.redberks.com'un IP adresini almalıdır. 
+
+Bu şu şekilde yapılır:
+
+1. Aynı kullanıcı makinesi, DNS uygulamasının istemci tarafını çalıştırır.
+2. Tarayıcı, URL'den ana bilgisayar adını (www.redberks.com) çıkarır ve ana bilgisayar adını DNS uygulamasının istemci tarafına iletir.
+3. DNS istemcisi (**DNS client**), ana bilgisayar adını içeren bir sorguyu bir DNS sunucusuna (**DNS server**) gönderir.
+4. DNS istemcisi sonunda, ana bilgisayar adının IP adresini içeren bir yanıt alır.
+5. Tarayıcı DNS'ten IP adresini aldıktan sonra, o IP adresindeki 80 numaralı portta bulunan HTTP sunucu sürecine bir TCP bağlantısı başlatabilir.
+
+Bu örnekten görüyoruz ki DNS, kendisini kullanan İnternet uygulamalarına ek bir gecikme—bazen önemli bir gecikme—ekler. Neyse ki, aşağıda tartışacağımız gibi, istenen IP adresi genellikle "yakın" bir DNS sunucusunda önbelleğe alınır, bu da DNS ağ trafiğini (**DNS network traffic**) ve ortalama DNS gecikmesini (**DNS delay**) azaltmaya yardımcı olur.
+
+DNS, ana bilgisayar adlarını IP adreslerine çevirmenin yanı sıra birkaç önemli hizmet daha sağlar:
+
+* **Ana Bilgisayar Takma Adı (Host aliasing).** Karmaşık bir ana bilgisayar adına sahip bir ana bilgisayar, bir veya daha fazla takma ada (**alias names**) sahip olabilir. Örneğin, relay1.west-coast.enterprise.com gibi bir ana bilgisayar adı, enterprise.com ve www.enterprise.com gibi iki takma ada sahip olabilir.
+Bu durumda, relay1.west-coast.enterprise.com ana bilgisayar adının kurallı ana bilgisayar adı (**canonical hostname**) olduğu söylenir. Takma ad ana bilgisayar adları (**alias hostnames**), mevcut olduğunda, genellikle kurallı ana bilgisayar adlarından daha akılda kalıcıdır. DNS, sağlanan bir takma ad ana bilgisayar adı için kurallı ana bilgisayar adını ve ayrıca ana bilgisayarın IP adresini almak için bir uygulama tarafından çağrılabilir.
+
+* **Posta Sunucusu Takma Adı (Mail server aliasing).** Açık nedenlerle, e-posta adreslerinin akılda kalıcı olması son derece arzu edilir. Örneğin, Bob'un Yahoo Mail'de bir hesabı varsa, Bob'un e-posta adresi bob@yahoo.com kadar basit olabilir. Ancak, Yahoo posta sunucusunun ana bilgisayar adı, yahoo.com'dan daha karmaşıktır ve çok daha az akılda kalıcıdır (örneğin, kurallı ana bilgisayar adı relay1.west-coast.yahoo.com gibi bir şey olabilir). DNS, sağlanan bir takma ad ana bilgisayar adı için kurallı ana bilgisayar adını ve ayrıca ana bilgisayarın IP adresini almak için bir posta uygulaması tarafından çağrılabilir. Aslında, MX kaydı (**MX record**) (aşağıya bakın), bir şirketin posta sunucusunun (**mail server**) ve Web sunucusunun (**Web server**) aynı (takma adlı) ana bilgisayar adlarına sahip olmasına izin verir; örneğin, bir şirketin Web sunucusu ve posta sunucusu her ikisi de enterprise.com olarak adlandırılabilir.
+  
+* **Yük Dağılımı (Load distribution).** DNS, çoğaltılmış sunucular (**replicated servers**), örneğin çoğaltılmış Web sunucuları arasında yük dağılımı yapmak için de kullanılır. cnn.com gibi yoğun siteler, her sunucunun farklı bir uç sistemde (**end system**) çalıştığı ve her birinin farklı bir IP adresine sahip olduğu birden fazla sunucu üzerinde çoğaltılır. Çoğaltılmış Web sunucuları için, bir grup IP adresi bu nedenle bir takma ad ana bilgisayar adıyla ilişkilendirilir.
+
+PRATİK: DNS: İstemci-Sunucu Paradigması Aracılığıyla Kritik Ağ İşlevleri
+
+HTTP, FTP ve SMTP gibi, DNS protokolü de bir uygulama katmanı protokolüdür, çünkü (1) istemci-sunucu paradigması (**client-server paradigm**) kullanarak iletişim kuran uç sistemler arasında çalışır ve (2) iletişim kuran uç sistemler arasında DNS mesajlarını (**DNS messages**) aktarmak için temel bir uçtan uca taşıma protokolüne (**end-to-end transport protocol**) dayanır. Ancak başka bir anlamda, DNS'in rolü Web, dosya transferi ve e-posta uygulamalarından oldukça farklıdır. Bu uygulamaların aksine, DNS, kullanıcının doğrudan etkileşimde bulunduğu bir uygulama değildir. 
+Bunun yerine, DNS, İnternet'teki kullanıcı uygulamaları ve diğer yazılımlar için temel bir İnternet işlevi—yani, ana bilgisayar adlarını altındaki IP adreslerine çevirmeyi—sağlar (**network-name to network-address translation**). İnternet mimarisindeki karmaşıklığın çoğunun ağın "kenarlarında" (**edges**) bulunduğunu belirtmiştik. Kritik ad-adres çeviri işlemini (**name-to-address translation process**), ağın kenarında bulunan istemciler ve sunucular kullanarak uygulayan DNS, bu tasarım felsefesinin bir başka örneğidir. 
+
+DNS veritabanı bu IP adresi kümesini içerir. İstemciler bir adres kümesine eşlenen bir ad için bir DNS sorgusu yaptığında, sunucu IP adreslerinin tamamını içeren bir yanıt verir, ancak her yanıtta adreslerin sıralamasını döndürür. Bir istemci tipik olarak HTTP istek mesajını kümede ilk sırada listelenen IP adresine gönderdiği için, DNS döndürmesi trafiği çoğaltılmış sunucular arasında dağıtır. DNS döndürmesi e-posta için de kullanılır, böylece birden fazla posta sunucusu aynı takma adı kullanabilir. Ayrıca, Akamai gibi içerik dağıtım şirketleri Web içerik dağıtımını sağlamak için DNS'i daha gelişmiş yollarla kullanmıştır [Dilley 2002] 
+
+DNS, RFC 1034 ve RFC 1035'te belirtilmiştir ve birkaç ek RFC'de güncellenmiştir. 
+Karmaşık bir sistemdir ve burada sadece temel yönlerine değiniyoruz. İlgilenen okuyucu bu RFC'lere ve Albitz ve Liu'nun kitabına [Albitz 1993] başvurabilir; ayrıca DNS'in ne olduğu ve nedenine dair güzel bir açıklama sunan geriye dönük makaleye [Mockapetris 1988] ve [Mockapetris 2005]'e de bakılabilir.
+
