@@ -803,3 +803,27 @@ DNS veritabanı bu IP adresi kümesini içerir. İstemciler bir adres kümesine 
 DNS, RFC 1034 ve RFC 1035'te belirtilmiştir ve birkaç ek RFC'de güncellenmiştir. 
 Karmaşık bir sistemdir ve burada sadece temel yönlerine değiniyoruz. İlgilenen okuyucu bu RFC'lere ve Albitz ve Liu'nun kitabına [Albitz 1993] başvurabilir; ayrıca DNS'in ne olduğu ve nedenine dair güzel bir açıklama sunan geriye dönük makaleye [Mockapetris 1988] ve [Mockapetris 2005]'e de bakılabilir.
 
+#### DNS Nasıl Çalışır?—Genel Bakış
+
+Şimdi DNS'in nasıl çalıştığına dair üst düzey bir genel bakış sunacağız. 
+Tartışmamız, ana bilgisayar adı-IP adresi çeviri hizmetine (**hostname-to-IP-address translation service**) odaklanacaktır.
+
+Bir kullanıcının ana bilgisayarında (**user’s host**) çalışan bir uygulamanın (bir Web tarayıcısı veya bir posta istemcisi (**mail client**) gibi) bir ana bilgisayar adını (**hostname**) bir IP adresine çevirmesi gerektiğini varsayalım. 
+Uygulama, çevrilmesi gereken ana bilgisayar adını belirterek DNS uygulamasının istemci tarafını çağıracaktır. (Birçok UNIX tabanlı makinede, uygulamanın çeviriyi gerçekleştirmek için çağırdığı fonksiyon çağrısı `gethostbyname()`'dir.) 
+Daha sonra kullanıcının ana bilgisayarındaki DNS kontrolü ele alır ve ağa (**network**) bir sorgu mesajı (**query message**) gönderir. 
+Tüm DNS sorgu ve yanıt mesajları, 53 numaralı porta (**port 53**) UDP datagramları (**UDP datagrams**) içinde gönderilir. 
+Milisaniyelerden saniyelere kadar değişen bir gecikmeden sonra, kullanıcının ana bilgisayarındaki DNS, istenen eşlemeyi (**mapping**) sağlayan bir DNS yanıt mesajı (**DNS reply message**) alır. Bu eşleme daha sonra çağıran uygulamaya iletilir. Böylece, kullanıcının ana bilgisayarındaki çağıran uygulamanın bakış açısından, DNS basit, anlaşılır bir çeviri hizmeti sağlayan bir kara kutudur (**black box**). 
+Ancak aslında, hizmeti uygulayan kara kutu karmaşıktır ve dünya çapında dağıtılmış çok sayıda DNS sunucusundan (**DNS servers**) ve DNS sunucularının ve sorgulayan ana bilgisayarların nasıl iletişim kurduğunu belirten bir uygulama katmanı protokolünden (**application-layer protocol**) oluşur.
+
+DNS için basit bir tasarım, tüm eşlemeleri içeren tek bir DNS sunucusuna sahip olmaktı. 
+Bu merkezileştirilmiş tasarımda (**centralized design**), istemciler tüm sorguları tek bir DNS sunucusuna yönlendirir ve DNS sunucusu sorgulayan istemcilere doğrudan yanıt verir. Bu tasarımın basitliği çekici olsa da, günümüzün İnternet'i için, devasa (ve büyüyen) ana bilgisayar sayısıyla, uygun değildir. 
+
+Merkezileştirilmiş bir tasarımın sorunları şunlardır:
+
+* **Tek bir hata noktası (A single point of failure).** DNS sunucusu çökerse, tüm İnternet de çöker!
+* **Trafik hacmi (Traffic volume).** Tek bir DNS sunucusu, yüz milyonlarca ana bilgisayardan üretilen tüm HTTP istekleri (**HTTP requests**) ve e-posta mesajları (**e-mail messages**) için tüm DNS sorgularını yönetmek zorunda kalırdı.
+* **Uzak merkezileştirilmiş veritabanı (Distant centralized database).** Tek bir DNS sunucusu, tüm sorgulayan istemcilere "yakın" olamaz. Eğer tek DNS sunucusunu New York şehrine koyarsak, Avustralya'dan gelen tüm sorguların dünyanın diğer ucuna, belki de yavaş ve yoğun bağlantılar üzerinden gitmesi gerekirdi. Bu önemli gecikmelere yol açabilir.
+* **Bakım (Maintenance).** Tek DNS sunucusu, tüm İnternet ana bilgisayarlarının kayıtlarını tutmak zorunda kalırdı. Bu merkezileştirilmiş veritabanı devasa olmakla kalmaz, aynı zamanda her yeni ana bilgisayarı hesaba katmak için sık sık güncellenmesi gerekirdi.
+
+Özetle, tek bir DNS sunucusundaki merkezileştirilmiş bir veritabanı ölçeklenemez (**scale**). Sonuç olarak, DNS tasarım gereği dağıtılmıştır (**distributed by design**). Aslında, DNS, dağıtılmış bir veritabanının İnternet'te nasıl uygulanabileceğinin harika bir örneğidir.
+
