@@ -827,3 +827,42 @@ Merkezileştirilmiş bir tasarımın sorunları şunlardır:
 
 Özetle, tek bir DNS sunucusundaki merkezileştirilmiş bir veritabanı ölçeklenemez (**scale**). Sonuç olarak, DNS tasarım gereği dağıtılmıştır (**distributed by design**). Aslında, DNS, dağıtılmış bir veritabanının İnternet'te nasıl uygulanabileceğinin harika bir örneğidir.
 
+#### Dağıtılmış, Hiyerarşik Bir Veritabanı
+
+Ölçek sorununu ele almak için, DNS, hiyerarşik bir şekilde düzenlenmiş ve dünya çapında dağıtılmış çok sayıda sunucu kullanır. 
+Tek bir DNS sunucusu, İnternet'teki tüm ana bilgisayarların tüm eşlemelerini barındırmaz. 
+Bunun yerine, eşlemeler DNS sunucuları arasında dağıtılır. 
+İlk yaklaşıma göre, hiyerarşik olarak organize edilmiş üç sınıf DNS sunucusu vardır: kök DNS sunucuları (**root DNS servers**), üst düzey alan adı (TLD) DNS sunucuları (**top-level domain (TLD) DNS servers**) ve yetkili DNS sunucuları (**authoritative DNS servers**).
+
+Bu üç sunucu sınıfının nasıl etkileşimde bulunduğunu anlamak için, bir DNS istemcisinin (**DNS client**) www.amazon.com ana bilgisayar adının IP adresini (**IP address**) belirlemek istediğini varsayalım. İlk yaklaşıma göre, aşağıdaki olaylar gerçekleşecektir. 
+İstemci ilk olarak kök sunuculardan (**root servers**) biriyle iletişim kurar, bu sunucu .com üst düzey alanı için TLD sunucularının IP adreslerini döndürür. İstemci daha sonra bu TLD sunucularından biriyle iletişim kurar, bu sunucu amazon.com için yetkili bir sunucunun IP adresini döndürür. 
+Son olarak, istemci amazon.com için yetkili sunuculardan biriyle iletişim kurar, bu sunucu www.amazon.com ana bilgisayar adı (**hostname**) için IP adresini döndürür. Bu DNS arama sürecini (**DNS lookup process**) yakında daha ayrıntılı inceleyeceğiz. Ama önce bu üç sınıf DNS sunucusuna daha yakından bakalım:
+
+* **Kök DNS sunucuları.** Dünya çapında dağılmış 1000'den fazla kök sunucu örneği vardır.
+Bu kök sunucular, 12 farklı kuruluş tarafından yönetilen ve İnternet Tahsisli Numaralar Otoritesi [IANA 2020] aracılığıyla koordine edilen 13 farklı kök sunucunun kopyalarıdır. Kök ad sunucularının tam listesi, onları yöneten kuruluşlar ve IP adresleri [https://www.iana.org/domains/root/servers]'da bulunabilir.
+Kök ad sunucuları, TLD sunucularının IP adreslerini sağlar.
+
+* **Üst düzey alan adı (TLD) sunucuları.** Üst düzey alan adlarının her biri için—com, org, net, edu ve gov gibi üst düzey alan adları ve uk, fr, ca ve jp gibi tüm ülke üst düzey alan adları için—bir TLD sunucusu (veya sunucu kümesi) bulunur. Verisign Global Registry Services şirketi, com üst düzey alanı için TLD sunucularını, Educause şirketi ise edu üst düzey alanı için TLD sunucularını yönetir. Bir TLD'yi destekleyen ağ altyapısı büyük ve karmaşık olabilir; Verisign ağına güzel bir genel bakış için [Osterweil 2012]'ye bakın. Tüm üst düzey alan adlarının listesi için [https://tld-list.com/]'ye bakın.
+TLD sunucuları, yetkili DNS sunucularının IP adreslerini sağlar.
+  
+* **Yetkili DNS sunucuları.** İnternet üzerinde halka açık ana bilgisayarlara (**publicly accessible hosts**) (Web sunucuları ve posta sunucuları gibi) sahip her kuruluş, bu ana bilgisayarların adlarını IP adreslerine eşleyen halka açık DNS kayıtları (**DNS records**) sağlamalıdır. Bir kuruluşun yetkili DNS sunucusu, bu DNS kayıtlarını barındırır. Bir kuruluş bu kayıtları tutmak için kendi yetkili DNS sunucusunu kurmayı seçebilir; alternatif olarak, kuruluş bu kayıtların barındırılması için ödeme yapabilir.
+
+Kök, TLD ve yetkili DNS sunucularının tümü, DNS sunucularının hiyerarşisine aittir. Yerel DNS sunucusu (**local DNS server**) adı verilen başka bir önemli DNS sunucusu türü vardır. Yerel DNS sunucusu, sunucu hiyerarşisine sıkı sıkıya ait değildir ancak yine de DNS mimarisi için merkezidir. 
+Her İSS—bir konut İSS'si (**residential ISP**) veya kurumsal bir İSS (**institutional ISP**) gibi—bir yerel DNS sunucusuna (varsayılan ad sunucusu (**default name server**) olarak da adlandırılır) sahiptir. Bir ana bilgisayar bir İSS'ye bağlandığında, İSS ana bilgisayara bir veya daha fazla yerel DNS sunucusunun IP adresini sağlar. Windows veya UNIX'teki ağ durumu(network status) pencerelerine erişerek yerel DNS sunucunuzun IP adresini kolayca belirleyebilirsiniz. 
+Bir ana bilgisayarın yerel DNS sunucusu tipik olarak ana bilgisayara "yakındır". Kurumsal bir İSS için, yerel DNS sunucusu ana bilgisayarla aynı LAN'da olabilir; konut İSS'si için, ana bilgisayardan genellikle birkaç yönlendiriciden daha fazla ayrılmamıştır. 
+Bir ana bilgisayar DNS sorgusu yaptığında, sorgu yerel DNS sunucusuna gönderilir; bu sunucu bir proxy (**proxy**) gibi davranır ve sorguyu aşağıda daha ayrıntılı tartışacağımız DNS sunucu hiyerarşisine iletir.
+
+Basit bir örneğe bakalım. cse.nyu.edu ana bilgisayarının gaia.cs.umass.edu'nun IP adresini istediğini varsayalım. Ayrıca NYU'nun cse.nyu.edu için yerel DNS sunucusunun dns.nyu.edu ve gaia.cs.umass.edu için yetkili bir DNS sunucusunun dns.umass.edu olarak adlandırıldığını varsayalım. cse.nyu.edu ana bilgisayarı ilk olarak yerel DNS sunucusuna, dns.nyu.edu'ya bir DNS sorgu mesajı (**DNS query message**) gönderir. 
+Sorgu mesajı çevrilecek ana bilgisayar adını, yani gaia.cs.umass.edu'yu içerir. Yerel DNS sunucusu sorgu mesajını bir kök DNS sunucusuna iletir. 
+Kök DNS sunucusu .edu son ekini not alır ve yerel DNS sunucusuna .edu'dan sorumlu TLD sunucularının IP adreslerinin bir listesini döndürür. 
+Yerel DNS sunucusu daha sonra sorgu mesajını bu TLD sunucularından birine yeniden gönderir. TLD sunucusu umass.edu son ekini not alır ve Massachusetts Üniversitesi için yetkili DNS sunucusunun, yani dns.umass.edu'nun IP adresiyle yanıt verir. Son olarak, yerel DNS sunucusu sorgu mesajını doğrudan dns.umass.edu'ya yeniden gönderir, bu da gaia.cs.umass.edu'nun IP adresiyle yanıt verir. Bu örnekte, bir ana bilgisayar adı için eşlemeyi elde etmek amacıyla sekiz DNS mesajı gönderildiğine dikkat edin: dört sorgu mesajı ve dört yanıt mesajı! DNS önbelleklemenin bu sorgu trafiğini (**query traffic**) nasıl azalttığını yakında göreceğiz.
+
+Önceki örneğimizde, TLD sunucusunun ana bilgisayar adı için yetkili DNS sunucusunu bildiği varsayıldı. 
+Genel olarak, bu her zaman doğru değildir. Bunun yerine, TLD sunucusu yalnızca ara bir DNS sunucusunu biliyor olabilir ve bu sunucu da ana bilgisayar adı için yetkili DNS sunucusunu biliyor olabilir. Örneğin, Massachusetts Üniversitesi'nin üniversite için dns.umass.edu adlı bir DNS sunucusu olduğunu tekrar varsayalım. Ayrıca Massachusetts Üniversitesi'ndeki her bölümün kendi DNS sunucusuna sahip olduğunu ve her bölüm DNS sunucusunun bölümdeki tüm ana bilgisayarlar için yetkili olduğunu varsayalım. Bu durumda, ara DNS sunucusu, dns.umass.edu, cs.umass.edu ile biten bir ana bilgisayar adına sahip bir ana bilgisayar için bir sorgu aldığında, dns.cs.umass.edu'nun IP adresini dns.nyu.edu'ya döndürür; bu sunucu cs.umass.edu ile biten tüm ana bilgisayar adları için yetkilidir. 
+Yerel DNS sunucusu dns.nyu.edu daha sonra sorguyu yetkili DNS sunucusuna gönderir, bu sunucu istenen eşlemeyi yerel DNS sunucusuna döndürür ve bu sunucu da eşlemeyi istekte bulunan ana bilgisayara geri döndürür. Bu durumda, toplam 10 DNS mesajı gönderilir!
+
+cse.nyu.edu'dan dns.nyu.edu'ya gönderilen sorgu, dns.nyu.edu'dan eşlemeyi kendi adına almasını istediği için yinelemeli bir sorgudur. 
+Ancak, sonraki üç sorgu tekrarlamalıdır, çünkü tüm yanıtlar doğrudan dns.nyu.edu'ya döndürülür. 
+Teorik olarak, herhangi bir DNS sorgusu yinelemeli veya tekrarlamalı olabilir. 
+Pratikte, sorgular tipik olarak şu kalıbı izler: İstek yapan ana bilgisayardan yerel DNS sunucusuna yapılan sorgu yinelemelidir ve kalan sorgular tekrarlamalıdır.
+
