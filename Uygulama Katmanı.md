@@ -910,3 +910,46 @@ Bir istemci (ana bilgisayar veya DNS sunucusu) kayda sahip olmadığında DNS su
 
 Üzerinde çalıştığınız ana bilgisayardan doğrudan bir DNS sunucusuna bir DNS sorgu mesajı göndermek ister misiniz? Bu, çoğu Windows (**Windows**) ve UNIX platformunda (**UNIX platforms**) bulunan `nslookup` programı (**nslookup program**) ile kolayca yapılabilir! Örneğin, bir Windows ana bilgisayarından Komut İstemi'ni (**Command Prompt**) açın ve sadece "nslookup" yazarak `nslookup` programını çağırın. `nslookup`'ı çağırdıktan sonra, herhangi bir DNS sunucusuna (kök, TLD veya yetkili) bir DNS sorgusu gönderebilirsiniz. DNS sunucusundan yanıt mesajını aldıktan sonra, `nslookup` yanıta dahil edilen kayıtları (insan tarafından okunabilir formatta) gösterecektir. Kendi ana bilgisayarınızdan `nslookup` çalıştırmaya alternatif olarak, `nslookup`'ı uzaktan kullanmanıza olanak tanıyan birçok Web sitesinden birini ziyaret edebilirsiniz. (Bir arama motoruna (**search engine**) sadece "nslookup" yazın ve bu sitelerden birine yönlendirileceksiniz.)
 
+![resim](https://i.ibb.co/HDDKv6bs/NsLookUp.png)
+
+#### DNS Veritabanına Kayıt Ekleme
+
+Yukarıdaki tartışma, DNS veritabanından (**DNS database**) kayıtların nasıl alındığına odaklandı. 
+Kayıtların ilk etapta veritabanına nasıl girdiğini merak ediyor olabilirsiniz. Bunun belirli bir örnek bağlamında nasıl yapıldığına bakalım. 
+Network Time adında heyecan verici yeni bir başlangıç şirketi kurduğunuzu varsayalım. Yapmak isteyeceğiniz ilk şeylerden biri, bir kayıt kuruluşu (**registrar**) aracılığıyla networktime.com alan adını (**domain name**) kaydettirmektir. Kayıt kuruluşu, alan adının benzersizliğini doğrulayan, alan adını DNS veritabanına giren (aşağıda tartışıldığı gibi) ve hizmetleri için sizden küçük bir ücret alan ticari bir kuruluştur. 
+1999'dan önce, tek bir kayıt kuruluşu olan Network Solutions, .com, .net ve .org alan adları için alan adı kaydında tekeli elinde tutuyordu. 
+Ancak şimdi müşteriler için rekabet eden birçok kayıt kuruluşu var ve İnternet Tahsisli Adlar ve Numaralar Kurumu (ICANN) (**Internet Corporation for Assigned Names and Numbers (ICANN)**) çeşitli kayıt kuruluşlarını akredite etmektedir. Akredite kayıt kuruluşlarının tam listesi http://www.internic.net adresinde mevcuttur.
+
+Bazı kayıt kuruluşları aracılığıyla networktime.com alan adını kaydettiğinizde, kayıt kuruluşuna birincil ve ikincil yetkili DNS sunucularınızın (**primary and secondary authoritative DNS servers**) adlarını ve IP adreslerini de sağlamanız gerekir. Adların ve IP adreslerinin dns1.networktime.com, dns2.networktime.com, 212.2.212.1 ve 212.212.212.2 olduğunu varsayalım. Bu iki yetkili DNS sunucusunun her biri için, kayıt kuruluşu TLD com sunucularına (**TLD com servers**) bir Type NS ve bir Type A kaydının (**Type A record**) girildiğinden emin olacaktır. Özellikle, networktime.com için birincil yetkili sunucu için, kayıt kuruluşu DNS sistemine aşağıdaki iki kaynak kaydını (**resource records**) ekleyecektir:
+
+```
+(networktime.com, dns1.networktime.com, NS)
+(dns1.networktime.com, 212.212.212.1, A)
+```
+
+Ayrıca, Web sunucunuz www.networktime.com için Type A kaynak kaydının ve posta sunucunuz mail.networktime.com için Type MX kaynak kaydının (**Type MX resource record**) kendi yetkili DNS sunucularınıza (**authoritative DNS servers**) girildiğinden emin olmanız gerekecektir. (Yakın zamana kadar, her DNS sunucusunun içeriği statik olarak yapılandırılıyordu, örneğin bir sistem yöneticisi (**system manager**) tarafından oluşturulan bir yapılandırma dosyasından (**configuration file**). Daha yakın zamanda, DNS protokolüne verilerin DNS mesajları (**DNS messages**) aracılığıyla dinamik olarak eklenmesine veya silinmesine olanak tanıyan bir UPDATE seçeneği (**UPDATE option**) eklenmiştir. [RFC 2136] ve [RFC 3007], DNS dinamik güncellemelerini (**DNS dynamic updates**) belirtir.)
+
+Tüm bu adımlar tamamlandıktan sonra, insanlar Web sitenizi (**Web site**) ziyaret edebilecek ve şirketinizdeki çalışanlara e-posta (**e-mail**) gönderebileceklerdir. DNS tartışmamızı bu ifadenin doğru olduğunu doğrulayarak sonlandıralım. Bu doğrulama, DNS hakkında öğrendiklerimizi pekiştirmeye de yardımcı olur. Avustralya'daki Alice'in www.networktime.com Web sayfasını (**Web page**) görüntülemek istediğini varsayalım. 
+Daha önce tartışıldığı gibi, ana bilgisayarı önce yerel DNS sunucusuna (**local DNS server**) bir DNS sorgusu gönderecektir. 
+Yerel DNS sunucusu daha sonra bir TLD com sunucusuyla iletişim kuracaktır. (Yerel DNS sunucusunun, bir TLD com sunucusunun adresi önbelleğe alınmamışsa bir kök DNS sunucusuyla (**root DNS server**) da iletişim kurması gerekecektir.) Bu TLD sunucusu, kayıt kuruluşunun bu kaynak kayıtlarını tüm TLD com sunucularına eklemesi nedeniyle yukarıda listelenen Type NS ve Type A kaynak kayıtlarını içerir. TLD com sunucusu, yanıtı Alice'in yerel DNS sunucusuna gönderir; yanıt, iki kaynak kaydını içerir. Yerel DNS sunucusu daha sonra www.networktime.com'a karşılık gelen Type A kaydı için 212.212.212.1'e bir DNS sorgusu gönderir. Bu kayıt, istenen Web sunucusunun IP adresini sağlar, örneğin 212.212.71.4; yerel DNS sunucusu bu adresi Alice'in ana bilgisayarına geri iletir. 
+Alice'in tarayıcısı artık 212.212.71.4 ana bilgisayarına bir TCP bağlantısı (**TCP connection**) başlatabilir ve bağlantı üzerinden bir HTTP isteği (**HTTP request**) gönderebilir. Vay canına! Web'de gezinirken görünenin çok daha ötesinde şeyler oluyor!
+
+- **DNS ZAYIF NOKTALARI** -
+
+DNS'in İnternet altyapısının kritik bir bileşeni olduğunu gördük; Web ve e-posta dahil birçok önemli hizmet, DNS olmadan işlev göremez. 
+Bu nedenle doğal olarak soruyoruz, DNS nasıl saldırıya uğrayabilir? DNS, çoğu İnternet uygulamasını da beraberinde çökertirken, hizmet dışı bırakılmayı bekleyen savunmasız bir hedef midir?
+
+Akla gelen ilk saldırı türü, DNS sunucularına karşı bir DDoS bant genişliği sel saldırısıdır (**DDoS bandwidth-flooding attack**).
+Örneğin, bir saldırgan her bir DNS kök sunucusuna çok sayıda paket göndererek, meşru DNS sorgularının çoğunun yanıtlanmamasını sağlayabilir. 
+DNS kök sunucularına karşı bu tür büyük ölçekli bir DDoS saldırısı aslında 21 Ekim 2002'de gerçekleşti. 
+Bu saldırıda saldırganlar, 13 DNS kök IP adresinin her birine kamyon yüküyle ICMP ping mesajı (**ICMP ping messages**) göndermek için bir botnet (**botnet**) kullandılar. (Şimdilik, ICMP paketlerinin özel türde IP datagramları (**IP datagrams**) olduğunu bilmek yeterlidir.) 
+Neyse ki, bu büyük ölçekli saldırı minimal hasara yol açtı ve kullanıcıların İnternet deneyimi üzerinde çok az veya hiç etkisi olmadı. 
+Saldırganlar kök sunuculara paket seli göndermeyi başardılar. Ancak DNS kök sunucularının birçoğu, kök sunuculara yönelik tüm ICMP ping mesajlarını her zaman engelleyecek şekilde yapılandırılmış paket filtreleri (**packet filters**) ile korunuyordu. Bu korunan sunucular böylece kurtuldu ve normal şekilde çalıştı. Ayrıca, çoğu yerel DNS sunucusu (**local DNS servers**) üst düzey alan adı sunucularının (**top-level-domain servers**) IP adreslerini önbelleğe alır, bu da sorgu sürecinin DNS kök sunucularını (**DNS root servers**) genellikle atlamasına olanak tanır.
+
+DNS'e karşı potansiyel olarak daha etkili bir DDoS saldırısı, üst düzey alan adı sunucularına, örneğin .com alanını yöneten üst düzey alan adı sunucularına bir DNS sorgusu seli göndermektir. DNS sunucularına yönelik DNS sorgularını filtrelemek daha zordur; ve üst düzey alan adı sunucuları, kök sunucular kadar kolay atlanamaz. Bu tür bir saldırı, 21 Ekim 2016'da üst düzey alan adı hizmet sağlayıcısı Dyn'e karşı gerçekleşti.
+Bu DDoS saldırısı, Mirai kötü amaçlı yazılımıyla enfekte olmuş yaklaşık yüz bin IoT cihazından (**IoT devices**) (yazıcılar, IP kameraları (**IP cameras**), ev tipi ağ geçitleri (**residential gateways**) ve bebek telsizleri (**baby monitors**) gibi) gelen çok sayıda DNS arama isteğiyle gerçekleştirildi. 
+Neredeyse tam bir gün boyunca Amazon, Twitter, Netflix, Github ve Spotify kesintiye uğradı.
+
+DNS potansiyel olarak başka yollarla da saldırıya uğrayabilir. Ortadaki adam saldırısında (**man-in-the-middle attack**), saldırgan ana bilgisayarlardan gelen sorguları yakalar (**intercepts queries**) ve sahte yanıtlar (**bogus replies**) döndürür. DNS zehirlenmesi saldırısında (**DNS poisoning attack**), saldırgan bir DNS sunucusuna sahte yanıtlar göndererek, sunucuyu önbelleğine sahte kayıtları (**bogus records into its cache**) kabul etmesi için kandırır. 
+Bu saldırılardan herhangi biri, örneğin şüphelenmeyen bir Web kullanıcısını saldırganın Web sitesine (**attacker’s Web site**) yönlendirmek için kullanılabilir. DNS Güvenlik Uzantıları (DNSSEC) [Gieben 2004; RFC 4033], bu tür istismarlara karşı koruma sağlamak için tasarlanmış ve dağıtılmıştır. 
+DNS'in güvenli bir versiyonu (**secured version of DNS**) olan DNSSEC, bu olası saldırıların çoğunu ele alır ve İnternet'te popülerlik kazanmaktadır (**gaining popularity**).
