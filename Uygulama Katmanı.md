@@ -866,3 +866,13 @@ Ancak, sonraki üç sorgu tekrarlamalıdır, çünkü tüm yanıtlar doğrudan d
 Teorik olarak, herhangi bir DNS sorgusu yinelemeli veya tekrarlamalı olabilir. 
 Pratikte, sorgular tipik olarak şu kalıbı izler: İstek yapan ana bilgisayardan yerel DNS sunucusuna yapılan sorgu yinelemelidir ve kalan sorgular tekrarlamalıdır.
 
+#### DNS Önbellekleme (Caching)
+
+Şimdiye kadarki tartışmamız, DNS sisteminin kritik derecede önemli bir özelliği olan DNS önbelleklemesini (**DNS caching**) göz ardı etti. 
+Gerçekte, DNS, gecikme performansını iyileştirmek ve İnternet etrafında sekerek dolaşan DNS mesajlarının sayısını azaltmak için DNS önbelleklemesini kapsamlı bir şekilde kullanır. DNS önbelleklemesinin ardındaki fikir çok basittir. 
+Bir sorgu zincirinde, bir DNS sunucusu bir DNS yanıtı (**DNS reply**) (örneğin, bir ana bilgisayar adından (**hostname**) bir IP adresine (**IP address**) eşleme içeren) aldığında, eşlemeyi yerel belleğinde (**local memory**) önbelleğe alabilir. Örneğin, yerel DNS sunucusu dns.nyu.edu'nun bir DNS sunucusundan bir yanıt aldığı her seferde, yanıtta yer alan herhangi bir bilgiyi önbelleğe alabilir. Bir ana bilgisayar adı/IP adresi çifti bir DNS sunucusunda önbelleğe alınmışsa ve aynı ana bilgisayar adı için DNS sunucusuna başka bir sorgu gelirse, DNS sunucusu ana bilgisayar adı için yetkili olmasa bile istenen IP adresini sağlayabilir. Ana bilgisayarlar ve ana bilgisayar adları ile IP adresleri arasındaki eşlemeler kalıcı olmaktan uzak olduğu için, DNS sunucuları önbelleğe alınmış bilgileri belirli bir süre sonra (genellikle iki gün olarak ayarlanır) atar.
+
+Örnek olarak, apricot.nyu.edu ana bilgisayarının redberks.com ana bilgisayar adı için IP adresini dns.nyu.edu'ya sorduğunu varsayalım. 
+Ayrıca, birkaç saat sonra, başka bir NYU ana bilgisayarının, örneğin kiwi.nyu.edu'nun, aynı ana bilgisayar adıyla dns.nyu.edu'ya da sorduğunu varsayalım. Önbellekleme sayesinde, yerel DNS sunucusu (**local DNS server**), başka hiçbir DNS sunucusunu sorgulamak zorunda kalmadan redberks.com'un IP adresini bu ikinci istek yapan ana bilgisayara hemen döndürebilecektir. Yerel bir DNS sunucusu, TLD sunucularının (**TLD servers**) IP adreslerini de önbelleğe alabilir, bu da yerel DNS sunucusunun bir sorgu zincirindeki kök DNS sunucularını (**root DNS servers**) atlamasına olanak tanır. 
+Aslında, önbellekleme sayesinde, DNS sorgularının çok küçük bir kısmı hariç tümü için kök sunucular atlanır.
+
