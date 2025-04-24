@@ -953,3 +953,75 @@ Neredeyse tam bir gün boyunca Amazon, Twitter, Netflix, Github ve Spotify kesin
 DNS potansiyel olarak başka yollarla da saldırıya uğrayabilir. Ortadaki adam saldırısında (**man-in-the-middle attack**), saldırgan ana bilgisayarlardan gelen sorguları yakalar (**intercepts queries**) ve sahte yanıtlar (**bogus replies**) döndürür. DNS zehirlenmesi saldırısında (**DNS poisoning attack**), saldırgan bir DNS sunucusuna sahte yanıtlar göndererek, sunucuyu önbelleğine sahte kayıtları (**bogus records into its cache**) kabul etmesi için kandırır. 
 Bu saldırılardan herhangi biri, örneğin şüphelenmeyen bir Web kullanıcısını saldırganın Web sitesine (**attacker’s Web site**) yönlendirmek için kullanılabilir. DNS Güvenlik Uzantıları (DNSSEC) [Gieben 2004; RFC 4033], bu tür istismarlara karşı koruma sağlamak için tasarlanmış ve dağıtılmıştır. 
 DNS'in güvenli bir versiyonu (**secured version of DNS**) olan DNSSEC, bu olası saldırıların çoğunu ele alır ve İnternet'te popülerlik kazanmaktadır (**gaining popularity**).
+
+## Eşten Eşe Dosya Dağıtımı (Peer-to-Peer File Distribution)
+
+Bu bölümde şimdiye kadar açıklanan uygulamalar—Web, e-posta ve DNS dahil—hepsi sürekli açık altyapı sunucularına (**always-on infrastructure servers**) önemli ölçüde bağımlı olan istemci-sunucu mimarilerini (**client-server architectures**) kullanır. 
+Bir P2P mimarisinde (**P2P architecture**), sürekli açık altyapı sunucularına minimal (veya hiç) bağımlılık yoktur. 
+Bunun yerine, eşler (**peers**) adı verilen aralıklı olarak bağlı ana bilgisayar çiftleri doğrudan birbirleriyle iletişim kurar. 
+Eşler bir hizmet sağlayıcıya ait değildir, bunun yerine kullanıcılar tarafından kontrol edilen PC'ler, dizüstü bilgisayarlar ve akıllı telefonlardır.
+
+Bu bölümde, çok doğal bir P2P uygulaması olan, büyük bir dosyayı (**file**) tek bir sunucudan (**server**) çok sayıda ana bilgisayara (eşler olarak adlandırılan) dağıtmayı ele alıyoruz. Dosya, Linux işletim sisteminin yeni bir versiyonu, mevcut bir işletim sistemi için bir yazılım yaması (**software patch**) veya bir MPEG video dosyası (**MPEG video file**) olabilir. İstemci-sunucu dosya dağıtımında (**client-server file distribution**), sunucu dosyanın bir kopyasını eşlerin her birine göndermelidir—bu, sunucu üzerinde muazzam bir yük oluşturur ve büyük miktarda sunucu bant genişliği (**server bandwidth**) tüketir. 
+P2P dosya dağıtımında (**P2P file distribution**), her eş, aldığı dosyanın herhangi bir kısmını diğer eşlere yeniden dağıtabilir, böylece dağıtım sürecinde sunucuya yardımcı olur. En popüler P2P dosya dağıtım protokolü **BitTorrent**'tir. Başlangıçta Bram Cohen tarafından geliştirilen BitTorrent protokolüne uyan birçok farklı bağımsız BitTorrent istemcisi (**BitTorrent clients**) bulunmaktadır, tıpkı HTTP protokolüne uyan bir dizi Web tarayıcı istemcisi (**Web browser clients**) olduğu gibi. Bu alt bölümde, dosya dağıtımı bağlamında P2P mimarilerinin kendi kendine ölçeklenebilirliğini (**self-scalability**) ilk olarak inceleyeceğiz. Daha sonra, BitTorrent'i en önemli özelliklerini ve niteliklerini vurgulayarak ayrıntılı olarak açıklayacağız.
+
+Şimdi düşünelim, ortada büyük bir dosya var (mesela bir oyun güncellemesi veya büyük bir video) ve bu dosyayı indirmek isteyen bir sürü insan (kullanıcı veya internet tabiriyle 'eş' - **peer**) var.
+
+**Client-Server (İstemci-Sunucu) Dağıtım Modeli:**
+
+Bu geleneksel modelde, dosyanın tek bir kopyası merkezi bir **server**'da (sunucuda) durur. 
+Dosyayı indirmek isteyen herkes, dosyayı doğrudan bu tek sunucudan ister ve indirir.
+
+* **Sorun Ne?** Sunucunun belirli bir **upload bandwidth**'i (yükleme hızı) vardır. Eğer 1000 kişi aynı anda aynı dosyayı isterse, sunucunun o 1000 kişiye dosyanın 1000 kopyasını göndermesi gerekir. Bu, sunucunun yükleme hızını sonuna kadar zorlar. Ne kadar çok kişi indirmek isterse, sunucunun göndermesi gereken toplam veri miktarı artar ve bu da sunucunun darboğaz haline gelmesine neden olur. Sonuç olarak, dosyanın herkes tarafından indirilmesi **çok uzun sürer**. İndiren kişi sayısı arttıkça, toplam indirme süresi kabaca **doğrusal olarak** artar. Ölçeklenmez.
+
+**Peer-to-Peer (P2P) Dağıtım Modeli:**
+
+Bu modelde işler biraz farklı yürüyor. Yine bir veya birkaç başlangıç noktası (genellikle ilk **server**) dosyanın orijinal kopyasına sahiptir. 
+Ama kullanıcılar dosyayı indirdikçe (parça parça veya bütün halinde), kendileri de o dosyanın ellerindeki kısımlarını **diğer kullanıcılara yüklemeye başlarlar**. Yani, her kullanıcı hem indiren (consumer) hem de yükleyen (redistributor) rolünü üstlenir.
+
+* **Neden Ölçeklenir?** İşte P2P'nin sihirli kısmı burada: Sisteme yeni bir kullanıcı (eş) katıldığında, sadece dosyayı indiren bir tüketici olmakla kalmaz, aynı zamanda dosyayı indirdikçe sisteme **yeni bir yükleme kapasitesi** de ekler. Sistemin toplam yükleme kapasitesi artık sadece orijinal sunucunun yükleme hızından ibaret değildir, aynı zamanda dosyanın parçalarına sahip olan tüm eşlerin toplam yükleme hızını da içerir.
+    * Ne kadar çok kişi dosyayı indirmeye başlarsa, o kadar çok kişi dosyanın parçalarına sahip olur.
+    * Bu kişiler de kendi yükleme kapasitelerini kullanarak bu parçaları diğer kişilere dağıtır.
+    * Dolayısıyla, indiren kişi sayısı arttıkça, dosyanın dağıtılmasına yardımcı olan toplam yükleme gücü de artar.
+
+**Sonuç:** Client-Server modelinde indiren kişi sayısı arttıkça yük *tek bir noktada* (sunucuda) birikir ve dağıtım süresi uzar. 
+P2P modelinde ise indiren kişi sayısı arttıkça, dağıtım yükü *tüm indirenlere yayılır* ve toplam yükleme kapasitesi artar. Bu sayede, indiren kişi sayısı çok artsa bile dosyanın dağıtım süresi o kadar artmaz, hatta belirli bir noktadan sonra neredeyse sabit kalabilir (bu duruma kendi kendine ölçeklenebilirlik - **self-scalability** denir).
+
+Özetle, P2P dosya dağıtımında, "Herkes birbirine yardım eder" mantığı çalıştığı için, sistem kullanıcı sayısı arttıkça kendi kendini destekler ve daha verimli hale gelir. **BitTorrent** gibi sistemler bu P2P mantığı üzerine kuruludur.
+
+#### BitTorrent
+
+BitTorrent, dosya dağıtımı (**file distribution**) için popüler bir P2P protokolüdür (**P2P protocol**) [Chao 2011]. 
+BitTorrent jargonunda, belirli bir dosyanın dağıtımına katılan tüm eşlerin (**peers**) topluluğuna bir **torrent** denir. 
+Bir torrent'teki eşler, dosyanın eşit boyutlu parçalarını (**chunks**) birbirlerinden indirirler, tipik bir **chunk** boyutu 256 KByte'tır. 
+Bir eş bir torrent'e ilk katıldığında, hiç **chunk**'ı yoktur. Zamanla giderek daha fazla **chunk** biriktirir. 
+**Chunk**'ları indirirken aynı zamanda diğer eşlere **chunk**'ları yükler (**uploads**). 
+Bir eş dosyanın tamamını edindikten sonra, torrent'ten (bencilce) ayrılabilir veya (özverili bir şekilde) torrent'te kalıp diğer eşlere **chunk** yüklemeye devam edebilir. Ayrıca, herhangi bir eş istediği zaman sadece bir **chunk** alt kümesiyle torrent'ten ayrılabilir ve daha sonra torrent'e tekrar katılabilir.
+
+Şimdi BitTorrent'in nasıl çalıştığına daha yakından bakalım. BitTorrent oldukça karmaşık bir protokol ve sistem olduğu için, yalnızca en önemli mekanizmalarını açıklayacağız, bazı ayrıntıları halının altına süpüreceğiz; bu, ağacı ormanın içinden görmemizi sağlayacaktır. 
+Her torrent'in bir **tracker** adı verilen bir altyapı node vardır. Bir eş bir torrent'e katıldığında, tracker'a kaydolur ve torrent'te hala bulunduğunu tracker'a periyodik olarak bildirir. Bu şekilde, tracker torrent'e katılan eşlerin kaydını tutar. Belirli bir torrent'te herhangi bir anda ondan az veya binden fazla eş katılıyor olabilir.
+
+Örneğin, yeni bir eş, Alice, torrent'e katıldığında, tracker katılan eşler kümesinden rastgele bir alt küme (somutlaştırmak için, diyelim ki 50) seçer ve bu 50 eşin IP adreslerini Alice'e gönderir. Bu eş listesine sahip olan Alice, bu listedeki tüm eşlerle eşzamanlı TCP bağlantıları (**TCP connections**) kurmaya çalışır. Alice'in TCP bağlantısı kurmayı başardığı tüm eşlere "komşu eşler" (**neighboring peers**) diyelim. Zamanla, bu eşlerden bazıları ayrılabilir ve diğer eşler (ilk 50'nin dışındaki) Alice ile TCP bağlantısı kurmaya çalışabilir. Yani bir eşin komşu eşleri zamanla dalgalanacaktır.
+
+Herhangi bir zamanda, her eşin dosyadan bir **chunk** alt kümesi olacaktır ve farklı eşler farklı alt kümelere sahip olacaktır. 
+Alice, komşu eşlerinden her birine (TCP bağlantıları üzerinden) sahip oldukları **chunk** listesini periyodik olarak soracaktır. 
+Alice'in L farklı komşusu varsa, L farklı **chunk** listesi elde edecektir. Bu bilgiyle, Alice şu anda sahip olmadığı **chunk**'lar için istekler (yine TCP bağlantıları üzerinden) gönderecektir.
+
+Yani herhangi bir anda Alice'in bir **chunk** alt kümesi olacak ve komşularının hangi **chunk**'lara sahip olduğunu bilecektir. 
+Bu bilgiyle, Alice'in yapması gereken iki önemli karar olacaktır. Birincisi, hangi **chunk**'ları komşularından önce istemelidir? Ve ikincisi, istenen **chunk**'ları komşularından hangisine göndermelidir? İsteyeceği **chunk**'lara karar verirken, Alice en nadir olanı ilk (**rarest first**) adı verilen bir teknik kullanır. Buradaki fikir, sahip olmadığı **chunk**'lar arasından, komşuları arasında en nadir olan **chunk**'ları (yani, komşuları arasında en az tekrar eden kopyası olan **chunk**'ları) belirlemek ve ardından önce bu en nadir **chunk**'ları istemektir. Bu şekilde, en nadir **chunk**'lar daha hızlı yeniden dağıtılır, bu da torrent'teki her **chunk** kopyasının sayısını (kabaca) eşitlemeyi amaçlar.
+
+Hangi isteklere yanıt vereceğine karar vermek için BitTorrent zeki bir ticaret algoritması (**trading algorithm**) kullanır. 
+Temel fikir şudur: Alice, kendisine o anda en yüksek hızda veri sağlayan komşularına öncelik verir. 
+Özellikle, komşularının her biri için, Alice sürekli olarak bit alma hızını ölçer ve kendisine en yüksek hızda bit besleyen dört eşi belirler. 
+Daha sonra aynı dört eşe **chunk** göndererek karşılık verir. Her 10 saniyede bir, hızları yeniden hesaplar ve muhtemelen dört eş kümesini değiştirir. 
+BitTorrent jargonunda, bu dört eşin **unchoked (tıkanmamış)** olduğu söylenir. Daha da önemlisi, her 30 saniyede bir, ek bir komşuyu rastgele seçer ve ona **chunk** gönderir. Rastgele seçilen bu eşe Bob diyelim. BitTorrent jargonunda Bob'un iyimser olarak tıkanmamış (**optimistically unchoked**) olduğu söylenir. Alice Bob'a veri gönderdiği için, Bob'un en iyi dört yükleyicisinden (**uploaders**) biri olabilir ve bu durumda Bob Alice'e veri göndermeye başlayacaktır. Bob'un Alice'e veri gönderme hızı yeterince yüksek olursa, Bob da sırayla Alice'in en iyi dört yükleyicisinden biri olabilir. 
+Başka bir deyişle, her 30 saniyede bir, Alice rastgele yeni bir ticaret ortağı (**trading partner**) seçecek ve o ortakla ticareti başlatacaktır. 
+Eğer iki eş ticaretten memnun kalırlarsa, birbirlerini en iyi dört listelerine koyacaklar ve eşlerden biri daha iyi bir ortak bulana kadar birbirleriyle ticarete devam edeceklerdir. Bunun etkisi, uyumlu hızlarda yükleme yapabilen eşlerin birbirlerini bulma eğiliminde olmasıdır. 
+Rastgele komşu seçimi, yeni eşlerin de **chunk** almasına olanak tanır, böylece takas edecek bir şeyleri olabilir. 
+Bu beş eşin (dört "en iyi" eş ve bir yoklayan eş) dışındaki tüm komşu eşler "tıkanmış" (**choked**) durumdadır, yani Alice'ten herhangi bir **chunk** almazlar. BitTorrent'in burada tartışılmayan bir dizi ilginç mekanizması vardır, bunlar arasında parçalar (mini-chunks), pipelining, rastgele ilk seçim, endgame mode ve anti-snubbing [Cohen 2003] bulunur.
+
+Az önce açıklanan ticaret için teşvik mekanizmasına genellikle **tit-for-tat (karşılık verme)** [Cohen 2003] denir. 
+Bu teşvik şemasının aşılabileceği gösterilmiştir [Liogkas 2006; Locher 2006; Piatek 2008]. 
+Bununla birlikte, BitTorrent ekosistemi (**BitTorrent ecosystem**) son derece başarılıdır ve yüz binlerce torrent'te milyonlarca eşzamanlı eş aktif olarak dosya paylaşmaktadır. Eğer BitTorrent tit-for-tat (veya bir varyantı) olmadan, ancak diğer her şeyiyle aynı şekilde tasarlanmış olsaydı, kullanıcıların çoğunluğu bedavacı (**freeriders**) olacağı için BitTorrent muhtemelen şu anda var bile olmazdı [Saroiu 2002].
+
+P2P hakkındaki tartışmamızı, P2P'nin başka bir uygulaması olan Dağıtılmış Hash Tablosu (DHT) (**Distributed Hast Table (DHT)**)'ndan kısaca bahsederek sonlandırıyoruz. Dağıtılmış hash tablosu, veritabanı kayıtlarının bir P2P sistemindeki (**P2P system**) eşler arasında dağıtıldığı basit bir veritabanıdır. DHT'ler (**DHTs**) yaygın olarak uygulanmıştır (örneğin, BitTorrent'te) ve kapsamlı araştırmalara konu olmuştur. 
+
