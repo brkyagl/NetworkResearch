@@ -1049,3 +1049,25 @@ Sıkıştırmayı (**compression**) kullanarak aynı videonun farklı kalite sev
 Kullanıcılar daha sonra mevcut bant genişliklerine (**available bandwidth**) bağlı olarak hangi versiyonu izlemek istediklerine karar verebilirler. 
 Yüksek hızlı İnternet bağlantısı olan kullanıcılar 3 Mbps versiyonunu seçebilir; bir akıllı telefonla (**smartphone**) 3G (**3G**) üzerinden video izleyen kullanıcılar 300 kbps versiyonunu seçebilir.
 
+#### HTTP Akışı ve DASH (HTTP Streaming and DASH)
+
+HTTP akışında (**HTTP streaming**), altta yatan medya, belirli bir URL'ye sahip sıradan bir dosya olarak bir HTTP sunucusunda (**HTTP server**) depolanır. 
+Bir kullanıcı videoyu izlemek istediğinde, istemci (**client**) sunucuyla bir TCP bağlantısı (**TCP connection**) kurar ve o URL için bir HTTP GET isteği (**HTTP GET request**) gönderir. Sunucu daha sonra video dosyasını, altta yatan ağ protokolleri (**network protocols**) ve trafik koşullarının (**traffic conditions**) izin verdiği kadar hızlı bir şekilde bir HTTP yanıt mesajı (**HTTP response message**) içinde gönderir. 
+İstemci tarafında, baytlar bir istemci uygulama arabelleğinde (**client application buffer**) toplanır. 
+Bu arabellekteki bayt sayısı önceden belirlenmiş bir eşiği aştığında, istemci uygulaması oynatmaya (**playback**) başlar—özellikle, video akışı uygulaması (**streaming video application**) periyodik olarak istemci uygulama arabelleğinden video karelerini (**video frames**) alır, karelerin sıkıştırmasını çözer (**decompresses**) ve bunları kullanıcının ekranında gösterir (**displays**). 
+Böylece, video akışı uygulaması, videonun sonraki kısımlarına karşılık gelen kareleri alıp arabelleğe alırken videoyu göstermektedir.
+
+Önceki paragrafta açıklandığı gibi HTTP akışı, pratikte (örneğin, YouTube tarafından kuruluşundan bu yana) yaygın olarak kullanılmasına rağmen, büyük bir dezavantajı vardır: Hem farklı istemciler arasında hem de aynı istemci için zaman içinde istemciye sunulan bant genişliğindeki (**bandwidth**) büyük değişikliklere rağmen, tüm istemciler videonun aynı kodlamasını alır. Bu durum, genellikle HTTP Üzerinden Dinamik Uyarlamalı Akış (DASH) (**Dynamic Adaptive Streaming over HTTP (DASH)**) olarak adlandırılan yeni bir HTTP tabanlı akış türünün geliştirilmesine yol açmıştır. 
+DASH'ta video, her biri farklı bir bit hızına (**bit rate**) ve buna karşılık farklı bir kalite seviyesine (**quality level**) sahip çeşitli farklı versiyonlara (**versions**) kodlanır (**encoded**). İstemci, birkaç saniyelik video kesitlerinin (**video segments**) parçalarını (**chunks**) dinamik olarak ister (**dynamically requests**). Mevcut bant genişliği (**available bandwidth**) yüksek olduğunda, istemci doğal olarak yüksek hızlı versiyondan (**high-rate version**) parçalar seçer; ve mevcut bant genişliği düşük olduğunda, doğal olarak düşük hızlı versiyondan (**low-rate version**) seçer. 
+İstemci, her **chunk** için HTTP GET istek mesajları (**HTTP GET request messages**) ile farklı **chunk**'ları teker teker seçer [Akhshabi 2011].
+
+DASH, farklı İnternet erişim hızlarına (**Internet access rates**) sahip istemcilerin farklı kodlama hızlarında video akışı yapmasına olanak tanır. 
+Düşük hızlı 3G bağlantısı olan istemciler düşük bit hızlı (**low bit-rate**) (ve düşük kaliteli) (**low-quality**) bir versiyon alabilir ve fiber bağlantısı olan istemciler yüksek kaliteli (**high-quality**) bir versiyon alabilir. DASH ayrıca, oturum sırasında mevcut uçtan uca bant genişliği (**available end-to-end bandwidth**) değişirse, bir istemcinin mevcut bant genişliğine uyum sağlamasına da olanak tanır. 
+Bu özellik, baz istasyonlarına (**base stations**) göre hareket ettikçe bant genişliği kullanılabilirliğinin dalgalandığını tipik olarak gören mobil kullanıcılar (**mobile users**) için özellikle önemlidir.
+
+DASH ile, her video versiyonu HTTP sunucusunda farklı bir URL ile depolanır. 
+HTTP sunucusunun ayrıca, her versiyon için URL'yi bit hızıyla birlikte sağlayan bir manifest dosyası (**manifest file**) vardır. 
+İstemci önce manifest dosyasını ister ve çeşitli versiyonlar hakkında bilgi edinir. 
+İstemci daha sonra her **chunk** için bir URL ve bir bayt aralığı belirterek HTTP GET istek mesajı ile tek seferde bir **chunk** seçer. 
+**Chunk**'ları indirirken, istemci aynı zamanda alınan bant genişliğini (**measured receive bandwidth**) ölçer ve bir hız belirleme algoritması (**rate determination algorithm**) çalıştırarak bir sonraki istenen **chunk**'ı seçer. 
+Doğal olarak, eğer istemcinin çok fazla video arabelleğe alınmışsa (**buffered**) ve ölçülen alınan bant genişliği yüksekse, yüksek bit hızlı bir versiyondan bir **chunk** seçecektir. Ve doğal olarak, eğer istemcinin az video arabelleğe alınmışsa ve ölçülen alınan bant genişliği düşükse, düşük bit hızlı bir versiyondan bir **chunk** seçecektir. Bu nedenle DASH, istemcinin farklı kalite seviyeleri arasında serbestçe geçiş yapmasına olanak tanır.
