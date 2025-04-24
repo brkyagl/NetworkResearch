@@ -1025,3 +1025,27 @@ Bununla birlikte, BitTorrent ekosistemi (**BitTorrent ecosystem**) son derece ba
 
 P2P hakkındaki tartışmamızı, P2P'nin başka bir uygulaması olan Dağıtılmış Hash Tablosu (DHT) (**Distributed Hast Table (DHT)**)'ndan kısaca bahsederek sonlandırıyoruz. Dağıtılmış hash tablosu, veritabanı kayıtlarının bir P2P sistemindeki (**P2P system**) eşler arasında dağıtıldığı basit bir veritabanıdır. DHT'ler (**DHTs**) yaygın olarak uygulanmıştır (örneğin, BitTorrent'te) ve kapsamlı araştırmalara konu olmuştur. 
 
+## Video Akışı ve İçerik Dağıtım Ağları (Video Streaming and Content Distribution Networks)
+
+Birçok tahmine göre, Netflix, YouTube ve Amazon Prime dahil olmak üzere video akışı (**streaming video**), **2025** yılında İnternet trafiğinin (**Internet traffic**) yaklaşık **%82**'sini oluşturmaktadır. Bu bölümde, popüler video akışı hizmetlerinin (**video streaming services**) günümüz İnternet'inde nasıl uygulandığına dair bir genel bakış sunacağız. Bunların, bazı yönleriyle bir önbellek (**cache**) gibi işlev gören uygulama katmanı protokolleri (**application-level protocols**) ve sunucular (**servers**) kullanılarak uygulandığını göreceğiz.
+
+#### İnternet Videosu
+
+Depolanmış video akışı uygulamalarında (**streaming stored video applications**), temel ortam önceden kaydedilmiş videodur (**prerecorded video**); örneğin bir film (**movie**), bir televizyon şovu (**television show**), önceden kaydedilmiş bir spor etkinliği (**sporting event**) veya önceden kaydedilmiş kullanıcı tarafından oluşturulan video (**user-generated video**) (YouTube'da yaygın olarak görülenler gibi). 
+Bu önceden kaydedilmiş videolar sunuculara (**servers**) yerleştirilir ve kullanıcılar videoları isteğe bağlı (**on demand**) olarak izlemek için sunuculara istekler (**requests**) gönderirler. Günümüzde Netflix, YouTube (Google), Amazon ve TikTok dahil birçok İnternet şirketi video akışı sağlamaktadır.
+
+Ancak video akışı tartışmasına başlamadan önce, video ortamının kendisine hızlıca bir göz atmalıyız. 
+Bir video, tipik olarak sabit bir hızda görüntülenen bir dizi görüntüden (**sequence of images**) oluşur, örneğin saniyede 24 veya 30 görüntü. 
+Sıkıştırılmamış (**uncompressed**), dijital olarak kodlanmış bir görüntü (**digitally encoded image**), her pikselin (**pixel**) parlaklık (**luminance**) ve renk (**color**) temsil etmek için belirli sayıda bit'e (**bits**) kodlandığı bir piksel dizisinden (**array of pixels**) oluşur. 
+Videonun önemli bir özelliği, sıkıştırılabilmesi (**compressed**), böylece video kalitesi (**video quality**) ile bit hızı (**bit rate**) arasında bir denge kurulmasıdır. Günümüzün hazır sıkıştırma algoritmaları (**off-the-shelf compression algorithms**), bir videoyu istenen hemen hemen her bit hızına sıkıştırabilir. Elbette, bit hızı ne kadar yüksek olursa, görüntü kalitesi o kadar iyi ve genel kullanıcı izleme deneyimi (**user viewing experience**) o kadar iyi olur.
+
+Ağ oluşturma açısından (**networking perspective**), videonun belki de en belirgin özelliği (**salient characteristic**) yüksek bit hızıdır (**high bit rate**). Sıkıştırılmış İnternet videosu (**Compressed Internet video**) tipik olarak düşük kaliteli video (**low-quality video**) için 100 kbps'den (**kbps**), yüksek tanımlı film akışı (**streaming high-definition movies**) için 4 Mbps'nin (**Mbps**) üzerine kadar değişir; 4K akışı (**4K streaming**) 10 Mbps'den fazla bir bit hızı öngörür. Bu, özellikle üst düzey video için devasa miktarda trafik (**traffic**) ve depolama (**storage**) anlamına gelebilir. 
+Örneğin, 67 dakika süren tek bir 2 Mbps video, 1 gigabayt depolama alanı (**gigabyte of storage**) ve trafik tüketecektir. 
+Açık ara en önemli performans ölçüsü (**performance measure**) ortalama uçtan uca verimliliktir (**average end-to-end throughput**). 
+Kesintisiz oynatma (**continuous playout**) sağlamak için, ağın (**network**), akış uygulamasına (**streaming application**), sıkıştırılmış videonun bit hızından (**bit rate of the compressed video**) en az o kadar büyük bir ortalama verimlilik sağlaması gerekir.
+
+Sıkıştırmayı (**compression**) kullanarak aynı videonun farklı kalite seviyelerinde (**quality level**) birden çok versiyonunu da oluşturabiliriz. 
+Örneğin, sıkıştırmayı kullanarak aynı videonun 300 kbps, 1 Mbps ve 3 Mbps hızlarında üç versiyonunu oluşturabiliriz. 
+Kullanıcılar daha sonra mevcut bant genişliklerine (**available bandwidth**) bağlı olarak hangi versiyonu izlemek istediklerine karar verebilirler. 
+Yüksek hızlı İnternet bağlantısı olan kullanıcılar 3 Mbps versiyonunu seçebilir; bir akıllı telefonla (**smartphone**) 3G (**3G**) üzerinden video izleyen kullanıcılar 300 kbps versiyonunu seçebilir.
+
