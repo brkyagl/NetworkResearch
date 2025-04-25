@@ -1178,3 +1178,61 @@ YouTube, HTTP akışını (**HTTP streaming**) kullanır ve genellikle bir video
 
 Her gün birkaç milyon video YouTube'a yüklenir (**uploaded**). YouTube videoları sadece sunucudan istemciye HTTP (**HTTP**) üzerinden akıtılmakla kalmaz, aynı zamanda YouTube yükleyicileri (**uploaders**) videolarını istemciden sunucuya HTTP üzerinden yüklerler. 
 YouTube, aldığı her videoyu işler (**processes**), bir YouTube video formatına (**YouTube video format**) dönüştürür ve farklı bit hızlarında (**different bit rates**) birden çok versiyon (**multiple versions**) oluşturur. Bu işleme tamamen Google veri merkezlerinde (**Google data centers**) gerçekleşir. 
+
+## Soket Programlama: Ağ Uygulamaları Oluşturma (Socket Programming: Creating Network Applications)
+
+Şimdiye kadar birçok önemli ağ uygulamasına (**network applications**) baktığımıza göre, ağ uygulama programlarının (**network application programs**) aslında nasıl oluşturulduğunu keşfedelim. Tipik bir ağ uygulaması, iki farklı uç sistemde (**end systems**) bulunan bir çift programdan oluşur—bir istemci programı (**client program**) ve bir sunucu programı (**server program**). Bu iki program çalıştırıldığında, bir istemci süreci (**client process**) ve bir sunucu süreci (**server process**) oluşturulur ve bu süreçler soketlerden (**sockets**) okuyarak (**reading from**) ve soketlere yazarak (**writing to**) birbirleriyle iletişim kurar (**communicate**). Bir ağ uygulaması oluştururken, geliştiricinin (**developer**) ana görevi bu nedenle hem istemci hem de sunucu programları için kod yazmaktır.
+
+İki tür ağ uygulaması vardır. Bir tür, çalışması bir protokol standardında (bir RFC veya başka bir standart belge gibi) belirtilen bir uygulamadır; bu tür bir uygulamaya bazen "açık" (**open**) denir, çünkü çalışmasını belirleyen kurallar herkes tarafından bilinir. 
+Böyle bir uygulama için, istemci ve sunucu programları RFC tarafından belirlenen kurallara uymalıdır (**conform to the rules**). 
+Örneğin, istemci programı, RFC 2616'da kesin olarak tanımlanan HTTP protokolünün (**HTTP protocol**) istemci tarafının bir uygulaması olabilir; benzer şekilde, sunucu programı, yine RFC 2616'da kesin olarak tanımlanan HTTP sunucu protokolünün (**HTTP server protocol**) bir uygulaması olabilir. 
+Bir geliştirici istemci programı için kod yazarken, başka bir geliştirici sunucu programı için kod yazarsa ve her iki geliştirici de RFC'nin kurallarına dikkatlice uyarsa, iki program birbiriyle çalışabilir (**interoperate**). 
+Gerçekten de, günümüzdeki birçok ağ uygulaması, bağımsız geliştiriciler tarafından oluşturulmuş istemci ve sunucu programları arasındaki iletişimi içerir—örneğin, bir Google Chrome tarayıcısı bir Apache Web sunucusuyla (**Apache Web server**) iletişim kurar veya bir BitTorrent istemcisi (**BitTorrent client**) bir BitTorrent takipçisiyle (**BitTorrent tracker**) iletişim kurar.
+
+Diğer tür ağ uygulaması ise özel ağ uygulamasıdır (**proprietary network application**). 
+Bu durumda, istemci ve sunucu programları, açıkça bir RFC'de veya başka bir yerde yayınlanmamış bir uygulama katmanı protokolü (**application-layer protocol**) kullanır. Tek bir geliştirici (veya geliştirme ekibi - **development team**) hem istemci hem de sunucu programlarını oluşturur ve geliştiricinin kodun içeriği üzerinde tam kontrolü vardır. Ancak kod açık bir protokolü uygulamadığı için, diğer bağımsız geliştiriciler uygulamayla birlikte çalışacak kod geliştiremeyeceklerdir.
+
+Bu bölümde, bir istemci-sunucu uygulamasını (**client-server application**) geliştirmenin temel konularını (**key issues**) inceleyeceğiz ve çok basit bir istemci-sunucu uygulamasını uygulayan koda bakarak "ellerimizi kirleteceğiz" (**get our hands dirty**). 
+Geliştirme aşamasında, geliştiricinin alması gereken ilk kararlardan biri, uygulamanın TCP (**TCP**) üzerinden mi yoksa UDP (**UDP**) üzerinden mi çalışacağıdır. TCP'nin bağlantı yönelimli (**connection oriented**) olduğunu ve iki uç sistem arasında veri akışının gerçekleştiği güvenilir bir bayt akışı kanalı (**reliable byte-stream channel**) sağladığını hatırlayın. UDP bağlantısızdır (**connectionless**) ve teslimat hakkında herhangi bir garanti vermeden bir uç sistemden diğerine bağımsız veri paketleri (**independent packets of data**) gönderir. 
+Ayrıca, bir istemci veya sunucu programı bir RFC tarafından tanımlanan bir protokolü uyguladığında, protokolle ilişkili iyi bilinen port numarasını (**well-known port number**) kullanması gerektiğini hatırlayın; tersine, özel bir uygulama geliştirirken, geliştirici bu tür iyi bilinen port numaralarını kullanmaktan kaçınmaya özen göstermelidir.
+
+UDP ve TCP soket programlamayı basit bir UDP uygulaması ve basit bir TCP uygulaması aracılığıyla tanıtıyoruz. 
+Basit UDP ve TCP uygulamalarını Python 3'te sunuyoruz. Kodu Java, C veya C++'da yazabilirdik, ancak Python'u seçtik, çünkü Python temel soket kavramlarını (**socket concepts**) açıkça ortaya koyar.
+Python'da daha az kod satırı vardır ve her satır yeni başlayan programcıya (**novice programmer**) zorluk çekmeden açıklanabilir. 
+Ancak Python'a aşina değilseniz korkmanıza gerek yok. Java, C veya C++'da programlama deneyiminiz (**experience programming**) varsa, kodu kolayca takip edebilmelisiniz. C ile istemci-sunucu programlama ile ilgilenen okuyucular için birkaç iyi referans mevcuttur [Donahoo 2001; Stevens 1997; Frost 1994]; aşağıdaki Python örneklerimiz C'ye benzer bir görünüme sahiptir.
+
+#### UDP ile Soket Programlama (Socket Programming with UDP)
+
+Bu alt bölümde, UDP (**UDP**) kullanan basit istemci-sunucu programları yazacağız; sonraki bölümde ise TCP (**TCP**) kullanan benzer programları yazacağız.
+
+Farklı makinelerde (**machines**) çalışan süreçlerin (**processes**) soketlere (**sockets**) mesajlar (**messages**) göndererek birbirleriyle iletişim kurduğunu (**communicate**) hatırlayın. Her sürecin bir eve, sürecin soketinin ise bir kapıya benzediğini söylemiştik. 
+Uygulama (**application**) evdeki kapının bir tarafında; taşıma katmanı protokolü (**transport-layer protocol**) ise dış dünyadaki kapının diğer tarafında bulunur. Uygulama geliştiricisinin (**application developer**) soketin uygulama katmanı tarafındaki her şey üzerinde kontrolü vardır; ancak taşıma katmanı tarafında çok az kontrolü bulunur.
+
+Şimdi UDP soketlerini (**UDP sockets**) kullanan iletişim halindeki iki süreç arasındaki etkileşime daha yakından bakalım. 
+Gönderen süreç, UDP kullanırken bir veri paketini (**packet of data**) soket kapısından dışarı itmeden önce, pakete bir hedef adresi (**destination address**) eklemelidir. Paket gönderenin soketinden (**sender’s socket**) geçtikten sonra, İnternet (**Internet**) bu hedef adresini paketi İnternet üzerinden alıcı süreçteki (**receiving process**) sokete yönlendirmek (**route**) için kullanacaktır. 
+Paket alıcı sokete (**receiving socket**) ulaştığında, alıcı süreç paketi soketten alacak (**retrieve the packet**) ve ardından paketin içeriğini inceleyecek (**inspect the packet’s contents**) ve uygun eylemi gerçekleştirecektir.
+
+Şimdi merak ediyor olabilirsiniz, pakete eklenen hedef adresinde neler bulunur? Tahmin edebileceğiniz gibi, hedef ana bilgisayarın IP adresi (**destination host’s IP address**) hedef adresinin bir parçasıdır. Pakete hedef IP adresini (**destination IP address**) ekleyerek, İnternet'teki yönlendiriciler (**routers**) paketi İnternet üzerinden hedef ana bilgisayara yönlendirebilecektir. 
+Ancak bir ana bilgisayarın, her biri bir veya daha fazla sokete sahip birçok ağ uygulaması sürecini (**network application processes**) çalıştırabileceği için, hedef ana bilgisayardaki belirli soketi tanımlamak da gereklidir. Bir soket oluşturulduğunda, port numarası (**port number**) adı verilen bir tanımlayıcı atanır. Bu nedenle, tahmin edebileceğiniz gibi, paketin hedef adresi aynı zamanda soketin port numarasını da içerir. 
+Özetle, gönderen süreç, pakete hedef ana bilgisayarın IP adresi ve hedef soketin port numarasından oluşan bir hedef adresi ekler. 
+Dahası, yakında göreceğimiz gibi, gönderenin kaynak adresi (**source address**) – kaynak ana bilgisayarın IP adresi (**source host**) ve kaynak soketin (**source socket**) port numarasından oluşur – pakete de eklenir. Ancak, kaynak adresinin pakete eklenmesi tipik olarak UDP uygulama kodu tarafından yapılmaz; bunun yerine altta yatan işletim sistemi (**underlying operating system**) tarafından otomatik olarak yapılır.
+
+Hem UDP hem de TCP için soket programlamayı göstermek amacıyla aşağıdaki basit istemci-sunucu uygulamasını (**client-server application**) kullanacağız:
+
+1.  İstemci klavyesinden (**keyboard**) bir satır karakter (veri) okur ve veriyi sunucuya gönderir (**sends the data**).
+2.  Sunucu veriyi alır (**receives the data**) ve karakterleri büyük harfe dönüştürür (**converts the characters to uppercase**).
+3.  Sunucu değiştirilmiş veriyi istemciye gönderir (**sends the modified data**).
+4.  İstemci değiştirilmiş veriyi alır (**receives the modified data**) ve satırı ekranında görüntüler (**displays the line on its screen**).
+
+UDP taşıma hizmeti (**UDP transport service**) üzerinden iletişim kuran istemci ve sunucunun ana soketle ilgili etkinlik:
+(Sunucu ve istemcinin soket oluşturma (`socket()`), veri gönderme (`sendto`/`send`), alma (`recvfrom`/`recv`) ve kapatma gibi eylemler... 
+Örneğin, sunucu tarafında bir `serverSocket` oluşturulur, istemci tarafından gelen UDP segmentleri okunur ve istemcinin adresi ve port numarası belirtilerek yanıtlar yazılır. İstemci tarafında ise bir `clientSocket` oluşturulur, sunucu IP'si ve portu ile bir datagram oluşturulup gönderilir, sunucudan gelen datagram okunur ve ardından `clientSocket` kapatılabilir.)
+
+Şimdi ellerimizi kirletelim ve bu basit uygulamanın bir UDP uygulaması için istemci-sunucu program çiftine bakalım. 
+Ayrıca, her programdan sonra ayrıntılı, satır satır bir analiz sunuyoruz. 
+Sunucuya basit bir uygulama katmanı mesajı gönderecek UDP istemcisi ile başlayacağız. 
+Sunucunun istemcinin mesajını alabilmesi ve yanıtlayabilmesi için hazır ve çalışıyor olması gerekir—yani, istemci mesajını göndermeden önce bir süreç olarak çalışıyor olması gerekir.
+
+İstemci programının adı UDPClient.py ve sunucu programının adı UDPServer.py'dir. Ana konuları vurgulamak için bilerek minimal kod sağladık. 
+"İyi kod" elbette birkaç yardımcı satır daha içerecektir, özellikle hata durumlarını ele almak için. 
+Bu uygulama için sunucu port numarası olarak keyfi olarak 6000'i seçtik.
