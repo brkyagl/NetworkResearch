@@ -1284,3 +1284,47 @@ Bu, kullanıcının yazdığı orijinal satır olmalı, ancak şimdi büyük har
 
 Bu satır soketi kapatır (**closes**). Süreç (**process**) daha sonra sonlanır (**terminates**).
 
+Okay, here is the translation for the UDPServer.py section, following the established style and keeping technical terms in English:
+
+#### UDPServer.py
+
+Şimdi uygulamanın sunucu tarafı (**server side**): UDPServer.py 
+
+```python
+from socket import *
+serverPort = 6000
+serverSocket = socket(AF_INET, SOCK_DGRAM)
+```
+
+UDPServer'ın başlangıcının UDPClient'e benzediğine dikkat edin. O da socket modülünü (**socket module**) içe aktarır, `serverPort` tamsayı değişkenini (**integer variable**) 6000'e ayarlar ve `SOCK_DGRAM` türünde (bir UDP soketi - **UDP socket**) bir soket (**socket**) oluşturur. UDPClient'ten belirgin şekilde farklı olan ilk kod satırı şudur:
+
+`serverSocket.bind(('', serverPort))`
+
+Yukarıdaki satır, 6000 numaralı portu sunucunun soketine (**server’s socket**) bağlar (**binds**) (yani atar - **assigns**). 
+Böylece, UDPServer'da, (uygulama geliştiricisi - **application developer** tarafından yazılan) kod, sokete açıkça bir port numarası (**port number**) atamaktadır. Bu şekilde, herhangi biri sunucunun IP adresindeki (**IP address**) 6000 numaralı porta bir paket (**packet**) gönderdiğinde, o paket bu sokete yönlendirilecektir (**directed**).
+
+UDPServer daha sonra bir `while` döngüsüne (**while loop**) girer; `while` döngüsü, UDPServer'ın istemcilerden süresiz olarak (**indefinitely**) paketleri almasına (**receive**) ve işlemesine (**process**) olanak tanır. `while` döngüsünde, UDPServer bir paketin gelmesini bekler (**waits for a packet**).
+
+`message, clientAddress = serverSocket.recvfrom(2048)`
+
+Bu kod satırı UDPClient'te gördüğümüze benzer. İnternet'ten (**Internet**) sunucunun soketine (**server’s socket**) bir paket geldiğinde (**packet arrives**), paketin verisi (**packet’s data**) `message` değişkenine (**variable**) ve paketin kaynak adresi (**packet’s source address**) `clientAddress` değişkenine konur. `clientAddress` değişkeni hem istemcinin IP adresini (**client’s IP address**) hem de istemcinin port numarasını (**client’s port number**) içerir. 
+Burada, UDPServer bu adres bilgisini kullanacaktır, çünkü sıradan posta gibi bir dönüş adresi (**return address**) sağlar. 
+Bu kaynak adresi bilgisiyle (**source address information**), sunucu artık yanıtını (**reply**) nereye yönlendirmesi gerektiğini bilir (**direct its reply**).
+
+`modifiedMessage = message.decode().upper()`
+
+Bu satır basit uygulamamızın kalbidir (**heart of our simple application**). İstemci tarafından gönderilen satırı (**sent by the client**) alır ve mesajı bir dizeye (**string**) dönüştürdükten sonra, büyük harfle yazmak (**capitalize**) için `upper()` metodunu (**method**) kullanır.
+
+`serverSocket.sendto(modifiedMessage.encode(), clientAddress)`
+
+Bu son satır, istemcinin adresini (**client’s address**) (IP adresi ve port numarası) büyük harfle yazılmış mesaja (**capitalized message**) ekler (dizeyi baytlara (**bytes**) dönüştürdükten sonra) ve sonuçtaki paketi (**resulting packet**) sunucunun soketine (**server’s socket**) gönderir (**sends**). (Daha önce bahsedildiği gibi, sunucu adresi (**server address**) de pakete eklenir, ancak bu kod tarafından açıkça değil otomatik olarak yapılır - **automatically**, **explicitly by the code**.) İnternet daha sonra paketi bu istemci adresine (**client address**) teslim edecektir (**deliver the packet**). 
+Sunucu paketi gönderdikten sonra, `while` döngüsünde kalır (**remains in the while loop**), başka bir UDP paketinin (**UDP packet**) gelmesini bekler (**waiting for another**) (herhangi bir ana bilgisayarda (**any host**) çalışan herhangi bir istemciden - **any client**).
+
+Program çiftini (**pair of programs**) test etmek için, UDPClient.py'yi bir ana bilgisayarda (**host**) ve UDPServer.py'yi başka bir ana bilgisayarda çalıştırın. UDPClient.py'de sunucunun doğru ana bilgisayar adını (**proper hostname**) veya IP adresini (**IP address**) eklediğinizden emin olun. 
+Ardından, sunucu ana bilgisayarında derlenmiş sunucu programı (**compiled server program**) olan UDPServer.py'yi çalıştırın (**execute**). 
+Bu, sunucuda bir süreç (**process**) oluşturur ve bir istemci tarafından temas kurulana kadar boşta bekler (**idles**). 
+Ardından, istemcide derlenmiş istemci programı (**compiled client program**) olan UDPClient.py'yi çalıştırın. 
+Bu, istemcide bir süreç oluşturur. Son olarak, istemcide uygulamayı (**use the application**) kullanmak için bir cümle yazın ve ardından Enter'a basın (**carriage return**).
+
+Kendi UDP istemci-sunucu uygulamanızı (**develop your own UDP client-server application**) geliştirmek için, istemci veya sunucu programlarını biraz değiştirerek (**modifying the client or server programs**) başlayabilirsiniz. Örneğin, sunucu tüm harfleri büyük harfe dönüştürmek (**converting all the letters to uppercase**) yerine, 's' harfinin kaç kez geçtiğini sayabilir (**count the number of times the letter s appears**) ve bu sayıyı döndürebilir (**return this number**). Veya istemciyi, büyük harfle yazılmış bir cümle aldıktan sonra, kullanıcının sunucuya daha fazla cümle göndermeye devam edebilmesi (**continue to send more sentences**) için değiştirebilirsiniz (**modify the client**).
+
