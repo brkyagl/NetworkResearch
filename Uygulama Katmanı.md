@@ -1236,3 +1236,51 @@ Sunucunun istemcinin mesajını alabilmesi ve yanıtlayabilmesi için hazır ve 
 İstemci programının adı UDPClient.py ve sunucu programının adı UDPServer.py'dir. Ana konuları vurgulamak için bilerek minimal kod sağladık. 
 "İyi kod" elbette birkaç yardımcı satır daha içerecektir, özellikle hata durumlarını ele almak için. 
 Bu uygulama için sunucu port numarası olarak keyfi olarak 6000'i seçtik.
+
+#### UDPClient.py
+
+Uygulamanın istemci tarafı (**client side**) için kod: UDPClient.py
+
+Şimdi UDPClient.py'deki çeşitli kod satırlarına bakalım.
+
+`from socket import *`
+
+Socket modülü (**socket module**), Python'daki tüm ağ iletişimlerinin (**network communications**) temelini oluşturur. 
+Bu satırı dahil ederek, programımız içinde soketler (**sockets**) oluşturabileceğiz.
+
+`serverName = 'hostname'`
+`serverPort = 6000`
+
+İlk satır, `serverName` değişkenini (**variable**) 'serverName' dizesine (**string**) ayarlar. 
+Burada, sunucunun IP adresini (**IP address**) (örneğin, "128.138.32.126") veya sunucunun ana bilgisayar adını (**hostname**) (örneğin, "redberks.com") içeren bir dize sağlıyoruz. Eğer ana bilgisayar adını kullanırsak, IP adresini almak için otomatik olarak bir DNS araması (**DNS lookup**) gerçekleştirilecektir.) İkinci satır, tamsayı değişkeni (**integer variable**) `serverPort`'u 6000'e ayarlar.
+
+`clientSocket = socket(AF_INET, SOCK_DGRAM)`
+
+Bu satır, `clientSocket` adı verilen istemcinin soketini (**socket**) oluşturur. 
+İlk parametre adres ailesini (**address family**) belirtir; özellikle `AF_INET`, altta yatan ağın (**underlying network**) IPv4 (**IPv4**) kullandığını gösterir. (Şimdi bunun için endişelenmeyin-daha sonra ele alacağız.) İkinci parametre, soketin `SOCK_DGRAM` türünde olduğunu belirtir, bu da onun bir UDP soketi (**UDP socket**) (TCP soketi (**TCP socket**) yerine) olduğu anlamına gelir. Soketi oluştururken istemci soketinin port numarasını (**port number**) belirtmediğimize dikkat edin; bunun yerine işletim sisteminin (**operating system**) bunu bizim için yapmasına izin veriyoruz. 
+İstemci sürecinin (**client process**) kapısı oluşturulduğuna göre, kapıdan göndermek için bir mesaj (**message**) oluşturmak isteyeceğiz.
+
+`message = input('Küçük harfli cümle girin: ')`
+
+`input()` Python'da yerleşik bir fonksiyondur (**built-in function**). Bu komut yürütüldüğünde, istemcideki kullanıcıya "Küçük harfli cümle girin: " kelimeleriyle bir istem (**prompt**) sunulur. Kullanıcı daha sonra klavyesini (**keyboard**) kullanarak bir satır girer ve bu satır `message` değişkenine konur. Artık bir soketimiz ve bir mesajımız olduğuna göre, mesajı soket aracılığıyla hedef ana bilgisayara göndermek isteyeceğiz.
+
+`clientSocket.sendto(message.encode(), (serverName, serverPort))`
+
+Yukarıdaki satırda, bir sokete bayt göndermemiz gerektiği için mesajı önce dize (**string**) türünden bayt (**bytes**) türüne dönüştürüyoruz; bu, `encode()` metoduyla (**method**) yapılır. `sendto()` metodu, hedef adresini (**destination address**) (`serverName`, `serverPort`) mesaja ekler ve sonuçtaki paketi (**packet**) sürecin soketine (`clientSocket`) gönderir. (Daha önce bahsedildiği gibi, kaynak adres (**source address**) de pakete eklenir, ancak bu kod tarafından açıkça değil otomatik olarak yapılır, altta yatan işletim sistemi (**underlying operating system**) tarafından.) 
+Bir UDP soketi (**UDP socket**) aracılığıyla istemciden sunucuya bir mesaj göndermek işte bu kadar basit! 
+Paketi gönderdikten sonra istemci sunucudan veri almayı bekler.
+
+`modifiedMessage, serverAddress = clientSocket.recvfrom(2048)`
+
+Yukarıdaki satırla, İnternet'ten (**Internet**) istemcinin soketine (**client’s socket**) bir paket geldiğinde, paketin verisi (**packet’s data**) `modifiedMessage` değişkenine (**variable**) konur ve paketin kaynak adresi (**packet’s source address**) `serverAddress` değişkenine konur. `serverAddress` değişkeni hem sunucunun IP adresini (**server’s IP address**) hem de sunucunun port numarasını (**server’s port number**) içerir. 
+UDPClient programı aslında bu sunucu adresi bilgisine ihtiyaç duymaz, çünkü sunucu adresini başlangıçtan beri zaten bilir; ancak bu Python satırı yine de sunucu adresini sağlar. `recvfrom` metodu ayrıca 2048 arabellek boyutunu (**buffer size**) da girdi olarak alır. (Bu arabellek boyutu çoğu amaç için çalışır.)
+
+`print(modifiedMessage.decode())`
+
+Bu satır, mesajı baytlardan (**bytes**) dizeye (**string**) dönüştürdükten sonra `modifiedMessage`'ı kullanıcının ekranına (**user’s display**) yazdırır. 
+Bu, kullanıcının yazdığı orijinal satır olmalı, ancak şimdi büyük harfle yazılmış (**capitalized**) olmalıdır.
+
+`clientSocket.close()`
+
+Bu satır soketi kapatır (**closes**). Süreç (**process**) daha sonra sonlanır (**terminates**).
+
