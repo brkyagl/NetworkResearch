@@ -2,7 +2,7 @@ from socket import * # 1
 
 serverPort = 6000 # 2
 
-serverSocket 0 socket(AF_INET, SOCK_DGRAM) # 3
+serverSocket = socket(AF_INET, SOCK_DGRAM) # 3
 
 serverSocket.bind(('', serverPort)) # 4
 
