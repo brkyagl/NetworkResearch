@@ -1328,3 +1328,4 @@ Bu, istemcide bir süreç oluşturur. Son olarak, istemcide uygulamayı (**use t
 
 Kendi UDP istemci-sunucu uygulamanızı (**develop your own UDP client-server application**) geliştirmek için, istemci veya sunucu programlarını biraz değiştirerek (**modifying the client or server programs**) başlayabilirsiniz. Örneğin, sunucu tüm harfleri büyük harfe dönüştürmek (**converting all the letters to uppercase**) yerine, 's' harfinin kaç kez geçtiğini sayabilir (**count the number of times the letter s appears**) ve bu sayıyı döndürebilir (**return this number**). Veya istemciyi, büyük harfle yazılmış bir cümle aldıktan sonra, kullanıcının sunucuya daha fazla cümle göndermeye devam edebilmesi (**continue to send more sentences**) için değiştirebilirsiniz (**modify the client**).
 
+Aklıma bir şeyler geldikçe geliştirdim onların sonunda 'Up' yazıyor dosyada mevcut.
