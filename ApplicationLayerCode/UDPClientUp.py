@@ -10,7 +10,7 @@ print("Client başlatıldı, server'a mesaj göndermeye hazır:", serverName, "p
 
 while True:
 
-    message = input("Küçük harflerlerle mesaj girin: ")
+    message = input("Küçük harflerle mesaj girin: ")
 
     try:
 
