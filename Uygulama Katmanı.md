@@ -1354,3 +1354,44 @@ Dahası, tıpkı insanların aynı kapıdan girip çıkabildiği gibi, istemci s
 
 TCP ile soket programlamayı göstermek için aynı basit istemci-sunucu uygulamasını (**client-server application**) kullanıyoruz: 
 İstemci sunucuya bir satır veri gönderir (**sends one line of data**), sunucu satırı büyük harfe dönüştürür (**capitalizes the line**) ve istemciye geri gönderir (**sends it back**). TCP taşıma hizmeti (**TCP transport service**) üzerinden iletişim kuran istemci ve sunucunun ana soketle ilgili etkinliğini (**socket-related activity**) vurgulayalım. (TCP istemcisinin socket oluşturma (`socket()`), bağlanma (`connect()`), veri gönderme (`send()`), alma (`recv()`) ve kapatma eylemlerini; ve TCP sunucusunun karşılama soketi (`socket()`, `bind()`, `listen()`), bağlantı kabul etme (`accept()`) ile oluşturulan yeni bağlantı soketi üzerinden veri alma (`recv()`), gönderme (`send()`) ve kapatma eylemleri.)
+
+#### TCPClient.py
+
+Uygulamanın istemci tarafı (**client side**) için kod: TCPClient.py
+
+Şimdi, UDP uygulamasından (**UDP implementation**) önemli ölçüde farklı olan kod satırlarına bakalım. Bu tür ilk satır, istemci soketinin (**client socket**) oluşturulmasıdır.
+
+`clientSocket = socket(AF_INET, SOCK_STREAM)`
+
+Bu satır, `clientSocket` adı verilen istemcinin soketini (**socket**) oluşturur. 
+İlk parametre yine altta yatan ağın (**underlying network**) IPv4 (**IPv4**) kullandığını belirtir. 
+İkinci parametre, soketin `SOCK_STREAM` türünde olduğunu belirtir, bu da onun bir TCP soketi (**TCP socket**) (UDP soketi (**UDP socket**) yerine) olduğu anlamına gelir. Soketi oluştururken yine istemci soketinin port numarasını (**port number**) belirtmediğimize dikkat edin; bunun yerine işletim sisteminin (**operating system**) bunu bizim için yapmasına izin veriyoruz. 
+
+Şimdi bir sonraki kod satırı UDPClient'te (**UDPClient**) gördüğümüzden çok farklıdır:
+
+`clientSocket.connect((serverName, serverPort))`
+
+İstemcinin bir TCP soketi (**TCP socket**) kullanarak sunucuya (veya tam tersi) veri göndermeden önce, istemci ile sunucu arasında bir TCP bağlantısının (**TCP connection**) kurulması gerektiğini hatırlayın. Yukarıdaki satır, istemci ile sunucu arasındaki TCP bağlantısını başlatır (**initiates**). `connect()` metodunun (**method**) parametresi, bağlantının sunucu tarafının adresidir (**address of the server side**). Bu kod satırı çalıştırıldıktan sonra, üç yollu el sıkışma (**three-way handshake**) gerçekleştirilir ve istemci ile sunucu arasında bir TCP bağlantısı kurulur (**established**).
+
+`message = input("Küçük harflerle mesaj girin: ")`
+
+UDPClient'te olduğu gibi, yukarıdaki satır kullanıcıdan (**user**) bir cümle (**sentence**) alır. `message` dizesi (**string**), kullanıcı satırı Enter'a basarak (**typing a carriage return**) sonlandırana kadar karakterleri toplamaya (**gather characters**) devam eder. 
+Bir sonraki kod satırı da UDPClient'ten çok farklıdır:
+
+`clientSocket.send(message.encode())`
+
+Yukarıdaki satır, cümleyi istemcinin soketi (**client’s socket**) aracılığıyla TCP bağlantısına (**TCP connection**) gönderir (**sends**). 
+Programın, UDP soketlerinde olduğu gibi, açıkça bir paket (**packet**) oluşturup hedef adresini (**destination address**) pakete eklemediğine dikkat edin. 
+Bunun yerine, istemci programı sadece `message` dizesindeki baytları (**bytes**) TCP bağlantısına bırakır (**drops the bytes**). 
+İstemci daha sonra sunucudan bayt almayı bekler (**waits to receive bytes**).
+
+`modifiedMessage = clientSocket.recv(1024)`
+
+Sunucudan karakterler (**characters arrive**) geldiğinde, `modifiedMessage` dizesine (**string**) yerleştirilir (**get placed into the string**). 
+Satır, Enter karakteriyle (**carriage return character**) sonlanana kadar `modifiedMessage` içinde karakterler birikmeye (**accumulate**) devam eder. 
+Büyük harfle yazılmış cümleyi yazdırdıktan (**printing the capitalized sentence**) sonra, istemcinin soketini kapatırız (**closes the client’s socket**):
+
+`clientSocket.close()`
+
+Bu son satır soketi kapatır (**closes the socket**) ve dolayısıyla istemci ile sunucu arasındaki TCP bağlantısını (**TCP connection**) kapatır (**closes**). 
+Bu, istemcideki TCP'nin sunucudaki TCP'ye bir TCP mesajı (**TCP message**) göndermesine neden olur.
