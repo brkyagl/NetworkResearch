@@ -1395,3 +1395,34 @@ Büyük harfle yazılmış cümleyi yazdırdıktan (**printing the capitalized s
 
 Bu son satır soketi kapatır (**closes the socket**) ve dolayısıyla istemci ile sunucu arasındaki TCP bağlantısını (**TCP connection**) kapatır (**closes**). 
 Bu, istemcideki TCP'nin sunucudaki TCP'ye bir TCP mesajı (**TCP message**) göndermesine neden olur.
+
+#### TCPServer.py
+
+Şimdi sunucu programına (**server program**) bakalım: TCPServer.py
+
+Şimdi UDPServer'dan (**UDPServer**) ve TCPClient'ten (**TCPClient**) belirgin şekilde farklı olan satırlara bakalım. 
+TCPClient'te (**TCPClient**) olduğu gibi, sunucu bir TCP soketi (**TCP socket**) oluşturur:
+
+`serverSocket = socket(AF_INET,SOCK_STREAM)`
+
+UDPServer'a benzer şekilde, sunucu port numarasını (**server port number**), `serverPort`'u, bu soketle ilişkilendiririz:
+
+`serverSocket.bind(('', serverPort))`
+
+Ancak TCP ile `serverSocket` bizim karşılama soketimiz (**welcoming socket**) olacaktır. 
+Bu karşılama kapısını (**welcoming door**) kurduktan sonra, bir istemcinin kapıyı çalmasını bekleyecek ve dinleyeceğiz (**listen**):
+
+`serverSocket.listen(1)`
+
+Bu satır, sunucunun istemciden gelen TCP bağlantı isteklerini (**TCP connection requests**) dinlemesini sağlar. 
+Parametre, maksimum bekleyen bağlantı sayısını (**maximum number of queued connections**) (en az 1) belirtir.
+
+`connectionSocket, addr = serverSocket.accept()`
+
+Bir istemci bu kapıyı çaldığında, program `serverSocket` için `accept()` metodunu (**method**) çağırır, bu da sunucuda, o belirli istemciye adanmış (**dedicated to this particular client**) `connectionSocket` adı verilen **yeni bir soket** (**new socket**) oluşturur. 
+İstemci ve sunucu daha sonra el sıkışmayı (**handshaking**) tamamlarlar (**complete**), istemcinin `clientSocket`'i ile sunucunun `connectionSocket`'i arasında bir TCP bağlantısı (**TCP connection**) oluştururlar. TCP bağlantısı kurulduktan sonra (**established**), istemci ve sunucu artık bağlantı üzerinden birbirlerine bayt gönderebilirler (**send bytes to each other**). TCP ile, bir taraftan gönderilen tüm baytların diğer tarafa ulaşması sadece garanti edilmekle kalmaz, aynı zamanda **sırasıyla** (**in order**) ulaşması da garanti edilir (**guaranteed to arrive**).
+
+`connectionSocket.close()`
+
+Bu programda, değiştirilmiş cümleyi istemciye gönderdikten sonra, bağlantı soketini (**connection socket**) kapatırız. Ancak `serverSocket` açık kaldığı için, başka bir istemci şimdi kapıyı çalabilir ve sunucuya değiştirmesi için bir cümle gönderebilir (**send the server a sentence to modify**).
+
