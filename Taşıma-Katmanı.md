@@ -69,3 +69,46 @@ Eğer ağ katmanı protokolü bilgisayarlar arasında gönderilen taşıma katma
 Yine de, alttaki ağ protokolü ağ katmanında karşılık gelen hizmeti sunmasa bile, bir taşıma protokolü belirli hizmetleri sunabilir. 
 Örneğin, bu bölümde göreceğimiz gibi, bir taşıma protokolü, alttaki ağ protokolü güvenilmez olsa bile, yani ağ protokolü paketleri kaybetse, bozsa veya çoğaltsa bile, uygulamaya güvenilir veri aktarımı hizmeti sunabilir. 
 Başka bir örnek olarak, bir taşıma protokolü, ağ katmanı taşıma katmanı segmentlerinin gizliliğini garanti edemese bile, uygulama mesajlarının davetsiz misafirler tarafından okunmamasını garanti etmek için şifreleme kullanabilir.
+
+### İnternet'teki Taşıma Katmanına Genel Bakış
+
+İnternet'in uygulama katmanına iki farklı taşıma katmanı protokolü sunduğunu hatırlayalım. 
+Bu protokollerden biri, çağıran uygulamaya **güvenilmez, bağlantısız bir hizmet** sağlayan **UDP** (User Datagram Protocol). 
+İkinci protokol ise, çağıran uygulamaya **güvenilir, bağlantı yönelimli bir hizmet** sunan **TCP** (Transmission Control Protocol). 
+Bir ağ uygulaması tasarlarken, uygulama geliştiricisinin bu iki taşıma protokolünden birini belirlemesi gerekir. 
+Gördüğümüz gibi, uygulama geliştiricisi soketleri (socket) oluştururken UDP ve TCP arasında seçim yapar.
+
+Terminolojiyi basitleştirmek için, taşıma katmanı paketine **segment** diyoruz. 
+Ancak, İnternet literatüründe (örneğin RFC'lerde), TCP için taşıma katmanı paketine de segment denildiğini, ancak UDP paketi için genellikle **datagram** (datagram) denildiğini belirtmekte fayda var. Ne var ki, aynı İnternet literatürü, ağ katmanı paketi için de datagram terimini kullanır!
+Bilgisayar ağları üzerine bu tür bir başlangıç için, hem TCP hem de UDP paketlerine segment demenin ve datagram terimini sadece ağ katmanı paketi (IP paketi) için saklamanın kafa karıştırıcı olmayacağını düşünüyoruz.
+
+UDP ve TCP'ye kısa bir giriş yapmadan önce, İnternet'in ağ katmanı hakkında birkaç şey söylemek faydalı olacaktır. 
+İnternet'in ağ katmanı protokolünün bir adı var: **IP** (Internet Protokolü). IP, bilgisayarlar (host'lar) arasında mantıksal iletişim sağlar. 
+IP hizmet modeli, **en iyi çaba ile teslimat** (best-effort delivery) hizmetidir. 
+Bu, IP'nin iletişim kuran bilgisayarlar arasında segmentleri teslim etmek için "en iyi çabayı" göstermesi anlamına gelir, ancak hiçbir **garanti** vermez. Özellikle, segment teslimatını garanti etmez, segmentlerin sıralı teslimatını garanti etmez ve segmentlerdeki verinin bütünlüğünü garanti etmez. 
+Bu nedenlerle, IP **güvenilmez bir hizmet** olarak adlandırılır. 
+Ayrıca burada belirtelim ki, her bilgisayarın en az bir ağ katmanı adresi, yani bir **IP adresi** vardır. 
+IP adreslemeyi detaylı olarak inceleyeceğiz; bu bölüm için sadece her bilgisayarın bir IP adresi olduğunu aklımızda tutmamız yeterlidir.
+
+IP hizmet modeline bir göz attığımıza göre, şimdi UDP ve TCP tarafından sağlanan hizmet modellerini özetleyelim. 
+UDP ve TCP'nin en temel sorumluluğu, IP'nin iki uç sistem (end systems) arasındaki teslimat hizmetini, bu uç sistemlerde çalışan iki **süreç** arasındaki bir teslimat hizmetine genişletmektir. Bilgisayardan bilgisayara teslimatı süreçten sürece teslimata genişletme işlemine taşıma katmanı **çoklama (multiplexing)** ve **ayırma (demultiplexing)** denir. Taşıma katmanı çoklama ve ayırmayı bir sonraki bölümde tartışacağız. 
+UDP ve TCP ayrıca, segment başlıklarındaki hata tespit alanlarını dahil ederek **bütünlük kontrolü** sağlarlar.
+
+Bu iki minimal taşıma katmanı hizmeti—süreçten sürece veri teslimatı ve hata kontrolü—UDP'nin sağladığı **tek** iki hizmettir! 
+Özellikle, IP gibi, UDP de **güvenilmez bir hizmettir**—bir süreç tarafından gönderilen verinin hedef sürece sağlam (veya hiç!) ulaşıp ulaşmayacağını garanti etmez. 
+
+TCP ise, uygulamalara birkaç ek hizmet sunar. Her şeyden önce, **güvenilir veri aktarımı** (reliable data transfer) sağlar. 
+**Akış kontrolü** (flow control), **sıra numaraları** (sequence numbers), **onaylar** (ACK'ler) ve **zamanlayıcılar** (timers) (bu bölümde detaylıca inceleyeceğimiz teknikler) kullanarak, TCP verinin gönderen süreçten alan sürece **doğru ve sıralı** bir şekilde teslim edilmesini sağlar. 
+Böylece TCP, IP'nin uç sistemler arasındaki güvenilmez hizmetini, süreçler arasında güvenilir bir veri taşıma hizmetine dönüştürür. 
+TCP ayrıca **tıkanıklık kontrolü** (congestion control) sağlar.
+Tıkanıklık kontrolü, çağıran uygulamaya sağlanan bir hizmetten çok, bir bütün olarak İnternet için, yani genel fayda için bir hizmettir. 
+Genel olarak konuşmak gerekirse, TCP tıkanıklık kontrolü, herhangi bir TCP bağlantısının, iletişim kuran bilgisayarlar arasındaki bağlantıları ve yönlendiricileri (router) aşırı miktarda trafikle boğmasını önler. TCP, tıkanık bir bağlantıdan geçen her bağlantıya, bağlantı **bant genişliğinden eşit pay** vermeye çalışır. 
+Bu, TCP bağlantılarının gönderen taraflarının ağa trafik gönderme hızını (**transmission rate**) düzenleyerek yapılır.
+
+UDP trafiği ise bunun tersine **düzenlenmemiş**tir. UDP taşıması kullanan bir uygulama, istediği hızda ve istediği süre boyunca veri gönderebilir.
+
+Güvenilir veri aktarımı ve tıkanıklık kontrolü sağlayan bir protokol zorunlu olarak **karmaşık**tır. 
+Güvenilir veri aktarımı prensiplerini ve tıkanıklık kontrolü prensiplerini ele almak için birkaç bölüme ve TCP protokolünün kendisini ele almak için ek bölümlere ihtiyacımız olacak. Bu bölümde benimsenen yaklaşım, temel prensipler ile TCP protokolü arasında geçiş yapmaktır. 
+Örneğin, önce güvenilir veri aktarımını genel bir bağlamda tartışacağız ve ardından TCP'nin güvenilir veri aktarımını özel olarak nasıl sağladığını konuşacağız. Benzer şekilde, önce tıkanıklık kontrolünü genel bir bağlamda tartışacağız ve ardından TCP'nin tıkanıklık kontrolünü nasıl yaptığını ele alacağız.
+Ama tüm bu güzel konulara girmeden önce, taşıma katmanı çoklama ve ayırmaya bir göz atalım.
+
