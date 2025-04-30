@@ -168,3 +168,53 @@ Ancak, TCP'deki çoklama/ayırmanın daha ince/karmaşık olduğunu da göreceğ
 
 0'dan 1023'e kadar değişen port numaralarına **iyi bilinen port numaraları** (well-known port numbers) denir ve bunlar kısıtlanmıştır, yani HTTP (port numarası 80'i kullanır) ve FTP (port numarası 21'i kullanır) gibi iyi bilinen uygulama protokolleri tarafından kullanılmak üzere ayrılmıştır. İyi bilinen port numaralarının listesi RFC 1700'de verilmiştir ve http://www.iana.org adresinde güncellenmektedir [RFC 3232]. Yeni bir uygulama geliştirdiğimizde (geliştirdiğimiz basit uygulama gibi), uygulamaya bir port numarası atamalıyız.
 
+#### Bağlantısız Çoklama ve Ayırma (UDP)
+
+Önceki kısımlardan hatırlarsan, Python kodunda bir UDP soketi (socket) şöyle oluşturuluyordu:
+
+```python
+clientSocket = socket(AF_INET, SOCK_DGRAM)
+```
+
+Bu şekilde bir UDP soketi açtığında, taşıma katmanı (yani evdeki postacı yardımcısı) otomatik olarak bu sokete bir **Port Numarası** atar. 
+Bu numarayı genellikle 1024 ile 65535 arasındaki bir aralıktan seçer ve o anda bilgisayarda (host) başka hiçbir UDP soketinin kullanmadığı bir numara verir. 
+Ama istersek, soketi oluşturduktan sonra `bind()` metodunu kullanarak bu UDP soketine belirlediğimiz özel bir port numarasını da atayabiliriz:
+
+```python
+clientSocket.bind(('', 19157)) # Örneğin 19157 portunu atadık
+```
+
+Eğer bir server programı yazıyorsak ve bu server bilinen bir hizmet (Web server gibi) sunuyorsa, o zaman yazılımcı olarak server soketine o hizmetin iyi bilinen port numarasını (Web için 80 gibi) özellikle atamamız gerekir. 
+Genellikle, Client tarafı port atamasını taşıma katmanına bırakır (otomatik ve gizlice yapar), Server tarafı ise belirli, sabit bir port numarası atar ki Client'lar onu bulabilsin.
+
+**UDP Paketleri Nasıl Hazırlanır ve Nasıl Yönlendirilir? (Çoklama ve Ayırma)**
+
+Artık UDP soketlerine port numaraları atandığına göre, UDP'nin çoklama (multiplexing) ve ayırma (demultiplexing) işini tam olarak nasıl yaptığını anlatalım:
+
+Diyelim ki A Bilgisayarındaki (birinci evdeki) bir süreç (çocuk), 19157 numaralı kapıyı (UDP portunu) kullanarak B Bilgisayarındaki (karşı evdeki) 46428 numaralı kapısı olan bir sürece (çocuğa) bir parça uygulama verisi (mektup içi) göndermek istiyor.
+
+* **A Bilgisayarında (Çoklama - Multiplexing):** A Bilgisayarındaki taşıma katmanı (birinci evdeki postacı yardımcısı), gönderilmek istenen veriyi (mektup içini) alır. Üzerine bir etiket yapıştırır. Bu etikette (taşıma katmanı başlığı - header) verinin kendisiyle birlikte şu bilgiler mutlaka bulunur:
+    * **Kaynak Port Numarası:** 19157 (Mektup bizim evdeki hangi kapıdan çıktı?)
+    * **Hedef Port Numarası:** 46428 (Karşı evdeki hangi kapıya gidecek?)
+    * (Ve daha sonra konuşacağımız birkaç başka bilgi daha).
+    Bu etiketlenmiş veriye biz **segment** diyoruz (taşıma katmanı segmenti). Taşıma katmanı bu segmenti alıp, evin posta kutusuna (ağ katmanına) verir.
+    Ağ katmanı da segmenti bir IP datagramı (ağ katmanı paketi) içine koyar ve en iyi çabayla B Bilgisayarına ulaştırmaya çalışır.
+
+* **B Bilgisayarında (Ayırma - Demultiplexing):** Eğer segment B Bilgisayarına (karşı eve) ulaşırsa, B Bilgisayarındaki taşıma katmanı (karşı evdeki postacı yardımcısı) paketi alır ve içinden segmenti çıkarır. Segmentin üzerindeki etikete (başına) bakar.
+
+Segmenti hangi sokete (hangi kapıya) teslim edeceğini anlamak için **sadece** **Hedef Port Numarası**'na (46428) ve paketin geldiği **Hedef IP Adresi**'ne (kendi evin IP adresi) bakar.
+
+**Çok Önemli Detay (UDP'nin Farkı):** 
+
+Bir UDP soketini bilgisayar içinde bulmak (ayırma yapmak) için taşıma katmanı **sadece Hedef IP Adresi ve Hedef Port Numarası**'na bakar. 
+Mektubun **Hangi Evden (Kaynak IP)** geldiğiyle veya **Hangi Kapıdan (Kaynak Port)** çıktığıyla **ilgilenmez**. 
+Eğer iki farklı evden (farklı Kaynak IP) veya aynı evin farklı çocuklarından/kapılarından (farklı Kaynak Port) gelen iki segmentin **HEPSİNİN** üzerinde **AYNI Hedef IP Adresi** (karşı evin adresi) ve **AYNI Hedef Port Numarası** (karşı evdeki aynı kapı numarası) yazıyorsa, taşıma katmanı o iki segmenti de **AYNI Sokete** (yani aynı uygulama sürecine) teslim eder. 
+Ağdan UDP segmentleri geldikçe, bilgisayar her segmenti ilgili sokete, segmentin hedef port numarasına bakarak yönlendirir (ayırma işlemini yapar).
+
+**Kaynak Port Numarası Neden Var O Zaman?**
+
+Madem ayırma sırasında kaynak portun önemi yok, neden var? **kaynak port numarası bir "dönüş adresinin" parçası olarak kullanılır.** 
+B Bilgisayarı A Bilgisayarına bir yanıt (segment) göndermek istediğinde, B'den A'ya giden segmentteki **hedef port** değeri, A'dan B'ye giden segmentin **kaynak port** değerinden alınır. (Tam dönüş adresi, A'nın IP adresi ve A'dan gelen paketin kaynak port numarasıdır.)
+
+Bu durum, incelediğimiz UDP server programında net görülüyordu. `UDPServer.py`'de server, gelen segmentten `recvfrom()` metodu ile client'ın kaynak port numarasını (ve IP adresini) çıkarıyordu. Sonra client'a geri gönderdiği yanıt segmentinde, bu çıkarılan kaynak port numarasını **hedef port** olarak kullanıyordu. İşte kaynak port numarası bu işe yarar: Karşı tarafın sana geri dönebilmesi için bir adres (port) bilgisi sağlamak.
+
