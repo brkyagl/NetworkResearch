@@ -112,3 +112,59 @@ Güvenilir veri aktarımı prensiplerini ve tıkanıklık kontrolü prensiplerin
 Örneğin, önce güvenilir veri aktarımını genel bir bağlamda tartışacağız ve ardından TCP'nin güvenilir veri aktarımını özel olarak nasıl sağladığını konuşacağız. Benzer şekilde, önce tıkanıklık kontrolünü genel bir bağlamda tartışacağız ve ardından TCP'nin tıkanıklık kontrolünü nasıl yaptığını ele alacağız.
 Ama tüm bu güzel konulara girmeden önce, taşıma katmanı çoklama ve ayırmaya bir göz atalım.
 
+## Çoklama (Multiplexing) ve Ayırma (Demultiplexing)
+
+Bu bölümde, taşıma katmanının yaptığı temel bir işi konuşacağız: İnternet'ten bilgisayarına gelen veriyi, o bilgisayarda çalışan **doğru uygulamaya** (veya biz ona **süreç** diyelim) nasıl ulaştırdığı. Teknik dilde buna **çoklama (multiplexing)** ve **ayırma (demultiplexing)** deniyor. Merak etme, bunu o basit ev benzetmesiyle kolayca anlayacağız.
+
+**Temel Problem Ne?**
+
+Şöyle düşün: Senin bilgisayarın bir ev gibi. Bu evde aynı anda birçok çocuk (uygulama) yaşıyor: tarayıcı, oyun, sohbet programı gibi. 
+İnternetten gelen veri paketleri de eve gelen mektuplar gibi. 
+Problem şu: Eve gelen postanın (veri paketlerinin) hangi çocuğa (hangi uygulamaya) ait olduğunu nasıl bileceğiz? 
+Posta kutusuna (internet bağlantına) gelen paketlerin doğru çocuğa gitmesi lazım.
+
+**Çocukların Kapıları (Soketler) ve Kapı Numaraları (Portlar)**
+
+İşte burada taşıma katmanı (bizim benzetmedeki postacı yardımcıları) devreye giriyor. 
+Onlar şöyle bir sistem kurmuş:
+
+1.  Evdeki her çocuk (her uygulama süreci), internetle konuşmak için kendine özel bir **kapı** açıyor. Bu kapılara teknik dilde **Soket (Socket)** deniyor.
+2.  Bu kapıları karıştırmamak için, her kapıya benzersiz bir **numara** veriyorlar. Bu numaralara da **Port Numarası** deniyor. Yani, tarayıcı uygulamasının ayrı bir soketi ve port numarası var, oyunun ayrı, sohbet programının ayrı...
+
+**Paket Gönderme (Çoklama / Multiplexing)**
+
+Şimdi veri gönderme tarafına bakalım (İşte burası **Çoklama - Multiplexing** işi):
+
+* Evdeki bir çocuk (uygulama süreci) bir mektup (veri) göndermek istiyor.
+* Mektubu kendi kapısından (kendi özel port numarası olan soketinden) postacı yardımcısına (taşıma katmanı) veriyor.
+* Postacı yardımcısı (taşıma katmanı), bu mektubu alıyor ve üzerine bir etiket yapıştırıyor. Bu etikette iki ana bilgi var:
+    * **"Bu mektup hangi kapıdan çıktı?"** (Kaynak Port Numarası)
+    * **"Bu mektup karşı evdeki hangi kapıya gidecek?"** (Hedef Port Numarası)
+* Bu etiketlenmiş mektuba (yani başlığı eklenmiş veri parçasına) biz **segment** diyoruz (taşıma katmanı segmenti).
+* Taşıma katmanı, farklı çocuklardan/kapılardan gelen bu segmentleri alıp, evin posta kutusuna (ağ katmanına) bırakıyor.
+Ağ katmanı da bu segmentleri bir paket (datagram) içine koyup gerçek postacıyla (internet üzerinden) karşı eve gönderiyor.
+
+**Paket Alma (Ayırma / Demultiplexing)**
+
+Şimdi veri alma tarafına bakalım (İşte burası **Ayırma - Demultiplexing** işi):
+
+* Gerçek postacı (ağ katmanı), internetten gelen bir paket (datagram) getirip evin posta kutusuna (bilgisayarın internet bağlantısına) bırakıyor.
+* Evdeki postacı yardımcısı (taşıma katmanı) paketi alıyor ve içinden mektubu (segmenti) çıkarıyor.
+* Segmentin üzerindeki etikete bakıyor ve özellikle **"Bu mektup hangi kapıya gidecek?"** (Hedef Port Numarası) yazan kısma odaklanıyor.
+* Sonra evdeki o port numarasına (etikette yazan numaraya) sahip olan kapıyı (soketi) buluyor.
+* Mektubun içindeki veriyi o kapıdan içeri atıyor. O kapıyı açmış bekleyen çocuk (uygulama süreci) da böylece kendi verisini almış oluyor.
+* İşte taşıma katmanının, gelen paketleri alıp üzerindeki **hedef port numarasına** bakarak **doğru sokete** (dolayısıyla doğru sürece) teslim etme işine **Ayırma (Demultiplexing)** denir.
+
+Taşıma katmanının ayırma (demultiplexing) hizmetini nasıl uygulayabileceği şimdi açık olmalıdır: Bilgisayardaki her sokete bir port numarası atanabilir ve bir segment bilgisayara ulaştığında, taşıma katmanı segmentteki hedef port numarasını inceler ve segmenti ilgili sokete yönlendirir. 
+Segmentin verisi daha sonra soket aracılığıyla bağlı sürece geçer. Göreceğimiz gibi, UDP temelde bunu böyle yapar.
+Ancak, TCP'deki çoklama/ayırmanın daha ince/karmaşık olduğunu da göreceğiz. 
+
+**Özetle:**
+
+- **Çoklama (Multiplexing):** Gönderme tarafında, farklı uygulamalardan/soketlerden gelen veriyi toplayıp, hangi soketten geldiğini ve kime gideceğini belirten etiketler (başlıklar) ekleyerek gönderme işi.
+- **Ayırma (Demultiplexing):** Alma tarafında, gelen paketlerin üzerindeki etiketlere (başlıktaki hedef port numarasına) bakarak veriyi doğru uygulamaya/sokete teslim etme işi.
+
+**Port Numaraları Hakkında Kısa Not:**
+
+0'dan 1023'e kadar değişen port numaralarına **iyi bilinen port numaraları** (well-known port numbers) denir ve bunlar kısıtlanmıştır, yani HTTP (port numarası 80'i kullanır) ve FTP (port numarası 21'i kullanır) gibi iyi bilinen uygulama protokolleri tarafından kullanılmak üzere ayrılmıştır. İyi bilinen port numaralarının listesi RFC 1700'de verilmiştir ve http://www.iana.org adresinde güncellenmektedir [RFC 3232]. Yeni bir uygulama geliştirdiğimizde (geliştirdiğimiz basit uygulama gibi), uygulamaya bir port numarası atamalıyız.
+
