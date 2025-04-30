@@ -218,3 +218,24 @@ B Bilgisayarı A Bilgisayarına bir yanıt (segment) göndermek istediğinde, B'
 
 Bu durum, incelediğimiz UDP server programında net görülüyordu. `UDPServer.py`'de server, gelen segmentten `recvfrom()` metodu ile client'ın kaynak port numarasını (ve IP adresini) çıkarıyordu. Sonra client'a geri gönderdiği yanıt segmentinde, bu çıkarılan kaynak port numarasını **hedef port** olarak kullanıyordu. İşte kaynak port numarası bu işe yarar: Karşı tarafın sana geri dönebilmesi için bir adres (port) bilgisi sağlamak.
 
+#### Bağlantı Yönelimli Çoklama ve Ayırma (TCP)
+
+Şimdi sıra TCP'de çoklama ve ayırma işinin nasıl yapıldığına geldi. TCP, UDP'den biraz farklı çalışır. 
+TCP'deki en temel farklardan biri şudur: Bir TCP soketi (socket) (ve aslında kurulan TCP bağlantısı), UDP'deki gibi sadece hedef port numarasıyla değil, **dört farklı bilgiyle birden** tanımlanır. 
+
+Biz buna **dörtlü** diyelim:
+
+1.  **Kaynak IP Adresi:** Paketi gönderen bilgisayarın adresi (evin adresi gibi).
+2.  **Kaynak Port Numarası:** Paketi gönderen bilgisayardaki sürecin (uygulamanın) açtığı kapının numarası.
+3.  **Hedef IP Adresi:** Paketin gideceği bilgisayarın adresi (karşı evin adresi gibi).
+4.  **Hedef Port Numarası:** Paketin gideceği bilgisayardaki sürecin (uygulamanın) kapısının numarası.
+
+Yani, bir TCP segmenti (paketi) ağdan alıcı bilgisayara ulaştığında, bilgisayarın taşıma katmanı (postacı yardımcısı), segmenti **doğru sokete (doğru kapıya) yönlendirmek (ayırmak)** için **bu dört bilginin tamamını** kullanır.
+
+**Bu Neden Önemli ve UDP'den Farkı Ne?**
+
+İşte fark burada ortaya çıkıyor: UDP'de taşıma katmanı gelen paketi ayırırken sadece paketin üzerindeki "Hedef Port Numarası"na bakıyordu ve aynı hedef porta giden tüm paketler aynı sokete gidiyordu. Ama TCP'de durum farklı! 
+TCP'de, farklı Kaynak IP adreslerinden veya farklı Kaynak Port numaralarından gelen iki segment (ilk bağlantı kurma isteği segmenti hariç), eğer **hedef IP adresi ve hedef port numarası aynı olsa bile**, **iki farklı sokete** yönlendirilir. 
+Çünkü TCP, paketin hem kime (Hedef IP + Hedef Port) gittiğine hem de **kimden (Kaynak IP + Kaynak Port)** geldiğine bakar. 
+Bu dört bilginin tamamı aynı olan paketler aynı sokete gider.
+
