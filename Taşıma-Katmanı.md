@@ -239,3 +239,40 @@ TCP'de, farklı Kaynak IP adreslerinden veya farklı Kaynak Port numaralarından
 Çünkü TCP, paketin hem kime (Hedef IP + Hedef Port) gittiğine hem de **kimden (Kaynak IP + Kaynak Port)** geldiğine bakar. 
 Bu dört bilginin tamamı aynı olan paketler aynı sokete gider.
 
+**TCP Bağlantısı Kurma ve Ayırma Nasıl İşler?**
+
+Bunu daha iyi anlamak için TCP istemci-sunucu programlama örneğini tekrar hatırlayalım:
+
+* **Server Tarafı:** TCP server uygulaması, belirli bir port numarasında (örneğin 6001) client'lardan gelecek bağlantı kurma isteklerini bekleyen bir "karşılama soketi"ne sahiptir. (serverSocket gibi, gelenleri karşılayan ana kapı).
+
+* **Client Tarafı:** TCP client'ı bir soket oluşturur ve ardından şu kodlarla server'a bağlantı kurma isteği gönderir:
+    ```python
+    clientSocket = socket(AF_INET, SOCK_STREAM)
+    clientSocket.connect((serverName,6001))
+    ```
+
+* Bir bağlantı kurma isteği, aslında sadece bir TCP segmentidir. Bu segmentin hedef port numarası server'ın portu (6001) ve TCP başlığında özel bir "bağlantı kurma" biti ayarlanmıştır. Bu segmentte ayrıca client tarafından seçilmiş bir kaynak port numarası da bulunur.
+
+* Server sürecini çalıştıran bilgisayarın işletim sistemi, 6001 numaralı hedef porta gelen bu bağlantı isteği segmentini aldığında, 6001 portunda bağlantı kabul etmek için bekleyen server sürecini (karşılama soketini) bulur.
+
+* Server süreci daha sonra `serverSocket.accept()` metodunu çağırır. Bu çağrı başarılı olduğunda, server yeni bir soket oluşturur:
+    ```python
+    connectionSocket, addr = serverSocket.accept() # Yeni soket oluşturulur
+    ```
+
+* İşte tam bu noktada, server'daki taşıma katmanı, gelen bağlantı isteği segmentindeki o **dört değeri** not eder: (1) segmentteki kaynak port numarası (client'ın kapı no), (2) kaynak bilgisayarın IP adresi (client'ın ev adresi), (3) segmentteki hedef port numarası (server'ın kapı no), ve (4) server'ın kendi IP adresi (server'ın ev adresi).
+
+* Yeni oluşturulan bu **bağlantı soketi** (`connectionSocket`), **işte bu dört değerle** tanımlanır!
+Daha sonra gelen tüm segmentler, eğer kaynak portu, kaynak IP adresi, hedef portu ve hedef IP adresi olarak **bu dört değerle tam olarak eşleşiyorsa**, bu yeni oluşturulan özel sokete yönlendirilir (ayırılır). TCP bağlantısı artık bu yeni soket üzerinden kurulmuş olur ve client ile server birbirlerine veri gönderebilirler.
+
+Bir server bilgisayarı aynı anda birçok TCP bağlantı soketini destekleyebilir. 
+Her soket bir sürece bağlıdır ve **her soket kendi benzersiz dörtlüsü ile** tanımlanır. 
+Bir TCP segmenti bilgisayara ulaştığında, taşıma katmanı segmenti doğru sokete yönlendirmek (ayırmak) için **tüm dört alanı** (kaynak IP adresi, kaynak portu, hedef IP adresi, hedef portu) kullanır.
+
+Örneğin, B sunucusuna A bilgisayarından bir, C bilgisayarından ise iki tane olmak üzere birden çok HTTP bağlantısının geldiğini varsayalım. 
+A, C ve B bilgisayarlarının her birinin kendi benzersiz IP adresi vardır. C Bilgisayarı, B sunucusuna açtığı iki farklı HTTP bağlantısı için iki farklı kaynak port numarası (26145 ve 7532) atar. A Bilgisayarı da C'den bağımsız olarak kaynak port numaraları seçer ve o da HTTP bağlantısı için 26145 kaynak portunu atayabilir. **İşte burası önemli:** Bu bir problem yaratmaz! Sunucu B, **aynı kaynak port numarasına (26145) sahip olan iki bağlantıyı (A'dan gelen ve C'den gelen) hala doğru şekilde ayırabilir**, çünkü bu iki bağlantının **kaynak IP adresleri farklıdır**. Yani A'dan gelen paket (A'nın IP, 26145, B'nin IP, 80) ile C'den gelen paket (C'nin IP, 26145, B'nin IP, 80) farklı dörtlüler oluşturur ve farklı soketlere gider.
+
+**Özetle UDP vs TCP Ayırma:**
+
+* **UDP:** Gelen paketi ayırırken **sadece** Hedef IP ve Hedef Port'a bakar. Farklı kaynaklardan aynı hedefe gelen paketler aynı sokete gider.
+* **TCP:** Gelen paketi ayırırken **hem** Kaynak IP + Kaynak Port'a **hem de** Hedef IP + Hedef Port'a bakar (dörtlünün tamamı). Farklı kaynaklardan aynı hedefe gelen paketler, kaynak bilgileri farklı olduğu sürece farklı soketlere gider. (İlk bağlantı isteği hariç, o sadece hedef porta bakar.)
