@@ -276,3 +276,22 @@ A, C ve B bilgisayarlarının her birinin kendi benzersiz IP adresi vardır. C B
 
 * **UDP:** Gelen paketi ayırırken **sadece** Hedef IP ve Hedef Port'a bakar. Farklı kaynaklardan aynı hedefe gelen paketler aynı sokete gider.
 * **TCP:** Gelen paketi ayırırken **hem** Kaynak IP + Kaynak Port'a **hem de** Hedef IP + Hedef Port'a bakar (dörtlünün tamamı). Farklı kaynaklardan aynı hedefe gelen paketler, kaynak bilgileri farklı olduğu sürece farklı soketlere gider. (İlk bağlantı isteği hariç, o sadece hedef porta bakar.)
+
+#### Port Tarama (Port Scanning)
+
+Bir sunucu sürecinin (server process), uzaktaki bir istemciden (client) temas beklemek üzere açık bir portu sabırla dinlediğini gördük. 
+Bazı portlar iyi bilinen uygulamalar (örneğin, Web, FTP, DNS ve SMTP sunucuları) için rezerve edilmiştir; diğer portlar ise popüler uygulamalar tarafından geleneksel olarak kullanılır (örneğin, Microsoft Windows SQL server'ı UDP 1434 portunda istekleri dinler).
+
+Böylece, bir portun bir bilgisayarda (host) açık olduğunu belirlersek, o portu bilgisayarda çalışan belirli bir uygulamayla eşleştirebiliriz. 
+Bu, ağlarındaki bilgisayarlarda hangi ağ uygulamalarının çalıştığını bilmekle genellikle ilgilenen **sistem yöneticileri** için çok kullanışlıdır. 
+Ancak **saldırganlar** da, "ortamı kolaçan etmek" veya "keşif yapmak" amacıyla, hedef bilgisayarlarda hangi portların açık olduğunu bilmek isterler. 
+Eğer bir bilgisayarın bilinen bir güvenlik açığı olan bir uygulama çalıştırdığı tespit edilirse (örneğin, 1434 portunda dinleyen bir SQL server'ın bir buffer overflow zafiyetine tabi olduğu ve bu savunmasız bilgisayarda uzaktaki bir kullanıcının rastgele kod çalıştırmasına izin verdiği, Slammer solucanı [CERT 2003–04] tarafından istismar edilen bir açık), o bilgisayar saldırıya hazır hale gelir.
+
+Hangi uygulamaların hangi portları dinlediğini belirlemek nispeten kolay bir görevdir. 
+Nitekim, tam da bu işi yapan bir dizi kamu malı program, yani **port tarayıcıları (port scanner)** bulunmaktadır. 
+Bunların belki de en yaygın kullanılanı, http://nmap.org adresinde ücretsiz olarak bulunan ve çoğu Linux dağıtımına dahil olan **nmap**'tir.
+
+**TCP** için, nmap TCP bağlantılarını kabul eden portları arayarak portları sırayla tarar (scan). 
+**UDP** için ise, nmap yine portları sırayla tarar ve iletilen UDP segmentlerine yanıt veren UDP portlarını arar. 
+Her iki durumda da nmap, açık, kapalı veya ulaşılamaz portların bir listesini döndürür. 
+nmap çalıştıran bir bilgisayar, İnternet'teki herhangi bir hedef bilgisayarı taramaya (scan) çalışabilir. 
